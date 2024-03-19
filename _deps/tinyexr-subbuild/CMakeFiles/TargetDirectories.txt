@@ -1,0 +1,3 @@
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/tinyexr-populate.dir
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/ZERO_CHECK.dir

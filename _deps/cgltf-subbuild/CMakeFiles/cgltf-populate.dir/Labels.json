@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/cgltf-populate"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/9df68c03ea53edc19c4480820230658c/cgltf-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/697d0e4817e06cea069a9d91e18ebdcc/cgltf-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"cgltf-populate"
+		],
+		"name" : "cgltf-populate"
+	}
+}

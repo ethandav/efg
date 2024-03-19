@@ -1,0 +1,14 @@
+# Target labels
+ tinyobjloader-populate
+# Source files and their labels
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/tinyobjloader-populate
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/f4371861e16ca2c7a738d4aecec8f1a0/tinyobjloader-populate.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/5ee47822067a8c8732f2d8c34751d2d2/tinyobjloader-populate-complete.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-build.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-configure.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-download.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-install.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-mkdir.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-patch.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-test.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyobjloader-subbuild/CMakeFiles/19ec92b1dc49e19091c7d8820e8623a4/tinyobjloader-populate-update.rule

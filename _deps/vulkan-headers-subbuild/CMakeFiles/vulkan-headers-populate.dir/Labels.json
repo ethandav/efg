@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/vulkan-headers-populate"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/4ee176cf0ec945875c8b6c24197e4609/vulkan-headers-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/85662cdddcdd75ad0a02858ce595f818/vulkan-headers-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"vulkan-headers-populate"
+		],
+		"name" : "vulkan-headers-populate"
+	}
+}

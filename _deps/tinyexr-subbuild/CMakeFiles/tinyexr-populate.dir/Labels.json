@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/tinyexr-populate"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/77e6e026a7b8d97a03e40fb16be927e4/tinyexr-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/7a647ccce7f32971f3c47db0f7036e8a/tinyexr-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/tinyexr-subbuild/CMakeFiles/dbb07b0aa9041612870c5c0bf741229e/tinyexr-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"tinyexr-populate"
+		],
+		"name" : "tinyexr-populate"
+	}
+}

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\f48baac6247fa4f00f5f730006bdf1b0\vulkan-headers-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\85662cdddcdd75ad0a02858ce595f818\vulkan-headers-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\4ee176cf0ec945875c8b6c24197e4609\vulkan-headers-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Ethan\Documents\GitHub\gfx\build\_deps\vulkan-headers-subbuild\CMakeFiles\vulkan-headers-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{F8C48AC0-DDDE-33AE-8A2D-6A4F9315C0ED}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+# Target labels
+ vulkan-headers-populate
+# Source files and their labels
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/vulkan-headers-populate
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/4ee176cf0ec945875c8b6c24197e4609/vulkan-headers-populate.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/85662cdddcdd75ad0a02858ce595f818/vulkan-headers-populate-complete.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-build.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-configure.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-download.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-install.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-mkdir.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-patch.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-test.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/vulkan-headers-subbuild/CMakeFiles/f48baac6247fa4f00f5f730006bdf1b0/vulkan-headers-populate-update.rule

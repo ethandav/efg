@@ -1,0 +1,14 @@
+# Target labels
+ cgltf-populate
+# Source files and their labels
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/cgltf-populate
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/9df68c03ea53edc19c4480820230658c/cgltf-populate.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/697d0e4817e06cea069a9d91e18ebdcc/cgltf-populate-complete.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-build.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-configure.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-download.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-install.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-mkdir.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-patch.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-test.rule
+C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/3735dc04402a369ccfac0172435b2439/cgltf-populate-update.rule

@@ -1,0 +1,26 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.28/Modules/BasicConfigVersion-SameMajorVersion.cmake.in
+C:/Program Files/CMake/share/cmake-3.28/Modules/CMakeDependentOption.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CMakePackageConfigHelpers.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CPack.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CPackComponent.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CTest.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CTestTargets.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/CTestUseLaunchers.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/DartConfiguration.tcl.in
+C:/Program Files/CMake/share/cmake-3.28/Modules/FindGit.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/FindVulkan.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/GNUInstallDirs.cmake
+C:/Program Files/CMake/share/cmake-3.28/Modules/WriteBasicConfigVersionFile.cmake
+C:/Program Files/CMake/share/cmake-3.28/Templates/CPackConfig.cmake.in
+C:/Users/Ethan/Documents/GitHub/gfx/build/CMakeFiles/cmake.verify_globs
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/CMakeLists.txt
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/codesign.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/cputypetest.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/mkvk.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/modules/FindBash.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/modules/GetGitRevisionDescription.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/modules/KtxDependentVariable.cmake
+C:/Users/Ethan/Documents/GitHub/gfx/third_party/KTX-Software/cmake/version.cmake
