@@ -189,3 +189,84 @@ Shape Shapes::sphere()
 
     return sphere;
 }
+
+Shape Shapes::triangle() {
+    Shape triangle;
+    triangle.vertexCount = 3;
+    triangle.indexCount = 3;
+    triangle.vertices = std::vector<GfxVertex>(triangle.vertexCount);
+    triangle.indices = std::vector<uint32_t>(triangle.indexCount);
+
+    triangle.vertices[0].position = glm::vec3(0.5f, -0.5f, 0.0f);
+    triangle.vertices[1].position = glm::vec3(0.0f, 0.5f, 0.0f);
+    triangle.vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
+
+    triangle.vertices[0].uv = glm::vec2(1.0f, 0.0f);
+    triangle.vertices[1].uv = glm::vec2(0.5f, 1.0f);
+    triangle.vertices[2].uv = glm::vec2(0.0f, 0.0f);
+
+    triangle.vertices[0].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    triangle.vertices[1].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    triangle.vertices[2].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+
+    triangle.indices = {2, 1, 0};
+
+    return triangle;
+}
+
+Shape Shapes::pyramid() {
+    Shape pyramid;
+    pyramid.vertexCount = 12;
+    pyramid.indexCount = 12;
+    pyramid.vertices = std::vector<GfxVertex>(pyramid.vertexCount);
+    pyramid.indices = std::vector<uint32_t>(pyramid.indexCount);
+
+    pyramid.vertices[0].position = glm::vec3(0.5f, -0.5f, -0.5f); // Front
+    pyramid.vertices[1].position = glm::vec3(0.0f, 0.5f, -0.5f);
+    pyramid.vertices[2].position = glm::vec3(-0.5f, -0.5f, -0.5f);
+    pyramid.vertices[3].position = glm::vec3(0.5f, -0.5f, 0.5f); // Back
+    pyramid.vertices[4].position = glm::vec3(0.0f, 0.5f, 0.5f);
+    pyramid.vertices[5].position = glm::vec3(-0.5f, -0.5f, 0.5f);
+    pyramid.vertices[6].position = glm::vec3(-0.5f, -0.5f, -0.5f); // Left
+    pyramid.vertices[7].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+    pyramid.vertices[8].position = glm::vec3(-0.5f, -0.5f, 0.5f);
+    pyramid.vertices[9].position = glm::vec3(0.5f, -0.5f, -0.5f); // Right
+    pyramid.vertices[10].position = glm::vec3(0.5f, 0.5f, 0.0f);
+    pyramid.vertices[11].position = glm::vec3(0.5f, -0.5f, 0.5f);
+
+
+    pyramid.vertices[0].uv = glm::vec2(1.0f, 0.0f); // Front
+    pyramid.vertices[1].uv = glm::vec2(0.5f, 1.0f);
+    pyramid.vertices[2].uv = glm::vec2(0.0f, 0.0f);
+    pyramid.vertices[3].uv = glm::vec2(1.0f, 0.0f); // Back
+    pyramid.vertices[4].uv = glm::vec2(0.5f, 1.0f);
+    pyramid.vertices[5].uv = glm::vec2(0.0f, 0.0f);
+    pyramid.vertices[6].uv = glm::vec2(1.0f, 0.0f); // Left
+    pyramid.vertices[7].uv = glm::vec2(0.5f, 1.0f);
+    pyramid.vertices[8].uv = glm::vec2(0.0f, 0.0f);
+    pyramid.vertices[9].uv = glm::vec2(1.0f, 0.0f); // Right
+    pyramid.vertices[10].uv = glm::vec2(0.5f, 1.0f);
+    pyramid.vertices[11].uv = glm::vec2(0.0f, 0.0f);
+
+    pyramid.vertices[0].normal = glm::vec3(0.0f, 0.0f, -1.0f); // Front
+    pyramid.vertices[1].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    pyramid.vertices[2].normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    pyramid.vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f); // Back
+    pyramid.vertices[4].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+    pyramid.vertices[5].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+    pyramid.vertices[6].normal = glm::vec3(-1.0f, 0.0f, 0.0f); // Left
+    pyramid.vertices[7].normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    pyramid.vertices[8].normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+    pyramid.vertices[9].normal = glm::vec3(1.0f, 0.0f, 0.0f);  // Right
+    pyramid.vertices[10].normal = glm::vec3(1.0f, 0.0f, 0.0f);
+    pyramid.vertices[11].normal = glm::vec3(1.0f, 0.0f, 0.0f);
+
+    pyramid.indices = {
+        2, 1, 0,
+        5, 3, 4,
+        8, 7, 6,
+        11, 9, 10
+    };
+
+    return pyramid;
+}

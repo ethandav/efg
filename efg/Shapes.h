@@ -26,12 +26,16 @@ namespace Shapes
     enum Types
     {
         CUBE,
-        SPHERE
+        SPHERE,
+        TRIANGLE,
+        PYRAMID
     };
 
     void scale(Shape& shape, float scaleFactor);
     Shape cube();
     Shape sphere();
+    Shape triangle();
+    Shape pyramid();
 }
 
 #endif

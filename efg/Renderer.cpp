@@ -9,20 +9,23 @@ void Renderer::start(GfxWindow window)
 
 	gfxImGuiInitialize(gfx);
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//LoadScene("assets/sponza.obj");
-	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
-	GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
-	obj2->transform = CreateTransformationMatrix(
-		glm::vec3(1.0, 1.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(.2f, .2f, .2f)
-	);
+	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
+	//GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
+	//obj2->transform = CreateTransformationMatrix(
+	//	glm::vec3(1.0, 1.0f, 1.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(.2f, .2f, .2f)
+	//);
+
+	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::TRIANGLE, "assets/textures/earth.jpeg");
+	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::PYRAMID, "assets/textures/pyramid.jpg");
 
 	glm::vec3 lightPosition = glm::vec3(17.0f, 17.0f, -20.0f);
 	float lightColor[3] = {1.0f, 1.0f, 1.0f};
-	float lightIntensity = 0.0f;
+	float lightIntensity = 1.0f;
 	float specStrength = 0.0f;
 	int shininess = 32;
 
@@ -154,6 +157,12 @@ GfxRef<GfxInstance> Renderer::AddPrimitiveToScene(const Shapes::Types type, cons
 		break;
 	case SPHERE:
 		shape = sphere();
+		break;
+	case TRIANGLE:
+		shape = triangle();
+		break;
+	case PYRAMID:
+		shape = pyramid();
 		break;
 	}
 
