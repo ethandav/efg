@@ -14,14 +14,14 @@ void Renderer::start(GfxWindow window)
 	//LoadScene("assets/sponza.obj");
 	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
 	//GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
-	//obj2->transform = CreateTransformationMatrix(
-	//	glm::vec3(1.0, 1.0f, 1.0f),
-	//	glm::vec3(0.0f, 0.0f, 0.0f),
-	//	glm::vec3(.2f, .2f, .2f)
-	//);
 
 	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::TRIANGLE, "assets/textures/earth.jpeg");
 	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::PYRAMID, "assets/textures/pyramid.jpg");
+	obj1->transform = CreateTransformationMatrix(
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(2.0f, 2.0f, 2.0f)
+	);
 
 	glm::vec3 lightPosition = glm::vec3(17.0f, 17.0f, -20.0f);
 	float lightColor[3] = {1.0f, 1.0f, 1.0f};
@@ -31,9 +31,10 @@ void Renderer::start(GfxWindow window)
 
 	uint32_t const instanceCount = gfxSceneGetInstanceCount(gfxScene);
 
-	GfxDrawState drawState;
 	GfxTexture colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     GfxTexture depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
+
+	GfxDrawState drawState;
 	gfxDrawStateSetColorTarget(drawState, 0, colorBuffer.getFormat());
 	gfxDrawStateSetDepthStencilTarget(drawState, depthBuffer.getFormat());
 	gfxDrawStateSetDepthFunction(drawState, D3D12_COMPARISON_FUNC_LESS);
@@ -63,7 +64,6 @@ void Renderer::start(GfxWindow window)
 
 		gfxCommandBindColorTarget(gfx, 0, colorBuffer);
 		gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
-		gfxCommandBindKernel(gfx, litKernel);
 		gfxCommandClearTexture(gfx, colorBuffer);
 		gfxCommandClearTexture(gfx, depthBuffer);
 
@@ -98,6 +98,7 @@ void Renderer::start(GfxWindow window)
 		gfxProgramSetParameter(gfx, litProgram, "shininess", shininess);
 		gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 
+		gfxCommandBindKernel(gfx, litKernel);
 		for (uint32_t i = 0; i < instanceCount; ++i)
 		{
 			GfxInstance const& instance = gfxSceneGetInstances(gfxScene)[i];

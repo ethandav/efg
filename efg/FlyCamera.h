@@ -43,6 +43,7 @@ struct FlyCamera
     glm::mat4 prev_view;
     glm::mat4 prev_proj;
     glm::mat4 prev_view_proj;
+    float prevYaw, prevPitch;
 };
 
 FlyCamera CreateFlyCamera(GfxContext gfx, glm::vec3 const &eye, glm::vec3 const &center);

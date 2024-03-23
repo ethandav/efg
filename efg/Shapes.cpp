@@ -222,18 +222,17 @@ Shape Shapes::pyramid() {
     pyramid.indices = std::vector<uint32_t>(pyramid.indexCount);
 
     pyramid.vertices[0].position = glm::vec3(0.5f, -0.5f, -0.5f); // Front
-    pyramid.vertices[1].position = glm::vec3(0.0f, 0.5f, -0.5f);
+    pyramid.vertices[1].position = glm::vec3(0.0f, 0.5f, 0.0f);
     pyramid.vertices[2].position = glm::vec3(-0.5f, -0.5f, -0.5f);
     pyramid.vertices[3].position = glm::vec3(0.5f, -0.5f, 0.5f); // Back
-    pyramid.vertices[4].position = glm::vec3(0.0f, 0.5f, 0.5f);
+    pyramid.vertices[4].position = glm::vec3(0.0f, 0.5f, 0.0f);
     pyramid.vertices[5].position = glm::vec3(-0.5f, -0.5f, 0.5f);
     pyramid.vertices[6].position = glm::vec3(-0.5f, -0.5f, -0.5f); // Left
-    pyramid.vertices[7].position = glm::vec3(-0.5f, 0.5f, 0.0f);
+    pyramid.vertices[7].position = glm::vec3(0.0f, 0.5f, 0.0f);
     pyramid.vertices[8].position = glm::vec3(-0.5f, -0.5f, 0.5f);
     pyramid.vertices[9].position = glm::vec3(0.5f, -0.5f, -0.5f); // Right
-    pyramid.vertices[10].position = glm::vec3(0.5f, 0.5f, 0.0f);
+    pyramid.vertices[10].position = glm::vec3(0.0f, 0.5f, 0.0f);
     pyramid.vertices[11].position = glm::vec3(0.5f, -0.5f, 0.5f);
-
 
     pyramid.vertices[0].uv = glm::vec2(1.0f, 0.0f); // Front
     pyramid.vertices[1].uv = glm::vec2(0.5f, 1.0f);

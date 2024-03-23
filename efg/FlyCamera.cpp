@@ -24,6 +24,8 @@ SOFTWARE.
 #include "FlyCamera.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include <glm/ext/quaternion_trigonometric.hpp>
 
 // cam speed
 const float rotationSpeed = 0.01f;
@@ -99,22 +101,58 @@ void UpdateFlyCamera(GfxContext gfx, GfxWindow window, FlyCamera &fly_camera)
 
     if (rmbDown)
     {
-        // Rotate the camera only if the right mouse button is held down
-        fly_camera.view = glm::rotate(fly_camera.view, rotationSpeed * static_cast<float>(mouseX - prevMouseX), glm::vec3(0.0f, 1.0f, 0.0f));
+        // Calculate the rotation angles based on mouse movement
+        float yaw = -rotationSpeed * static_cast<float>(mouseX - prevMouseX);
+        float pitch = rotationSpeed * static_cast<float>(mouseY - prevMouseY);
+
+        float smoothFactor = 0.2f; // Adjust this value for smoother movement
+        yaw = smoothFactor * yaw + (1.0f - smoothFactor) * fly_camera.prevYaw;
+        pitch = smoothFactor * pitch + (1.0f - smoothFactor) * fly_camera.prevPitch;
+
+        // Create quaternions for the yaw and pitch rotations
+        glm::quat yawQuat = glm::angleAxis(yaw, fly_camera.up);
+        glm::vec3 right = glm::normalize(glm::cross(fly_camera.up, fly_camera.center - fly_camera.eye));
+        glm::quat pitchQuat = glm::angleAxis(pitch, right);
+
+        // Apply the rotations to the direction vector
+        glm::vec3 direction = fly_camera.center - fly_camera.eye;
+        direction = yawQuat * direction;
+        direction = pitchQuat * direction;
+
+        // Update the camera's center position
+        fly_camera.center = fly_camera.eye + direction;
+
+        fly_camera.prevYaw = yaw;
+        fly_camera.prevPitch = pitch;
     }
 
     prevMouseX = mouseX;
     prevMouseY = mouseY;
 
     // Handle camera translation based on keyboard input
+    glm::vec3 forward = glm::normalize(fly_camera.center - fly_camera.eye);
+    glm::vec3 right = glm::normalize(glm::cross(forward, fly_camera.up));
     if (GetAsyncKeyState('W') & 0x8000)
     {
-        fly_camera.fov -= zoomSpeed;
+        fly_camera.eye += forward * zoomSpeed;
+        fly_camera.center += forward * zoomSpeed;
     }
     if (GetAsyncKeyState('S') & 0x8000)
     {
-        fly_camera.fov += zoomSpeed;
+        fly_camera.eye -= forward * zoomSpeed;
+        fly_camera.center -= forward * zoomSpeed;
     }
+    if (GetAsyncKeyState('A') & 0x8000)
+    {
+        fly_camera.eye -= right * zoomSpeed;
+        fly_camera.center -= right * zoomSpeed;
+    }
+    if (GetAsyncKeyState('D') & 0x8000)
+    {
+        fly_camera.eye += right * zoomSpeed;
+        fly_camera.center += right * zoomSpeed;
+    }
+
     // Handle mouse button states
     if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
     {
@@ -127,26 +165,14 @@ void UpdateFlyCamera(GfxContext gfx, GfxWindow window, FlyCamera &fly_camera)
         rmbDown = false;
     }
 
-    // Update projection aspect ratio
+    // Update view matrix
+    fly_camera.view = glm::lookAt(fly_camera.eye, fly_camera.center, fly_camera.up);
+
+    // Update projection matrix
     float const aspect_ratio = gfxGetBackBufferWidth(gfx) / (float)gfxGetBackBufferHeight(gfx);
-
-    //fly_camera.fov = glm::clamp(fly_camera.fov, fly_camera.minFov, fly_camera.maxFov);
-
-    //fly_camera.proj = glm::perspective(glm::radians(fly_camera.fov), aspect_ratio, 1e-1f, 1e4f);
-
-    // Update projection jitter for anti-aliasing
-    //static uint32_t jitter_index;
-
-    //jitter_index = (jitter_index + 1) & 15; // 16 samples TAA
-
-    //float const jitter_x = (2.0f * CalculateHaltonNumber(jitter_index + 1, 2) - 1.0f) / gfxGetBackBufferWidth(gfx);
-    //float const jitter_y = (2.0f * CalculateHaltonNumber(jitter_index + 1, 3) - 1.0f) / gfxGetBackBufferHeight(gfx);
-
-    //fly_camera.proj[2][0]      = jitter_x;
-    //fly_camera.proj[2][1]      = jitter_y;
-    //fly_camera.prev_proj[2][0] = jitter_x;  // patch previous projection matrix so subpixel jitter doesn't generate velocity values
-    //fly_camera.prev_proj[2][1] = jitter_y;
+    fly_camera.proj = glm::perspective(0.6f, aspect_ratio, 1e-1f, 1e4f);
 
     fly_camera.view_proj       = fly_camera.proj      * fly_camera.view;
     fly_camera.prev_view_proj  = fly_camera.prev_proj * fly_camera.prev_view;
 }
+
