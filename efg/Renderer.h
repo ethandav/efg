@@ -9,6 +9,7 @@
 #include "FlyCamera.h"
 #include "Shapes.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 
 class Renderer
