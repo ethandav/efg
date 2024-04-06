@@ -19,6 +19,7 @@ public:
 	~Renderer() {};
 
 	void start(GfxWindow window);
+	void update();
 	void shutdown();
 private:
 	GfxRef<GfxInstance> AddPrimitiveToScene(const Shapes::Types type, const char* textureFile);
@@ -32,6 +33,23 @@ private:
 	GfxArray<GfxBuffer> indexBuffers = {};
 	GfxArray<GfxBuffer> vertexBuffers = {};
     GfxArray<GfxTexture> albedoBuffers;
+
+	GfxDrawState drawState;
+	GfxTexture colorBuffer = {};
+	GfxTexture depthBuffer = {};
+
+	GfxProgram litProgram = {};
+	GfxKernel litKernel = {};
+	GfxKernel resolveKernel = {};
+	GfxSamplerState textureSampler = {};
+
+	uint32_t instanceCount = 0;
+
+	glm::vec3 lightPosition = glm::vec3(17.0f, 17.0f, -20.0f);
+	float lightColor[3] = {1.0f, 1.0f, 1.0f};
+	float lightIntensity = 1.0f;
+	float specStrength = 0.0f;
+	int shininess = 32;
 };
 
 #endif

@@ -12,44 +12,42 @@ void Renderer::start(GfxWindow window)
 	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//LoadScene("assets/sponza.obj");
-	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
-	//GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
+	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
+	GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
+	GfxRef<GfxInstance> obj3 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/sun.png");
 
-	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::TRIANGLE, "assets/textures/earth.jpeg");
-	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::PYRAMID, "assets/textures/pyramid.jpg");
-	obj1->transform = CreateTransformationMatrix(
-		glm::vec3(0.0, 0.0f, 0.0f),
+	obj2->transform = CreateTransformationMatrix(
+		glm::vec3(1.0, 1.0f, -15.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(2.0f, 2.0f, 2.0f)
+		glm::vec3(.5f, .5f, .5f)
 	);
 
-	glm::vec3 lightPosition = glm::vec3(17.0f, 17.0f, -20.0f);
-	float lightColor[3] = {1.0f, 1.0f, 1.0f};
-	float lightIntensity = 1.0f;
-	float specStrength = 0.0f;
-	int shininess = 32;
+	obj3->transform = CreateTransformationMatrix(
+		glm::vec3(0.0, 0.0f, -1000.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(20.0f, 20.0f, 20.0f)
+	);
 
-	uint32_t const instanceCount = gfxSceneGetInstanceCount(gfxScene);
+	instanceCount = gfxSceneGetInstanceCount(gfxScene);
 
-	GfxTexture colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
-    GfxTexture depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
+	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
+    depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
 
-	GfxDrawState drawState;
 	gfxDrawStateSetColorTarget(drawState, 0, colorBuffer.getFormat());
 	gfxDrawStateSetDepthStencilTarget(drawState, depthBuffer.getFormat());
 	gfxDrawStateSetDepthFunction(drawState, D3D12_COMPARISON_FUNC_LESS);
 
-	GfxProgram litProgram = gfxCreateProgram(gfx, "lit");
-	GfxKernel litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
-	GfxKernel resolveKernel = gfxCreateGraphicsKernel(gfx, litProgram, "resolve");
-	GfxSamplerState textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
+	litProgram = gfxCreateProgram(gfx, "lit");
+	litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
+	resolveKernel = gfxCreateGraphicsKernel(gfx, litProgram, "resolve");
+	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
 
 	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
+}
 
-	while (!gfxWindowIsCloseRequested(window))
-	{
-
+void Renderer::update()
+{
 	    //float angularSpeed = glm::pi<float>() / 20.0;
 		//float angle = angularSpeed * time;
 		//
@@ -60,7 +58,7 @@ void Renderer::start(GfxWindow window)
 		UpdateFlyCamera(gfx, *m_Window, cam);
 		gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
 
-		gfxWindowPumpEvents(window);
+		gfxWindowPumpEvents(*m_Window);
 
 		gfxCommandBindColorTarget(gfx, 0, colorBuffer);
 		gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
@@ -123,27 +121,6 @@ void Renderer::start(GfxWindow window)
 
 		gfxImGuiRender();
 		gfxFrame(gfx);
-
-		time += 0.1f;
-	}
-
-
-	gfxDestroyTexture(gfx, depthBuffer);
-	gfxDestroyTexture(gfx, colorBuffer);
-	gfxDestroyKernel(gfx, litKernel);
-	gfxDestroyKernel(gfx, resolveKernel);
-	gfxDestroyProgram(gfx, litProgram);
-	gfxDestroySamplerState(gfx, textureSampler);
-
-    for(uint32_t i = 0; i < indexBuffers.size(); ++i)
-        gfxDestroyBuffer(gfx, indexBuffers.data()[i]);
-    for(uint32_t i = 0; i < vertexBuffers.size(); ++i)
-        gfxDestroyBuffer(gfx, vertexBuffers.data()[i]);
-    for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
-        gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
-
-	gfxDestroyWindow(window);
-	shutdown();
 }
 
 GfxRef<GfxInstance> Renderer::AddPrimitiveToScene(const Shapes::Types type, const char* textureFile)
@@ -265,6 +242,21 @@ void Renderer::LoadScene(const char* assetFile)
 
 void Renderer::shutdown()
 {
+	gfxDestroyTexture(gfx, depthBuffer);
+	gfxDestroyTexture(gfx, colorBuffer);
+	gfxDestroyKernel(gfx, litKernel);
+	gfxDestroyKernel(gfx, resolveKernel);
+	gfxDestroyProgram(gfx, litProgram);
+	gfxDestroySamplerState(gfx, textureSampler);
+
+    for(uint32_t i = 0; i < indexBuffers.size(); ++i)
+        gfxDestroyBuffer(gfx, indexBuffers.data()[i]);
+    for(uint32_t i = 0; i < vertexBuffers.size(); ++i)
+        gfxDestroyBuffer(gfx, vertexBuffers.data()[i]);
+    for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
+        gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
+
+	gfxDestroyWindow(*m_Window);
 	gfxImGuiTerminate();
 	gfxDestroyScene(gfxScene);
 	gfxDestroyContext(gfx);
