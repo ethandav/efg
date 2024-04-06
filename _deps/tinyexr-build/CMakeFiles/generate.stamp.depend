@@ -1,9 +1,0 @@
-# CMake generation dependency list for this directory.
-C:/Users/Ethan/Documents/GitHub/gfx/build/CMakeFiles/cmake.verify_globs
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/CMakeLists.txt
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/FindASan.cmake
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/FindMSan.cmake
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/FindSanitizers.cmake
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/FindTSan.cmake
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/FindUBSan.cmake
-C:/Users/Ethan/Documents/GitHub/gfx/third_party/tinyexr/cmake/sanitizers/sanitize-helpers.cmake

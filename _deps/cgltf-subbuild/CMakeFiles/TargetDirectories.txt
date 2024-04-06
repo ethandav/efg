@@ -1,3 +1,0 @@
-C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/cgltf-populate.dir
-C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/ALL_BUILD.dir
-C:/Users/Ethan/Documents/GitHub/gfx/build/_deps/cgltf-subbuild/CMakeFiles/ZERO_CHECK.dir
