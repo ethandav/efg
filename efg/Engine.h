@@ -2,6 +2,8 @@
 #ifndef ENGINE_H
 #define  ENGINE_H
 
+#include "Renderer.h"
+
 class Engine
 {
 public:
@@ -9,6 +11,11 @@ public:
 	~Engine() {};
 
 	void Initialize();
+	void start();
+	void shutdown();
+private:
+	Renderer renderer;
+	GfxWindow window = {};
 };
 
 #endif ENGINE_H

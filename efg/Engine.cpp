@@ -1,17 +1,21 @@
 #include "Engine.h"
-#include "Renderer.h"
 
 void Engine::Initialize()
 {
-	GfxWindow window = gfxCreateWindow(1280, 720, "Freeside Engine");
-	Renderer renderer;
-
+	window = gfxCreateWindow(1280, 720, "Freeside Engine");
 	renderer.start(window);
-	
+}
+
+void Engine::start()
+{
 	while (!gfxWindowIsCloseRequested(window))
 	{
 		renderer.update();
 	}
+}
 
+void Engine::shutdown()
+{
 	renderer.shutdown();
+	gfxDestroyWindow(window);
 }

@@ -256,7 +256,6 @@ void Renderer::shutdown()
     for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
         gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
 
-	gfxDestroyWindow(*m_Window);
 	gfxImGuiTerminate();
 	gfxDestroyScene(gfxScene);
 	gfxDestroyContext(gfx);
