@@ -3,7 +3,8 @@
 void Engine::Initialize()
 {
 	window = gfxCreateWindow(1280, 720, "Freeside Engine");
-	renderer.start(window);
+	gfx = gfxCreateContext(window);
+	renderer.start(gfx, window);
 }
 
 void Engine::start()

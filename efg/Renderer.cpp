@@ -1,11 +1,11 @@
 #include "Renderer.h"
 
-void Renderer::start(GfxWindow window)
+void Renderer::start(const GfxContext& gfx, const GfxWindow& window)
 {
 	float time = 0.0f;
 	m_Window = &window;
-	gfx = gfxCreateContext(window);
 	gfxScene = gfxCreateScene();
+	m_gfx = &gfx;
 
 	gfxImGuiInitialize(gfx);
 
@@ -48,83 +48,86 @@ void Renderer::start(GfxWindow window)
 
 void Renderer::update()
 {
-	    //float angularSpeed = glm::pi<float>() / 20.0;
-		//float angle = angularSpeed * time;
-		//
-		//lightPosition.x = 1.5 * glm::cos(angle);
-		//lightPosition.z = 1.5 * glm::sin(angle);
-		//lightPosition.y = 1.5 * glm::cos((glm::pi<float>() / 30.0) * time);
+	const GfxContext gfx = *m_gfx;
 
-		UpdateFlyCamera(gfx, *m_Window, cam);
-		gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
+	//float angularSpeed = glm::pi<float>() / 20.0;
+	//float angle = angularSpeed * time;
+	//
+	//lightPosition.x = 1.5 * glm::cos(angle);
+	//lightPosition.z = 1.5 * glm::sin(angle);
+	//lightPosition.y = 1.5 * glm::cos((glm::pi<float>() / 30.0) * time);
 
-		gfxWindowPumpEvents(*m_Window);
+	UpdateFlyCamera(gfx, *m_Window, cam);
+	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
 
-		gfxCommandBindColorTarget(gfx, 0, colorBuffer);
-		gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
-		gfxCommandClearTexture(gfx, colorBuffer);
-		gfxCommandClearTexture(gfx, depthBuffer);
+	gfxWindowPumpEvents(*m_Window);
 
-		if (ImGui::Begin("Lighting", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+	gfxCommandBindColorTarget(gfx, 0, colorBuffer);
+	gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
+	gfxCommandClearTexture(gfx, colorBuffer);
+	gfxCommandClearTexture(gfx, depthBuffer);
+
+	if (ImGui::Begin("Lighting", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+	{
+	    ImGui::Separator();
+	    if (ImGui::SliderFloat("Camera Distance", &cam.eye.z, 0.0f, 100.0f))
+	    {
+	        updateView(gfx, cam);
+	    }
+	    ImGui::Separator();
+	    ImGui::SliderFloat("Ambient Light Intensity", &lightIntensity, 0, 5);
+	    ImGui::Separator();
+	    ImGui::SliderFloat("Specular Strength", &specStrength, 0, 5);
+	    ImGui::Separator();
+	    ImGui::InputInt("Shininess", &shininess, 2, 256);
+	    ImGui::Separator();
+	    ImGui::Text("Light Position");
+	    ImGui::SliderFloat("x", &lightPosition.x, -20, 20);
+	    ImGui::SliderFloat("y", &lightPosition.y, -20, 20);
+	    ImGui::SliderFloat("z", &lightPosition.z, -20, 20);
+	    ImGui::Separator();
+	    ImGui::ColorPicker3("Light Source Color", lightColor);
+	    ImGui::Separator();
+	}
+	ImGui::End();
+
+	gfxProgramSetParameter(gfx, litProgram, "lightColor", lightColor);
+	gfxProgramSetParameter(gfx, litProgram, "lightPosition", lightPosition);
+	gfxProgramSetParameter(gfx, litProgram, "lightIntensity", lightIntensity);
+	gfxProgramSetParameter(gfx, litProgram, "specStrength", specStrength);
+	gfxProgramSetParameter(gfx, litProgram, "shininess", shininess);
+	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
+
+	gfxCommandBindKernel(gfx, litKernel);
+	for (uint32_t i = 0; i < instanceCount; ++i)
+	{
+		GfxInstance const& instance = gfxSceneGetInstances(gfxScene)[i];
+
+		gfxProgramSetParameter(gfx, litProgram, "transform", instance.transform);
+
+		if (instance.material)
 		{
-		    ImGui::Separator();
-		    if (ImGui::SliderFloat("Camera Distance", &cam.eye.z, 0.0f, 100.0f))
-		    {
-		        updateView(gfx, cam);
-		    }
-		    ImGui::Separator();
-		    ImGui::SliderFloat("Ambient Light Intensity", &lightIntensity, 0, 5);
-		    ImGui::Separator();
-		    ImGui::SliderFloat("Specular Strength", &specStrength, 0, 5);
-		    ImGui::Separator();
-		    ImGui::InputInt("Shininess", &shininess, 2, 256);
-		    ImGui::Separator();
-		    ImGui::Text("Light Position");
-		    ImGui::SliderFloat("x", &lightPosition.x, -20, 20);
-		    ImGui::SliderFloat("y", &lightPosition.y, -20, 20);
-		    ImGui::SliderFloat("z", &lightPosition.z, -20, 20);
-		    ImGui::Separator();
-		    ImGui::ColorPicker3("Light Source Color", lightColor);
-		    ImGui::Separator();
+			gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance.material]);
 		}
-		ImGui::End();
-
-		gfxProgramSetParameter(gfx, litProgram, "lightColor", lightColor);
-		gfxProgramSetParameter(gfx, litProgram, "lightPosition", lightPosition);
-		gfxProgramSetParameter(gfx, litProgram, "lightIntensity", lightIntensity);
-		gfxProgramSetParameter(gfx, litProgram, "specStrength", specStrength);
-		gfxProgramSetParameter(gfx, litProgram, "shininess", shininess);
-		gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
-
-		gfxCommandBindKernel(gfx, litKernel);
-		for (uint32_t i = 0; i < instanceCount; ++i)
+		else
 		{
-			GfxInstance const& instance = gfxSceneGetInstances(gfxScene)[i];
-
-			gfxProgramSetParameter(gfx, litProgram, "transform", instance.transform);
-
-			if (instance.material)
-			{
-				gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance.material]);
-			}
-			else
-			{
-				gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
-			}
-			gfxCommandBindIndexBuffer(gfx, indexBuffers[instance.mesh]);
-			gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance.mesh]);
-			gfxCommandDrawIndexed(gfx, (uint32_t)instance.mesh->indices.size());
+			gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
 		}
+		gfxCommandBindIndexBuffer(gfx, indexBuffers[instance.mesh]);
+		gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance.mesh]);
+		gfxCommandDrawIndexed(gfx, (uint32_t)instance.mesh->indices.size());
+	}
 
-		gfxCommandBindKernel(gfx, resolveKernel);
-		gfxCommandDraw(gfx, 3);
+	gfxCommandBindKernel(gfx, resolveKernel);
+	gfxCommandDraw(gfx, 3);
 
-		gfxImGuiRender();
-		gfxFrame(gfx);
+	gfxImGuiRender();
+	gfxFrame(gfx);
 }
 
 GfxRef<GfxInstance> Renderer::AddPrimitiveToScene(const Shapes::Types type, const char* textureFile)
 {
+	const GfxContext gfx = *m_gfx;
 	using namespace Shapes;
 
 	Shape shape = {};
@@ -188,6 +191,8 @@ glm::mat4 Renderer::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 
 
 void Renderer::LoadScene(const char* assetFile)
 {
+	const GfxContext gfx = *m_gfx;
+
     gfxSceneImport(gfxScene, assetFile);   // import our scene
 
     uint32_t const mesh_count     = gfxSceneGetMeshCount(gfxScene);
@@ -242,6 +247,8 @@ void Renderer::LoadScene(const char* assetFile)
 
 void Renderer::shutdown()
 {
+	const GfxContext gfx = *m_gfx;
+
 	gfxDestroyTexture(gfx, depthBuffer);
 	gfxDestroyTexture(gfx, colorBuffer);
 	gfxDestroyKernel(gfx, litKernel);

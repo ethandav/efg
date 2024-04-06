@@ -18,7 +18,7 @@ public:
 	Renderer() {};
 	~Renderer() {};
 
-	void start(GfxWindow window);
+	void start(const GfxContext& gfx, const GfxWindow& window);
 	void update();
 	void shutdown();
 private:
@@ -26,8 +26,8 @@ private:
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
 	void LoadScene(const char* assetFile);
 	
-	GfxContext	gfx = {};
-	GfxWindow*	m_Window = nullptr;
+	const GfxContext*	m_gfx = {};
+	const GfxWindow*	m_Window = nullptr;
 	GfxScene	gfxScene = {};
 	FlyCamera	cam = {};
 	GfxArray<GfxBuffer> indexBuffers = {};

@@ -15,6 +15,7 @@ public:
 	void shutdown();
 private:
 	Renderer renderer;
+	GfxContext gfx = {};
 	GfxWindow window = {};
 };
 
