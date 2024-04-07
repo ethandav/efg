@@ -10,22 +10,22 @@ void Scene::initialize(const GfxContext& gfx)
 	m_gfx = &gfx;
 	gfxScene = gfxCreateScene();
 
-	//LoadScene("assets/sponza.obj");
-	GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
-	GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
-	GfxRef<GfxInstance> obj3 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/sun.png");
+	LoadSceneFromFile("assets/sponza.obj");
+	//GfxRef<GfxInstance> obj1 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/earth.jpeg");
+	//GfxRef<GfxInstance> obj2 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/moon.jpg");
+	//GfxRef<GfxInstance> obj3 = AddPrimitiveToScene(Shapes::SPHERE, "assets/textures/sun.png");
 
-	obj2->transform = CreateTransformationMatrix(
-		glm::vec3(1.0, 1.0f, -15.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(.5f, .5f, .5f)
-	);
+	//obj2->transform = CreateTransformationMatrix(
+	//	glm::vec3(1.0, 1.0f, -15.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(.5f, .5f, .5f)
+	//);
 
-	obj3->transform = CreateTransformationMatrix(
-		glm::vec3(0.0, 0.0f, -1000.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(20.0f, 20.0f, 20.0f)
-	);
+	//obj3->transform = CreateTransformationMatrix(
+	//	glm::vec3(0.0, 0.0f, -1000.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(20.0f, 20.0f, 20.0f)
+	//);
 }
 
 void Scene::update(GfxProgram const& program) const
@@ -116,11 +116,11 @@ glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rot
 	return translationMatrix * rotationMatrix * scalingMatrix;
 }
 
-void Scene::LoadScene(const char* assetFile)
+void Scene::LoadSceneFromFile(const char* assetFile)
 {
 	const GfxContext gfx = *m_gfx;
 
-    gfxSceneImport(gfxScene, assetFile);   // import our scene
+	gfxSceneImport(gfxScene, assetFile);   // import our scene
 
     uint32_t const mesh_count     = gfxSceneGetMeshCount(gfxScene);
     uint32_t const material_count = gfxSceneGetMaterialCount(gfxScene);

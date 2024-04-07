@@ -22,7 +22,7 @@ private:
 
 	GfxRef<GfxInstance> AddPrimitiveToScene(const Shapes::Types type, const char* textureFile);
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
-	void LoadScene(const char* assetFile);
+	void LoadSceneFromFile(const char* assetFile);
 
 	GfxArray<GfxBuffer> indexBuffers = {};
 	GfxArray<GfxBuffer> vertexBuffers = {};
