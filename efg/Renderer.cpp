@@ -31,11 +31,8 @@ void Renderer::update()
 {
 	const GfxContext gfx = *m_gfx;
 
-
 	UpdateFlyCamera(gfx, *m_Window, cam);
 	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
-
-	gfxWindowPumpEvents(*m_Window);
 
 	gfxCommandBindColorTarget(gfx, 0, colorBuffer);
 	gfxCommandBindDepthStencilTarget(gfx, depthBuffer);

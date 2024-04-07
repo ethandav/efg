@@ -13,6 +13,7 @@ void Engine::start()
 {
 	while (!gfxWindowIsCloseRequested(window))
 	{
+		gfxWindowPumpEvents(window);
 		renderer.update();
 	}
 }
@@ -20,5 +21,6 @@ void Engine::start()
 void Engine::shutdown()
 {
 	renderer.shutdown();
+	scene.destroy();
 	gfxDestroyWindow(window);
 }
