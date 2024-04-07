@@ -39,35 +39,8 @@ void Renderer::update()
 	gfxCommandClearTexture(gfx, colorBuffer);
 	gfxCommandClearTexture(gfx, depthBuffer);
 
-	if (ImGui::Begin("Lighting", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
-	{
-	    ImGui::Separator();
-	    if (ImGui::SliderFloat("Camera Distance", &cam.eye.z, 0.0f, 100.0f))
-	    {
-	        updateView(gfx, cam);
-	    }
-	    ImGui::Separator();
-	    ImGui::SliderFloat("Ambient Light Intensity", &lightIntensity, 0, 5);
-	    ImGui::Separator();
-	    ImGui::SliderFloat("Specular Strength", &specStrength, 0, 5);
-	    ImGui::Separator();
-	    ImGui::InputInt("Shininess", &shininess, 2, 256);
-	    ImGui::Separator();
-	    ImGui::Text("Light Position");
-	    ImGui::SliderFloat("x", &lightPosition.x, -20, 20);
-	    ImGui::SliderFloat("y", &lightPosition.y, -20, 20);
-	    ImGui::SliderFloat("z", &lightPosition.z, -20, 20);
-	    ImGui::Separator();
-	    ImGui::ColorPicker3("Light Source Color", lightColor);
-	    ImGui::Separator();
-	}
-	ImGui::End();
+	ImGui::Begin("Ethan's Framework (for) Graphics", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
 
-	gfxProgramSetParameter(gfx, litProgram, "lightColor", lightColor);
-	gfxProgramSetParameter(gfx, litProgram, "lightPosition", lightPosition);
-	gfxProgramSetParameter(gfx, litProgram, "lightIntensity", lightIntensity);
-	gfxProgramSetParameter(gfx, litProgram, "specStrength", specStrength);
-	gfxProgramSetParameter(gfx, litProgram, "shininess", shininess);
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 
 	gfxCommandBindKernel(gfx, litKernel);
@@ -77,7 +50,9 @@ void Renderer::update()
 	gfxCommandBindKernel(gfx, resolveKernel);
 	gfxCommandDraw(gfx, 3);
 
+	ImGui::End();
 	gfxImGuiRender();
+
 	gfxFrame(gfx);
 }
 
