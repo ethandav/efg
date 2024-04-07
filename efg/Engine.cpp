@@ -4,7 +4,9 @@ void Engine::Initialize()
 {
 	window = gfxCreateWindow(1280, 720, "Freeside Engine");
 	gfx = gfxCreateContext(window);
-	renderer.start(gfx, window);
+	scene.initialize(gfx);
+
+	renderer.start(gfx, window, scene);
 }
 
 void Engine::start()

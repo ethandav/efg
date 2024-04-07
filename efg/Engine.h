@@ -3,6 +3,7 @@
 #define  ENGINE_H
 
 #include "Renderer.h"
+#include "Scene.h"
 
 class Engine
 {
@@ -14,9 +15,10 @@ public:
 	void start();
 	void shutdown();
 private:
-	Renderer renderer;
+	Renderer renderer = {};
 	GfxContext gfx = {};
 	GfxWindow window = {};
+	Scene scene = {};
 };
 
 #endif ENGINE_H

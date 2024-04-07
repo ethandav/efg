@@ -141,6 +141,7 @@ copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\d3d12SDKLayers.dll" "$(Ta
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shapes.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +152,7 @@ copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\d3d12SDKLayers.dll" "$(Ta
     <ClInclude Include="Engine.h" />
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Shapes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
