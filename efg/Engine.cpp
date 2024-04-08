@@ -6,7 +6,9 @@ void Engine::Initialize()
 	gfx = gfxCreateContext(window);
 
 	Scene* scene = new Scene();
+	Gui* gui = new Gui();
 	renderer.attachRenderLayer(scene);
+	renderer.attachRenderLayer(gui);
 
 	renderer.initialize(gfx, window);
 }

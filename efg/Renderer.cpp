@@ -6,8 +6,6 @@ void Renderer::initialize(const GfxContext& gfx, const GfxWindow& window)
 	m_Window = &window;
 	m_gfx = &gfx;
 
-	gfxImGuiInitialize(gfx);
-
 	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
@@ -49,17 +47,12 @@ void Renderer::update()
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 	gfxCommandBindKernel(gfx, litKernel);
 
-	ImGui::Begin("Ethan's Framework (for) Graphics", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
-
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
 		layer->update(gfx, litProgram);
 	});
 
 	gfxCommandBindKernel(gfx, resolveKernel);
 	gfxCommandDraw(gfx, 3);
-
-	ImGui::End();
-	gfxImGuiRender();
 
 	gfxFrame(gfx);
 }
@@ -79,6 +72,5 @@ void Renderer::shutdown()
 	gfxDestroyProgram(gfx, litProgram);
 	gfxDestroySamplerState(gfx, textureSampler);
 
-	gfxImGuiTerminate();
 	gfxDestroyContext(gfx);
 }

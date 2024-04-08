@@ -4,6 +4,7 @@
 
 #include "Renderer.h"
 #include "Scene.h"
+#include "Gui.h"
 
 class Engine
 {
