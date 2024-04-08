@@ -62,22 +62,21 @@ public:
 	Scene() {};
 	virtual void initialize(const GfxContext& gfx);
 	virtual void update(GfxContext const& gfx, GfxProgram const& program);
-	virtual void destroy();
+	virtual void destroy(GfxContext const& gfx);
 private:
-	const GfxContext* m_gfx = nullptr;
 	GfxScene gfxScene = {};
 
-	void AddPrimitive(const char* name, const Shapes::Types type, const char* textureFile,
+	void AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
-	void addLight(const char* name,
+	void addLight(GfxContext const& gfx, const char* name,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const;
-	void LoadSceneFromFile(const char* assetFile);
+	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
 
 	GfxArray<GfxBuffer> indexBuffers = {};
 	GfxArray<GfxBuffer> vertexBuffers = {};

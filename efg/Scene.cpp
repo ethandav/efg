@@ -2,13 +2,13 @@
 
 void Scene::initialize(const GfxContext& gfx)
 {
-	m_gfx = &gfx;
 	gfxScene = gfxCreateScene();
 
-	addLight("Light 1");
-	AddPrimitive("Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+	addLight(gfx, "Light 1");
+	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
 	AddPrimitive(
+        gfx,
 		"Moon",
 		Shapes::SPHERE,
 		"assets/textures/moon.jpg",
@@ -18,6 +18,7 @@ void Scene::initialize(const GfxContext& gfx)
 	);
 
 	AddPrimitive(
+        gfx,
 		"Sun",
 		Shapes::SPHERE,
 		"assets/textures/sun.png",
@@ -26,7 +27,7 @@ void Scene::initialize(const GfxContext& gfx)
 		glm::vec3(20.0f, 20.0f, 20.0f)
 	);
 
-	//LoadSceneFromFile("assets/Room.obj");
+	//LoadSceneFromFile(gxf, "assets/Room.obj");
 }
 
 void Scene::update(GfxContext const& gfx, GfxProgram const& program)
@@ -104,7 +105,7 @@ void Scene::update(GfxContext const& gfx, GfxProgram const& program)
     }
 }
 
-void Scene::addLight(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
+void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	GfxRef<GfxInstance> reference = gfxSceneCreateInstance(gfxScene);
 	char* lightName = new char[strlen(name) + 1];
@@ -113,10 +114,9 @@ void Scene::addLight(const char* name, glm::vec3 translation, glm::vec3 rotation
 	gameObjects.push_back(light);
 }
 
-void Scene::AddPrimitive(const char* name, const Shapes::Types type, const char* textureFile,
+void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
-	const GfxContext gfx = *m_gfx;
 	using namespace Shapes;
 
 	Shape shape = {};
@@ -177,9 +177,8 @@ glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rot
 	return translationMatrix * rotationMatrix * scalingMatrix;
 }
 
-void Scene::LoadSceneFromFile(const char* assetFile)
+void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 {
-	const GfxContext gfx = *m_gfx;
     uint32_t const orig_instance_count = gfxSceneGetInstanceCount(gfxScene);
     uint32_t const orig_mesh_count     = gfxSceneGetMeshCount(gfxScene);
     uint32_t const orig_material_count = gfxSceneGetMaterialCount(gfxScene);
@@ -244,10 +243,8 @@ void Scene::LoadSceneFromFile(const char* assetFile)
     }
 }
 
-void Scene::destroy()
+void Scene::destroy(GfxContext const& gfx)
 {
-	const GfxContext gfx = *m_gfx;
-
     for(uint32_t i = 0; i < indexBuffers.size(); ++i)
         gfxDestroyBuffer(gfx, indexBuffers.data()[i]);
     for(uint32_t i = 0; i < vertexBuffers.size(); ++i)

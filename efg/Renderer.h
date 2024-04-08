@@ -16,7 +16,7 @@ public:
 	virtual ~RenderLayer() = default;
 	virtual void initialize(GfxContext const& gfx) = 0;
 	virtual void update(GfxContext const& gfx, GfxProgram const& program) = 0;
-	virtual void destroy() = 0;
+	virtual void destroy(GfxContext const& gfx) = 0;
 private:
 };
 

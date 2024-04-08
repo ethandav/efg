@@ -69,7 +69,7 @@ void Renderer::shutdown()
 	const GfxContext gfx = *m_gfx;
 
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
-		layer->destroy();
+		layer->destroy(gfx);
 	});
 
 	gfxDestroyTexture(gfx, depthBuffer);
