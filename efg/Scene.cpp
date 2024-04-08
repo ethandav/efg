@@ -29,10 +29,8 @@ void Scene::initialize(const GfxContext& gfx)
 	//LoadSceneFromFile("assets/Room.obj");
 }
 
-void Scene::update(GfxProgram const& program) const
+void Scene::update(GfxContext const& gfx, GfxProgram const& program)
 {
-    GfxContext gfx = *m_gfx;
-
     for (GameObject* obj : gameObjects)
     {
         if (obj == nullptr)

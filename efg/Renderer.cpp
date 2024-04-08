@@ -1,10 +1,9 @@
 #include "Renderer.h"
 
-void Renderer::start(const GfxContext& gfx, const GfxWindow& window, const Scene& scene)
+void Renderer::initialize(const GfxContext& gfx, const GfxWindow& window)
 {
 	float time = 0.0f;
 	m_Window = &window;
-	m_scene = &scene;
 	m_gfx = &gfx;
 
 	gfxImGuiInitialize(gfx);
@@ -25,6 +24,15 @@ void Renderer::start(const GfxContext& gfx, const GfxWindow& window, const Scene
 
 	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
+
+	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
+		layer->initialize(gfx);
+	});
+}
+
+void Renderer::attachRenderLayer(RenderLayer* layer)
+{
+	renderLayers.push_back(layer);
 }
 
 void Renderer::update()
@@ -38,14 +46,14 @@ void Renderer::update()
 	gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
 	gfxCommandClearTexture(gfx, colorBuffer);
 	gfxCommandClearTexture(gfx, depthBuffer);
+	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
+	gfxCommandBindKernel(gfx, litKernel);
 
 	ImGui::Begin("Ethan's Framework (for) Graphics", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
 
-	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
-
-	gfxCommandBindKernel(gfx, litKernel);
-
-	m_scene->update(litProgram);
+	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
+		layer->update(gfx, litProgram);
+	});
 
 	gfxCommandBindKernel(gfx, resolveKernel);
 	gfxCommandDraw(gfx, 3);
@@ -59,6 +67,10 @@ void Renderer::update()
 void Renderer::shutdown()
 {
 	const GfxContext gfx = *m_gfx;
+
+	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
+		layer->destroy();
+	});
 
 	gfxDestroyTexture(gfx, depthBuffer);
 	gfxDestroyTexture(gfx, colorBuffer);

@@ -8,7 +8,17 @@
 #include "gfx_scene.h"
 #include "FlyCamera.h"
 #include "Shapes.h"
-#include "Scene.h"
+
+class RenderLayer
+{
+public:
+	RenderLayer() {};
+	virtual ~RenderLayer() = default;
+	virtual void initialize(GfxContext const& gfx) = 0;
+	virtual void update(GfxContext const& gfx, GfxProgram const& program) = 0;
+	virtual void destroy() = 0;
+private:
+};
 
 class Renderer
 {
@@ -16,14 +26,13 @@ public:
 	Renderer() {};
 	~Renderer() {};
 
-	void start(const GfxContext& gfx, const GfxWindow& window, const Scene& scene);
-	void bindSceneBuffers();
+	void initialize(const GfxContext& gfx, const GfxWindow& window);
+	void attachRenderLayer(RenderLayer* layer);
 	void update();
 	void shutdown();
 private:
 	const GfxContext*	m_gfx = {};
 	const GfxWindow*	m_Window = nullptr;
-	const Scene*	m_scene = {};
 	FlyCamera	cam = {};
 
 	GfxDrawState drawState;
@@ -34,6 +43,8 @@ private:
 	GfxKernel litKernel = {};
 	GfxKernel resolveKernel = {};
 	GfxSamplerState textureSampler = {};
+
+	std::vector<RenderLayer*> renderLayers = {};
 
 };
 

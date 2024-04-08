@@ -4,9 +4,11 @@ void Engine::Initialize()
 {
 	window = gfxCreateWindow(1920, 1080, "Freeside Engine");
 	gfx = gfxCreateContext(window);
-	scene.initialize(gfx);
 
-	renderer.start(gfx, window, scene);
+	Scene* scene = new Scene();
+	renderer.attachRenderLayer(scene);
+
+	renderer.initialize(gfx, window);
 }
 
 void Engine::start()
@@ -20,7 +22,6 @@ void Engine::start()
 
 void Engine::shutdown()
 {
-	scene.destroy();
 	renderer.shutdown();
 	gfxDestroyWindow(window);
 }

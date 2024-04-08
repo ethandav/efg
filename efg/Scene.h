@@ -6,6 +6,7 @@
 #include "gfx_scene.h"
 #include "gfx_imgui.h"
 #include "Shapes.h"
+#include "Renderer.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
@@ -55,13 +56,13 @@ public:
 		GameObject(name, ref, translation, rotation, scale) {}
 };
 
-class Scene
+class Scene : public RenderLayer
 {
 public:
 	Scene() {};
-	void initialize(const GfxContext& gfx);
-	void update(GfxProgram const& program) const;
-	void destroy();
+	virtual void initialize(const GfxContext& gfx);
+	virtual void update(GfxContext const& gfx, GfxProgram const& program);
+	virtual void destroy();
 private:
 	const GfxContext* m_gfx = nullptr;
 	GfxScene gfxScene = {};

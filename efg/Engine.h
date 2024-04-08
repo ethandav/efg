@@ -18,7 +18,6 @@ private:
 	Renderer renderer = {};
 	GfxContext gfx = {};
 	GfxWindow window = {};
-	Scene scene = {};
 };
 
 #endif ENGINE_H
