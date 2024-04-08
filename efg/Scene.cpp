@@ -26,75 +26,92 @@ void Scene::initialize(const GfxContext& gfx)
 		glm::vec3(20.0f, 20.0f, 20.0f)
 	);
 
-	//LoadSceneFromFile("assets/sponza.obj");
+	//LoadSceneFromFile("assets/Room.obj");
 }
 
 void Scene::update(GfxProgram const& program) const
 {
-	GfxContext gfx = *m_gfx;
-	ImGui::Begin("Game Objects");
+    GfxContext gfx = *m_gfx;
 
-	for (GameObject* obj : gameObjects)
-	{
-        if (ImGui::TreeNode(obj->name)) {
-			ImGui::InputFloat3("Position", &obj->position[0], "%.3f");
+    for (GameObject* obj : gameObjects)
+    {
+        if (obj == nullptr)
+        {
+            continue;
+        }
+
+        GfxInstance* instance = gfxSceneGetInstance(gfxScene, obj->reference);
+        Light* light = dynamic_cast<Light*>(obj);
+
+        if (ImGui::TreeNode(obj->name))
+        {
+            ImGui::InputFloat3("Position", &obj->position[0], "%.3f");
+            ImGui::InputFloat3("Rotation", &obj->rotation[0], "%.3f");
+            ImGui::InputFloat3("Scale", &obj->scale[0], "%.3f");
+
+            if (light)
+            {
+                ImGui::Separator();
+                ImGui::SliderFloat("Ambient Light Intensity", &light->lightIntensity, 0, 5);
+                ImGui::Separator();
+                ImGui::SliderFloat("Specular Strength", &light->specStrength, 0, 5);
+                ImGui::Separator();
+                ImGui::InputInt("Shininess", &light->shininess, 2, 256);
+                ImGui::Separator();
+                ImGui::ColorPicker3("Light Source Color", light->lightColor);
+                ImGui::Separator();
+            }
+
             ImGui::TreePop();
         }
 
-		if (dynamic_cast<Instance*>(obj))
-		{
-			GfxInstance const& instance = gfxSceneGetInstances(gfxScene)[(dynamic_cast<Instance*>(obj))->reference.getIndex()];
+        bool positionChanged = obj->position != obj->prevPosition;
+        bool rotationChanged = obj->rotation != obj->prevRotation;
+        bool scaleChanged = obj->scale != obj->prevScale;
 
-			gfxProgramSetParameter(gfx, program, "transform", instance.transform);
+        if (positionChanged || rotationChanged || scaleChanged)
+        {
+            obj->prevPosition = obj->position;
+            obj->prevRotation = obj->rotation;
+            obj->prevScale = obj->scale;
+            instance->transform = CreateTransformationMatrix(obj->position, obj->rotation, obj->scale);
+        }
 
-			if (instance.material)
-			{
-				gfxProgramSetParameter(gfx, program, "AlbedoBuffer", albedoBuffers[instance.material]);
-			}
-			else
-			{
-				gfxProgramSetParameter(gfx, program, "AlbedoBuffer", GfxTexture());
-			}
-			gfxCommandBindIndexBuffer(gfx, indexBuffers[instance.mesh]);
-			gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance.mesh]);
-			gfxCommandDrawIndexed(gfx, (uint32_t)instance.mesh->indices.size());
-		}
+        if (dynamic_cast<Instance*>(obj))
+        {
+            gfxProgramSetParameter(gfx, program, "transform", instance->transform);
 
-		if(dynamic_cast<Light*>(obj))
-		{
-			Light* light = dynamic_cast<Light*>(obj);
-			gfxProgramSetParameter(gfx, program, "lightColor", light->lightColor);
-			gfxProgramSetParameter(gfx, program, "lightPosition", light->lightPosition);
-			gfxProgramSetParameter(gfx, program, "lightIntensity", light->lightIntensity);
-			gfxProgramSetParameter(gfx, program, "specStrength", light->specStrength);
-			gfxProgramSetParameter(gfx, program, "shininess", light->shininess);
+            if (instance->material)
+            {
+                gfxProgramSetParameter(gfx, program, "AlbedoBuffer", albedoBuffers[instance->material]);
+            }
+            else
+            {
+                gfxProgramSetParameter(gfx, program, "AlbedoBuffer", GfxTexture());
+            }
 
-			//ImGui::Separator();
-			//ImGui::SliderFloat("Ambient Light Intensity", &light->lightIntensity, 0, 5);
-			//ImGui::Separator();
-			//ImGui::SliderFloat("Specular Strength", &light->specStrength, 0, 5);
-			//ImGui::Separator();
-			//ImGui::InputInt("Shininess", &light->shininess, 2, 256);
-			//ImGui::Separator();
-			//ImGui::Text("Light Position");
-			//ImGui::SliderFloat("x", &light->lightPosition.x, -20, 20);
-			//ImGui::SliderFloat("y", &light->lightPosition.y, -20, 20);
-			//ImGui::SliderFloat("z", &light->lightPosition.z, -20, 20);
-			//ImGui::Separator();
-			//ImGui::ColorPicker3("Light Source Color", light->lightColor);
-			//ImGui::Separator();
-		}
-	}
+            gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
+            gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance->mesh]);
+            gfxCommandDrawIndexed(gfx, (uint32_t)instance->mesh->indices.size());
+        }
 
-    ImGui::End();
+        if (light)
+        {
+            gfxProgramSetParameter(gfx, program, "lightColor", light->lightColor);
+            gfxProgramSetParameter(gfx, program, "lightPosition", light->position);
+            gfxProgramSetParameter(gfx, program, "lightIntensity", light->lightIntensity);
+            gfxProgramSetParameter(gfx, program, "specStrength", light->specStrength);
+            gfxProgramSetParameter(gfx, program, "shininess", light->shininess);
+        }
+    }
 }
 
-void Scene::addLight(const char* name)
+void Scene::addLight(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	GfxRef<GfxInstance> reference = gfxSceneCreateInstance(gfxScene);
 	char* lightName = new char[strlen(name) + 1];
 	strcpy_s(lightName, strlen(name) + 1, name);
-	Light* light = new Light(lightName, reference);
+	Light* light = new Light(lightName, reference, translation, rotation, scale);
 	gameObjects.push_back(light);
 }
 
@@ -151,10 +168,10 @@ void Scene::AddPrimitive(const char* name, const Shapes::Types type, const char*
 
 	char* objName = new char[strlen(name) + 1];
 	strcpy_s(objName, strlen(name) + 1, name);
-	gameObjects.push_back(new Instance(objName, newInstance));
+	gameObjects.push_back(new Instance(objName, newInstance, translation, rotation, scale));
 }
 
-glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
+glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
 	glm::mat4 rotationMatrix = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
@@ -169,7 +186,7 @@ void Scene::LoadSceneFromFile(const char* assetFile)
     uint32_t const orig_mesh_count     = gfxSceneGetMeshCount(gfxScene);
     uint32_t const orig_material_count = gfxSceneGetMaterialCount(gfxScene);
 
-	gfxSceneImport(gfxScene, assetFile);   // import our scene
+	gfxSceneImport(gfxScene, assetFile);
 
     uint32_t const new_instance_count = gfxSceneGetInstanceCount(gfxScene);
     uint32_t const new_mesh_count     = gfxSceneGetMeshCount(gfxScene);
