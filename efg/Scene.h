@@ -66,6 +66,7 @@ public:
 private:
 	GfxScene gfxScene = {};
 
+	void loadScene(GfxContext const& gfx);
 	void AddPrimitive(GfxContext const& gfx, const char* name,
 		const Shapes::Types type, const char* textureFile,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),

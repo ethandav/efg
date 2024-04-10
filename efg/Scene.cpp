@@ -3,7 +3,11 @@
 void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
+    loadScene(gfx);
+}
 
+void Scene::loadScene(const GfxContext& gfx)
+{
 	addLight(gfx, "Light 1");
 	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
