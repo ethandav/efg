@@ -47,8 +47,12 @@
     <None Include="lit.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="sky.frag" />
-    <None Include="sky.vert" />
+    <None Include="sky.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="sky.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlyCamera.h">

@@ -1,6 +1,3 @@
-float3 lightColor;
-float lightIntensity;
-
 SamplerState TextureSampler;
 
 Texture2D AlbedoBuffer;
@@ -17,11 +14,13 @@ struct Params
 
 float4 main(Params input) : SV_Target
 {
+    float3 skyColor = float3(1.0f, 1.0f, 1.0f);
+    float skyIntensity = 1.0f;
     float3 texColor = AlbedoBuffer.Sample(TextureSampler, input.uv).xyz;
     
     // Ambient Lighting
-    float ambientStrength = lightIntensity;
-    float3 ambient = ambientStrength * lightColor;
+    float ambientStrength = skyIntensity;
+    float3 ambient = ambientStrength * skyColor;
 
     // Final color calculation
     float3 result = ambient * texColor;

@@ -54,6 +54,17 @@ public:
 		GameObject(name, ref, translation, rotation, scale) {}
 };
 
+class Skybox
+{
+public:
+	Skybox() {};
+	Skybox(GfxRef<GfxMesh> meshRef, GfxRef<GfxMaterial> matRef) : mesh(meshRef), material(matRef) {};
+	~Skybox() {};
+
+	GfxRef<GfxMesh> mesh = {};
+	GfxRef<GfxMaterial> material = {};
+};
+
 class Scene : public RenderLayer
 {
 public:
@@ -65,6 +76,8 @@ private:
 	GfxScene gfxScene = {};
 
 	void loadScene(GfxContext const& gfx);
+	void updateGameObjects(GfxContext const& gfx);
+	void updateSkybox(GfxContext const& gfx);
 	void AddPrimitive(GfxContext const& gfx, const char* name,
 		const Shapes::Types type, const char* textureFile,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -77,20 +90,25 @@ private:
 	);
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const;
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
+	void createSkybox(GfxContext const& gfx, const char* textureFile);
 
-	FlyCamera					cam				= {};
-	GfxDrawState				drawState		= {};
-	GfxTexture					colorBuffer		= {};
-	GfxTexture					depthBuffer		= {};
-	GfxProgram					litProgram		= {};
-	GfxKernel					litKernel		= {};
-	GfxKernel					resolveKernel	= {};
-	GfxSamplerState				textureSampler	= {};
-	GfxArray<GfxBuffer>			indexBuffers	= {};
-	GfxArray<GfxBuffer>			vertexBuffers	= {};
-	GfxArray<GfxTexture>		albedoBuffers	= {};
-	std::vector<Light*>			lights			= {};
-	std::vector<GameObject*>	gameObjects		= {};
+	FlyCamera					cam						= {};
+	GfxDrawState				drawState				= {};
+	GfxTexture					colorBuffer				= {};
+	GfxTexture					depthBuffer				= {};
+	GfxProgram					litProgram				= {};
+	GfxKernel					litKernel				= {};
+	GfxProgram					skyboxProgram			= {};
+	GfxKernel					skyboxKernel			= {};
+	GfxKernel					litResolveKernel		= {};
+	GfxKernel					skyboxResolveKernel		= {};
+	GfxSamplerState				textureSampler			= {};
+	GfxArray<GfxBuffer>			indexBuffers			= {};
+	GfxArray<GfxBuffer>			vertexBuffers			= {};
+	GfxArray<GfxTexture>		albedoBuffers			= {};
+	std::vector<Light*>			lights					= {};
+	std::vector<GameObject*>	gameObjects				= {};
+	Skybox*						skybox					= nullptr;
 };
 
 #endif SCENE_H
