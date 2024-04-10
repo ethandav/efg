@@ -1,6 +1,5 @@
 float3 lightColor;
 float lightIntensity;
-float3 viewPos;
 
 SamplerState TextureSampler;
 

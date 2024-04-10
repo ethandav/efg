@@ -148,6 +148,8 @@ copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\d3d12SDKLayers.dll" "$(Ta
   <ItemGroup>
     <None Include="lit.frag" />
     <None Include="lit.vert" />
+    <None Include="sky.frag" />
+    <None Include="sky.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />

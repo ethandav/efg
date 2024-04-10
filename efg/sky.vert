@@ -1,5 +1,6 @@
-//sky.vert
-float4x4 g_ViewProjection;
+//cube.vert
+float4x4 g_View;
+float4x4 g_Projection;
 float4x4 transform;
 
 struct Params
@@ -13,9 +14,14 @@ struct Params
 
 Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
 {
+    // Transform the position to world space
+    float4x4 viewProjection = mul(g_Projection, g_View);
+    float4 worldPos = mul(transform, float4(pos, 1.0f));
+    float4 clipPos = mul(viewProjection, worldPos);
+
     // Create the output structure
     Params output;
-    output.Position = mul(g_ViewProjection, float4(pos, 1.0f));
+    output.Position = clipPos;
     output.Normal = normal;
     output.uv = uv;
     output.FragPos = pos;
