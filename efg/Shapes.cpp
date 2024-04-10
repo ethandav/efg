@@ -139,27 +139,27 @@ Shape Shapes::skybox()
         22, 21, 23
     };
 
-    skybox.vertices[0].position  = glm::vec3(-100.0f,  100.0f, -100.0f); //Top
+    skybox.vertices[0].position  = glm::vec3(-100.0f,  100.0f, -100.0f);
     skybox.vertices[1].position  = glm::vec3( 100.0f,  100.0f, -100.0f);
     skybox.vertices[2].position  = glm::vec3(-100.0f,  100.0f,  100.0f);
     skybox.vertices[3].position  = glm::vec3( 100.0f,  100.0f,  100.0f);
-    skybox.vertices[4].position  = glm::vec3(-100.0f,  100.0f,  100.0f); //Front
+    skybox.vertices[4].position  = glm::vec3(-100.0f,  100.0f,  100.0f);
     skybox.vertices[5].position  = glm::vec3( 100.0f,  100.0f,  100.0f);
     skybox.vertices[6].position  = glm::vec3(-100.0f, -100.0f,  100.0f);
     skybox.vertices[7].position  = glm::vec3( 100.0f, -100.0f,  100.0f);
-    skybox.vertices[8].position  = glm::vec3( 100.0f,  100.0f,  100.0f); //Right
+    skybox.vertices[8].position  = glm::vec3( 100.0f,  100.0f,  100.0f);
     skybox.vertices[9].position  = glm::vec3( 100.0f,  100.0f, -100.0f);
-    skybox.vertices[20].position = glm::vec3(-100.0f, -100.0f,  100.0f); //Bottom
     skybox.vertices[10].position = glm::vec3( 100.0f, -100.0f,  100.0f);
     skybox.vertices[11].position = glm::vec3( 100.0f, -100.0f, -100.0f);
-    skybox.vertices[12].position = glm::vec3( 100.0f,  100.0f, -100.0f); //Back
+    skybox.vertices[12].position = glm::vec3( 100.0f,  100.0f, -100.0f);
     skybox.vertices[13].position = glm::vec3(-100.0f,  100.0f, -100.0f);
     skybox.vertices[14].position = glm::vec3( 100.0f, -100.0f, -100.0f);
     skybox.vertices[15].position = glm::vec3(-100.0f, -100.0f, -100.0f);
-    skybox.vertices[16].position = glm::vec3(-100.0f,  100.0f, -100.0f); //Left
+    skybox.vertices[16].position = glm::vec3(-100.0f,  100.0f, -100.0f);
     skybox.vertices[17].position = glm::vec3(-100.0f,  100.0f,  100.0f);
     skybox.vertices[18].position = glm::vec3(-100.0f, -100.0f, -100.0f);
     skybox.vertices[19].position = glm::vec3(-100.0f, -100.0f,  100.0f);
+    skybox.vertices[20].position = glm::vec3(-100.0f, -100.0f,  100.0f);
     skybox.vertices[21].position = glm::vec3( 100.0f, -100.0f,  100.0f);
     skybox.vertices[22].position = glm::vec3(-100.0f, -100.0f, -100.0f);
     skybox.vertices[23].position = glm::vec3( 100.0f, -100.0f, -100.0f);
@@ -189,27 +189,27 @@ Shape Shapes::skybox()
     skybox.vertices[22].normal = glm::vec3( 0.0f, 1.0f,  0.0f);
     skybox.vertices[23].normal = glm::vec3( 0.0f, 1.0f,  0.0f);
 
-    skybox.vertices[0].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[0].uv = glm::vec2(0.0f, 0.0f); //Top
     skybox.vertices[1].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[2].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[3].uv = glm::vec2(1.0f, 1.0f);
-    skybox.vertices[4].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[4].uv = glm::vec2(0.0f, 0.0f); //Front
     skybox.vertices[5].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[6].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[7].uv = glm::vec2(1.0f, 1.0f);
-    skybox.vertices[8].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[8].uv = glm::vec2(0.0f, 0.0f); //Right
     skybox.vertices[9].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[10].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[11].uv = glm::vec2(1.0f, 1.0f);
-    skybox.vertices[12].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[12].uv = glm::vec2(0.0f, 0.0f); //Back
     skybox.vertices[13].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[14].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[15].uv = glm::vec2(1.0f, 1.0f);
-    skybox.vertices[16].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[16].uv = glm::vec2(0.0f, 0.0f); //Left
     skybox.vertices[17].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[18].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[19].uv = glm::vec2(1.0f, 1.0f);
-    skybox.vertices[20].uv = glm::vec2(0.0f, 0.0f);
+    skybox.vertices[20].uv = glm::vec2(0.0f, 0.0f); //Bottom
     skybox.vertices[21].uv = glm::vec2(1.0f, 0.0f);
     skybox.vertices[22].uv = glm::vec2(0.0f, 1.0f);
     skybox.vertices[23].uv = glm::vec2(1.0f, 1.0f);
