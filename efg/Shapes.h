@@ -8,17 +8,17 @@
 
 struct Vertex
 {
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 uv;
+    glm::vec3 position  = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 normal    = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec2 uv        = glm::vec2(0.0f, 0.0f);
 };
 
 struct Shape
 {
-    std::vector<GfxVertex> vertices;
-    std::vector<uint32_t> indices;
-    int vertexCount = 0;
-    int indexCount = 0;
+    int                     vertexCount     = 0;
+    int                     indexCount      = 0;
+    std::vector<GfxVertex>  vertices        = {};
+    std::vector<uint32_t>   indices         = {};
 };
 
 namespace Shapes
@@ -32,7 +32,6 @@ namespace Shapes
         PYRAMID
     };
 
-    void scale(Shape& shape, float scaleFactor);
     Shape cube();
     Shape skybox();
     Shape sphere();

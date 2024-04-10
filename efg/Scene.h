@@ -19,14 +19,14 @@ public:
 		name(name), reference(ref), position(pos), rotation(rot), scale(scale) {};
 	virtual ~GameObject() = default;
 
-	const char* name = "";
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 scale = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 prevPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 prevRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 prevScale = glm::vec3(0.0f, 0.0f, 0.0f);
-	GfxRef<GfxInstance> reference;
+	const char*				name			= "";
+	GfxRef<GfxInstance>		reference		= {};
+	glm::vec3				position		= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3				rotation		= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3				scale			= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3				prevPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3				prevRotation	= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3				prevScale		= glm::vec3(0.0f, 0.0f, 0.0f);
 };
 
 class Light : public GameObject
@@ -78,23 +78,19 @@ private:
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const;
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
 
-	GfxDrawState drawState;
-	GfxTexture colorBuffer = {};
-	GfxTexture depthBuffer = {};
-
-	GfxProgram litProgram = {};
-	GfxKernel litKernel = {};
-	GfxKernel resolveKernel = {};
-	GfxSamplerState textureSampler = {};
-
-	GfxArray<GfxBuffer> indexBuffers = {};
-	GfxArray<GfxBuffer> vertexBuffers = {};
-    GfxArray<GfxTexture> albedoBuffers;
-
-	std::vector<Light*> lights = {};
-	std::vector<GameObject*> gameObjects = {};
-
-	FlyCamera cam = {};
+	FlyCamera					cam				= {};
+	GfxDrawState				drawState		= {};
+	GfxTexture					colorBuffer		= {};
+	GfxTexture					depthBuffer		= {};
+	GfxProgram					litProgram		= {};
+	GfxKernel					litKernel		= {};
+	GfxKernel					resolveKernel	= {};
+	GfxSamplerState				textureSampler	= {};
+	GfxArray<GfxBuffer>			indexBuffers	= {};
+	GfxArray<GfxBuffer>			vertexBuffers	= {};
+	GfxArray<GfxTexture>		albedoBuffers	= {};
+	std::vector<Light*>			lights			= {};
+	std::vector<GameObject*>	gameObjects		= {};
 };
 
 #endif SCENE_H

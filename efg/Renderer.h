@@ -15,11 +15,9 @@ public:
 	void update();
 	void shutdown();
 private:
-	GfxContext gfx = {};
-	const GfxWindow*	m_Window = nullptr;
-
-	std::vector<RenderLayer*> renderLayers = {};
-
+	GfxContext					gfx				= {};
+	std::vector<RenderLayer*>	renderLayers	= {};
+	const GfxWindow*			m_Window		= nullptr;
 };
 
 #endif

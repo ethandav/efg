@@ -1,13 +1,5 @@
 #include "Shapes.h"
 
-void Shapes::scale(Shape& shape, float scaleFactor)
-{
-    for (auto& vertex : shape.vertices)
-    {
-        vertex.position *= scaleFactor;
-    }
-}
-
 Shape Shapes::cube()
 {
     Shape cube;

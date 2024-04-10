@@ -16,9 +16,9 @@ public:
 	void start();
 	void shutdown();
 private:
-	Renderer renderer = {};
-	GfxContext gfx = {};
-	GfxWindow window = {};
+	Renderer	renderer	= {};
+	GfxContext	gfx			= {};
+	GfxWindow	window		= {};
 };
 
 #endif ENGINE_H
