@@ -3,6 +3,24 @@
 void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
+
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
+	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
+    depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
+
+	gfxDrawStateSetColorTarget(drawState, 0, colorBuffer.getFormat());
+	gfxDrawStateSetDepthStencilTarget(drawState, depthBuffer.getFormat());
+	gfxDrawStateSetDepthFunction(drawState, D3D12_COMPARISON_FUNC_LESS);
+
+	litProgram = gfxCreateProgram(gfx, "lit");
+	litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
+	resolveKernel = gfxCreateGraphicsKernel(gfx, litProgram, "resolve");
+	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
+
+	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
+	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
+
     loadScene(gfx);
 }
 
@@ -34,8 +52,18 @@ void Scene::loadScene(const GfxContext& gfx)
 	//LoadSceneFromFile(gxf, "assets/Room.obj");
 }
 
-void Scene::update(GfxContext const& gfx, GfxProgram const& program)
+void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 {
+	UpdateFlyCamera(gfx, window, cam);
+	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
+
+	gfxCommandBindColorTarget(gfx, 0, colorBuffer);
+	gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
+	gfxCommandClearTexture(gfx, colorBuffer);
+	gfxCommandClearTexture(gfx, depthBuffer);
+	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
+	gfxCommandBindKernel(gfx, litKernel);
+
     for (GameObject* obj : gameObjects)
     {
         if (obj == nullptr)
@@ -82,15 +110,15 @@ void Scene::update(GfxContext const& gfx, GfxProgram const& program)
 
         if (dynamic_cast<Instance*>(obj))
         {
-            gfxProgramSetParameter(gfx, program, "transform", instance->transform);
+            gfxProgramSetParameter(gfx, litProgram, "transform", instance->transform);
 
             if (instance->material)
             {
-                gfxProgramSetParameter(gfx, program, "AlbedoBuffer", albedoBuffers[instance->material]);
+                gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance->material]);
             }
             else
             {
-                gfxProgramSetParameter(gfx, program, "AlbedoBuffer", GfxTexture());
+                gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
             }
 
             gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
@@ -100,13 +128,16 @@ void Scene::update(GfxContext const& gfx, GfxProgram const& program)
 
         if (light)
         {
-            gfxProgramSetParameter(gfx, program, "lightColor", light->lightColor);
-            gfxProgramSetParameter(gfx, program, "lightPosition", light->position);
-            gfxProgramSetParameter(gfx, program, "lightIntensity", light->lightIntensity);
-            gfxProgramSetParameter(gfx, program, "specStrength", light->specStrength);
-            gfxProgramSetParameter(gfx, program, "shininess", light->shininess);
+            gfxProgramSetParameter(gfx, litProgram, "lightColor", light->lightColor);
+            gfxProgramSetParameter(gfx, litProgram, "lightPosition", light->position);
+            gfxProgramSetParameter(gfx, litProgram, "lightIntensity", light->lightIntensity);
+            gfxProgramSetParameter(gfx, litProgram, "specStrength", light->specStrength);
+            gfxProgramSetParameter(gfx, litProgram, "shininess", light->shininess);
         }
     }
+
+	gfxCommandBindKernel(gfx, resolveKernel);
+	gfxCommandDraw(gfx, 3);
 }
 
 void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
@@ -263,4 +294,11 @@ void Scene::destroy(GfxContext const& gfx)
 	}
 
 	gfxDestroyScene(gfxScene);
+
+	gfxDestroyTexture(gfx, depthBuffer);
+	gfxDestroyTexture(gfx, colorBuffer);
+	gfxDestroyKernel(gfx, litKernel);
+	gfxDestroyKernel(gfx, resolveKernel);
+	gfxDestroyProgram(gfx, litProgram);
+	gfxDestroySamplerState(gfx, textureSampler);
 }

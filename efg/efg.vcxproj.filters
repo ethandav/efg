@@ -47,6 +47,8 @@
     <None Include="lit.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="sky.frag" />
+    <None Include="sky.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlyCamera.h">
@@ -65,6 +67,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

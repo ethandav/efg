@@ -2,11 +2,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "gfx.h"
-#include "gfx_scene.h"
-#include "gfx_imgui.h"
+#include "RenderLayer.h"
 #include "Shapes.h"
-#include "Renderer.h"
+#include "FlyCamera.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
@@ -61,7 +59,7 @@ class Scene : public RenderLayer
 public:
 	Scene() {};
 	virtual void initialize(const GfxContext& gfx);
-	virtual void update(GfxContext const& gfx, GfxProgram const& program);
+	virtual void update(GfxContext const& gfx, GfxWindow const& window);
 	virtual void destroy(GfxContext const& gfx);
 private:
 	GfxScene gfxScene = {};
@@ -80,12 +78,23 @@ private:
 	glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const;
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
 
+	GfxDrawState drawState;
+	GfxTexture colorBuffer = {};
+	GfxTexture depthBuffer = {};
+
+	GfxProgram litProgram = {};
+	GfxKernel litKernel = {};
+	GfxKernel resolveKernel = {};
+	GfxSamplerState textureSampler = {};
+
 	GfxArray<GfxBuffer> indexBuffers = {};
 	GfxArray<GfxBuffer> vertexBuffers = {};
     GfxArray<GfxTexture> albedoBuffers;
 
 	std::vector<Light*> lights = {};
 	std::vector<GameObject*> gameObjects = {};
+
+	FlyCamera cam = {};
 };
 
 #endif SCENE_H

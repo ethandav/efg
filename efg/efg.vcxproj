@@ -156,6 +156,7 @@ copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\d3d12SDKLayers.dll" "$(Ta
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderLayer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shapes.h" />
   </ItemGroup>

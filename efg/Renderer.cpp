@@ -1,27 +1,10 @@
 #include "Renderer.h"
 
-void Renderer::initialize(const GfxContext& gfx, const GfxWindow& window)
+void Renderer::initialize(const GfxWindow& window)
 {
 	float time = 0.0f;
 	m_Window = &window;
-	m_gfx = &gfx;
-
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
-	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
-    depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
-
-	gfxDrawStateSetColorTarget(drawState, 0, colorBuffer.getFormat());
-	gfxDrawStateSetDepthStencilTarget(drawState, depthBuffer.getFormat());
-	gfxDrawStateSetDepthFunction(drawState, D3D12_COMPARISON_FUNC_LESS);
-
-	litProgram = gfxCreateProgram(gfx, "lit");
-	litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
-	resolveKernel = gfxCreateGraphicsKernel(gfx, litProgram, "resolve");
-	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
-
-	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
-	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
+	gfx = gfxCreateContext(window);
 
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
 		layer->initialize(gfx);
@@ -35,42 +18,19 @@ void Renderer::attachRenderLayer(RenderLayer* layer)
 
 void Renderer::update()
 {
-	const GfxContext gfx = *m_gfx;
-
-	UpdateFlyCamera(gfx, *m_Window, cam);
-	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
-
-	gfxCommandBindColorTarget(gfx, 0, colorBuffer);
-	gfxCommandBindDepthStencilTarget(gfx, depthBuffer);
-	gfxCommandClearTexture(gfx, colorBuffer);
-	gfxCommandClearTexture(gfx, depthBuffer);
-	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
-	gfxCommandBindKernel(gfx, litKernel);
-
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
-		layer->update(gfx, litProgram);
+		layer->update(gfx, *m_Window);
 	});
-
-	gfxCommandBindKernel(gfx, resolveKernel);
-	gfxCommandDraw(gfx, 3);
 
 	gfxFrame(gfx);
 }
 
 void Renderer::shutdown()
 {
-	const GfxContext gfx = *m_gfx;
-
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
 		layer->destroy(gfx);
+		delete layer;
 	});
-
-	gfxDestroyTexture(gfx, depthBuffer);
-	gfxDestroyTexture(gfx, colorBuffer);
-	gfxDestroyKernel(gfx, litKernel);
-	gfxDestroyKernel(gfx, resolveKernel);
-	gfxDestroyProgram(gfx, litProgram);
-	gfxDestroySamplerState(gfx, textureSampler);
 
 	gfxDestroyContext(gfx);
 }
