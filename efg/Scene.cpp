@@ -34,8 +34,13 @@ void Scene::initialize(const GfxContext& gfx)
 
 void Scene::loadScene(const GfxContext& gfx)
 {
-	createSkybox(gfx, "assets/textures/earth.jpeg");
-	addLight(gfx, "Light 1");
+	createSkybox(gfx, "assets/textures/sky.jpg");
+	addLight(gfx, "Light 1",
+		glm::vec3(0.0, 2.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(1.f, 1.f, 1.f)
+	);
+
 	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
 	AddPrimitive(
@@ -53,7 +58,7 @@ void Scene::loadScene(const GfxContext& gfx)
 		"Sun",
 		Shapes::SPHERE,
 		"assets/textures/sun.png",
-		glm::vec3(0.0, 0.0f, -1000.0f),
+		glm::vec3(0.0, 0.0f, -80.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(20.0f, 20.0f, 20.0f)
 	);

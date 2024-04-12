@@ -40,7 +40,7 @@ public:
 
 	glm::vec3	lightPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
 	float		lightColor[3]	= {1.0f, 1.0f, 1.0f};
-	float		lightIntensity	= 1.0f;
+	float		lightIntensity	= 0.0f;
 	float		specStrength	= 0.0f;
 	int			shininess		= 32;
 };
