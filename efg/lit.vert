@@ -22,7 +22,7 @@ Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
     output.Position = clipPos;
     output.Normal = normal;
     output.uv = uv;
-    output.FragPos = pos;
+    output.FragPos = worldPos.xyz;
     output.Color = 1.0f;
 
     return output;
