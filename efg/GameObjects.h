@@ -13,6 +13,8 @@ public:
 	GameObject() {};
 	GameObject(const char* name) : name(name) {};
 	GameObject(const char* name, GfxRef<GfxInstance> ref) : name(name), reference(ref) {};
+	GameObject(const char* name, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale) :
+		name(name), position(pos), rotation(rot), scale(scale) {};
 	GameObject(const char* name, GfxRef<GfxInstance> ref, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale) :
 		name(name), reference(ref), position(pos), rotation(rot), scale(scale) {};
 	virtual ~GameObject() = default;
@@ -34,10 +36,10 @@ class Light : public GameObject
 {
 public:
 	Light() {};
-	Light(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) { };
-	Light(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
+	Light(const char* name) : GameObject(name) { };
+	Light(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		lightPosition(translation),
-		GameObject(name, ref, translation, rotation, scale) {}
+		GameObject(name, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
 

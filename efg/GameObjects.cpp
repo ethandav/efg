@@ -32,7 +32,6 @@ void Mesh::gui()
 
 void Light::draw(GfxContext const& gfx, GfxProgram const& program)
 {
-
     gfxProgramSetParameter(gfx, program, "lightColor", lightColor);
     gfxProgramSetParameter(gfx, program, "lightPosition", position);
     gfxProgramSetParameter(gfx, program, "lightIntensity", lightIntensity);

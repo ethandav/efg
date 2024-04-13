@@ -154,10 +154,9 @@ void Scene::updateSkybox(GfxContext const& gfx)
 
 void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
-	GfxRef<GfxInstance> reference = gfxSceneCreateInstance(gfxScene);
 	char* lightName = new char[strlen(name) + 1];
 	strcpy_s(lightName, strlen(name) + 1, name);
-	Light* light = new Light(lightName, reference, translation, rotation, scale);
+	Light* light = new Light(lightName, translation, rotation, scale);
 	gameObjects.push_back(light);
 }
 
@@ -316,8 +315,26 @@ void Scene::destroy(GfxContext const& gfx)
 
 	for (GameObject* obj : gameObjects)
 	{
-		delete obj->name;
-		delete obj;
+		Mesh* mesh = dynamic_cast<Mesh*>(obj);
+		if (mesh)
+		{
+			gfxDestroyBuffer(gfx, mesh->indexBuffer);
+			gfxDestroyBuffer(gfx, mesh->vertexBuffer);
+			gfxDestroyTexture(gfx, mesh->material.texture);
+		}
+
+		if (obj != nullptr)
+		{
+			delete obj->name;
+			delete obj;
+		}
+	}
+
+	if (skybox != nullptr)
+	{
+		gfxDestroyBuffer(gfx, skybox->indexBuffer);
+		gfxDestroyBuffer(gfx, skybox->vertexBuffer);
+		gfxDestroyTexture(gfx, skybox->material.texture);
 	}
 
 	gfxDestroyScene(gfxScene);
