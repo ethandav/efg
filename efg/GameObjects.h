@@ -19,6 +19,7 @@ public:
 	glm::vec3				prevPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				prevRotation	= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				prevScale		= glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4				modelMatrix		= glm::mat4();
 };
 
 class Light : public GameObject
@@ -57,4 +58,4 @@ public:
 	GfxRef<GfxMaterial> material = {};
 };
 
-glm::mat4 CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
+glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);

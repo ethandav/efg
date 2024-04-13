@@ -157,7 +157,7 @@ void Scene::updateGameObjects(GfxContext const& gfx)
             obj->prevPosition = obj->position;
             obj->prevRotation = obj->rotation;
             obj->prevScale = obj->scale;
-            instance->transform = CreateTransformationMatrix(obj->position, obj->rotation, obj->scale);
+            instance->transform = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
         }
 
         if (dynamic_cast<Mesh*>(obj))
@@ -234,7 +234,7 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 		break;
 	}
 
-	glm::mat4 transformationMatrix = CreateTransformationMatrix(translation, rotation, scale);
+	glm::mat4 transformationMatrix = CreateModelMatrix(translation, rotation, scale);
 
 	GfxRef<GfxMesh> newMesh = gfxSceneCreateMesh(gfxScene);
 	GfxRef<GfxInstance> newInstance = gfxSceneCreateInstance(gfxScene);
