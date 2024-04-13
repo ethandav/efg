@@ -35,35 +35,36 @@ void Scene::initialize(const GfxContext& gfx)
 void Scene::loadScene(const GfxContext& gfx)
 {
 	createSkybox(gfx, "assets/textures/sky.jpg");
+
 	addLight(gfx, "Light 1",
 		glm::vec3(0.0, 2.0f, 0.0f)
 	);
 
-	AddPrimitive(
-		gfx,
-		"Sphere 1",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(-2.0, 0.0f, 2.0f)
-	);
+	//AddPrimitive(
+	//	gfx,
+	//	"Sphere 1",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(-2.0, 0.0f, 2.0f)
+	//);
 
-	AddPrimitive(
-		gfx,
-		"Sphere 2",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(2.0, 0.0f, 2.0f)
-	);
+	//AddPrimitive(
+	//	gfx,
+	//	"Sphere 2",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(2.0, 0.0f, 2.0f)
+	//);
 
-	AddPrimitive(
-		gfx,
-		"Sphere 3",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(0.0, 0.0f, -2.0f)
-	);
+	//AddPrimitive(
+	//	gfx,
+	//	"Sphere 3",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(0.0, 0.0f, -2.0f)
+	//);
 
-	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+	//AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
 	//AddPrimitive(
     //    gfx,
@@ -85,7 +86,7 @@ void Scene::loadScene(const GfxContext& gfx)
 	//	glm::vec3(20.0f, 20.0f, 20.0f)
 	//);
 
-	//LoadSceneFromFile(gxf, "assets/Room.obj");
+	LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
 
 void Scene::update(GfxContext const& gfx, GfxWindow const& window)
@@ -133,6 +134,10 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 		    obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
 		}
 
+		if (obj->reference)
+		{
+			DrawInstanced(gfx, obj);
+		}
 		obj->draw(gfx, litProgram);
 
 		if (ImGui::TreeNode(obj->name))
@@ -140,6 +145,27 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 			obj->gui();
 		}
     }
+}
+
+void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
+{
+	GfxInstance* instance = gfxSceneGetInstance(gfxScene, obj->reference);
+
+	gfxProgramSetParameter(gfx, litProgram, "transform", instance->transform);
+	
+	if (instance->material)
+	{
+	    gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance->material]);
+	    gfxProgramSetParameter(gfx, litProgram, "useTexture", true);
+	}
+	else
+	{
+	    gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
+	}
+	
+	gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
+	gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance->mesh]);
+	gfxCommandDrawIndexed(gfx, (uint32_t)instance->mesh->indices.size());
 }
 
 void Scene::updateSkybox(GfxContext const& gfx)
@@ -256,7 +282,7 @@ void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 		char* name = new char[tmp_name.length() + 1];
 		strcpy_s(name, tmp_name.length() + 1, tmp_name.c_str());
 
-		gameObjects.push_back(new Mesh(name, inst_ref));
+		gameObjects.push_back(new Instanced(name, inst_ref));
     }
 
     for(uint32_t i = orig_material_count; i < new_material_count; ++i)

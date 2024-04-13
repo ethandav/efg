@@ -30,6 +30,14 @@ void Mesh::gui()
 	ImGui::TreePop();
 }
 
+void Instanced::gui()
+{
+	ImGui::InputFloat3("Position", &position[0], "%.3f");
+	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
+	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
+	ImGui::TreePop();
+}
+
 void Light::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "lightColor", lightColor);

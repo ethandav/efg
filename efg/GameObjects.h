@@ -54,9 +54,9 @@ class Mesh: public GameObject
 {
 public:
 	Mesh() {};
-	Mesh(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
-	Mesh(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
-		GameObject(name, ref, translation, rotation, scale) {}
+	Mesh(const char* name) : GameObject(name) {}
+	Mesh(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
+		GameObject(name, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
 
@@ -65,8 +65,18 @@ public:
     std::vector<uint32_t>   indices         = {};
 	GfxBuffer indexBuffer = {};
 	GfxBuffer vertexBuffer = {};
+};
 
-private:
+class Instanced : public GameObject
+{
+public:
+	Instanced() {};
+	Instanced(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
+	Instanced(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
+		GameObject(name, ref, translation, rotation, scale) {}
+	virtual void draw(GfxContext const& gfx, GfxProgram const& program) {};
+	virtual void gui();
+
 };
 
 class Skybox : public Mesh

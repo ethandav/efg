@@ -20,6 +20,7 @@ private:
 
 	void loadScene(GfxContext const& gfx);
 	void updateGameObjects(GfxContext const& gfx);
+	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
 	void AddPrimitive(GfxContext const& gfx, const char* name,
 		const Shapes::Types type, const char* textureFile = nullptr,
