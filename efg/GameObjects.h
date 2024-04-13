@@ -1,6 +1,12 @@
 #pragma once
 #include "RenderLayer.h"
 
+struct Material
+{
+	bool hasTexture = false;
+	GfxTexture texture = {};
+};
+
 class GameObject
 {
 public:
@@ -10,6 +16,8 @@ public:
 	GameObject(const char* name, GfxRef<GfxInstance> ref, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale) :
 		name(name), reference(ref), position(pos), rotation(rot), scale(scale) {};
 	virtual ~GameObject() = default;
+	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram) = 0;
+	virtual void gui() = 0;
 
 	const char*				name			= "";
 	GfxRef<GfxInstance>		reference		= {};
@@ -30,6 +38,8 @@ public:
 	Light(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		lightPosition(translation),
 		GameObject(name, ref, translation, rotation, scale) {}
+	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
+	virtual void gui();
 
 	glm::vec3	lightPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
 	float		lightColor[3]	= {1.0f, 1.0f, 1.0f};
@@ -45,6 +55,16 @@ public:
 	Mesh(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
 	Mesh(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		GameObject(name, ref, translation, rotation, scale) {}
+	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
+	virtual void gui();
+
+	Material material = {};
+    std::vector<GfxVertex>  vertices        = {};
+    std::vector<uint32_t>   indices         = {};
+	GfxBuffer indexBuffer = {};
+	GfxBuffer vertexBuffer = {};
+
+private:
 };
 
 class Skybox

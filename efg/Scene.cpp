@@ -63,7 +63,7 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(0.0, 0.0f, -2.0f)
 	);
 
-	//AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
 	//AddPrimitive(
     //    gfx,
@@ -119,77 +119,26 @@ void Scene::updateGameObjects(GfxContext const& gfx)
     for (GameObject* obj : gameObjects)
     {
         if (obj == nullptr)
-        {
             continue;
-        }
 
-        GfxInstance* instance = gfxSceneGetInstance(gfxScene, obj->reference);
-        Light* light = dynamic_cast<Light*>(obj);
+		bool positionChanged = obj->position != obj->prevPosition;
+		bool rotationChanged = obj->rotation != obj->prevRotation;
+		bool scaleChanged = obj->scale != obj->prevScale;
 
-        if (ImGui::TreeNode(obj->name))
-        {
-            ImGui::InputFloat3("Position", &obj->position[0], "%.3f");
-            ImGui::InputFloat3("Rotation", &obj->rotation[0], "%.3f");
-            ImGui::InputFloat3("Scale", &obj->scale[0], "%.3f");
+		if (positionChanged || rotationChanged || scaleChanged)
+		{
+		    obj->prevPosition = obj->position;
+		    obj->prevRotation = obj->rotation;
+		    obj->prevScale = obj->scale;
+		    obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
+		}
 
-            if (light)
-            {
-                ImGui::Separator();
-                ImGui::SliderFloat("Ambient Light Intensity", &light->lightIntensity, 0, 5);
-                ImGui::Separator();
-                ImGui::SliderFloat("Specular Strength", &light->specStrength, 0, 5);
-                ImGui::Separator();
-                ImGui::InputInt("Shininess", &light->shininess, 2, 256);
-                ImGui::Separator();
-                ImGui::ColorPicker3("Light Source Color", light->lightColor);
-                ImGui::Separator();
-            }
+		obj->draw(gfx, litProgram);
 
-            ImGui::TreePop();
-        }
-
-        bool positionChanged = obj->position != obj->prevPosition;
-        bool rotationChanged = obj->rotation != obj->prevRotation;
-        bool scaleChanged = obj->scale != obj->prevScale;
-
-        if (positionChanged || rotationChanged || scaleChanged)
-        {
-            obj->prevPosition = obj->position;
-            obj->prevRotation = obj->rotation;
-            obj->prevScale = obj->scale;
-            instance->transform = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
-        }
-
-        if (dynamic_cast<Mesh*>(obj))
-        {
-			glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(instance->transform)));
-
-            gfxProgramSetParameter(gfx, litProgram, "transform", instance->transform);
-            gfxProgramSetParameter(gfx, litProgram, "normalMatrix", normalMatrix);
-
-            if (instance->material)
-            {
-                gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance->material]);
-                gfxProgramSetParameter(gfx, litProgram, "useTexture", true);
-            }
-			else
-			{
-                gfxProgramSetParameter(gfx, litProgram, "useTexture", false);
-			}
-
-            gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
-            gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance->mesh]);
-            gfxCommandDrawIndexed(gfx, (uint32_t)instance->mesh->indices.size());
-        }
-
-        if (light)
-        {
-            gfxProgramSetParameter(gfx, litProgram, "lightColor", light->lightColor);
-            gfxProgramSetParameter(gfx, litProgram, "lightPosition", light->position);
-            gfxProgramSetParameter(gfx, litProgram, "lightIntensity", light->lightIntensity);
-            gfxProgramSetParameter(gfx, litProgram, "specStrength", light->specStrength);
-            gfxProgramSetParameter(gfx, litProgram, "shininess", light->shininess);
-        }
+		if (ImGui::TreeNode(obj->name))
+		{
+			obj->gui();
+		}
     }
 }
 
@@ -234,40 +183,37 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 		break;
 	}
 
-	glm::mat4 transformationMatrix = CreateModelMatrix(translation, rotation, scale);
+	Mesh* newMesh = new Mesh();
+	newMesh->position = translation;
+	newMesh->rotation = rotation;
+	newMesh->scale = scale;
 
-	GfxRef<GfxMesh> newMesh = gfxSceneCreateMesh(gfxScene);
-	GfxRef<GfxInstance> newInstance = gfxSceneCreateInstance(gfxScene);
+	glm::mat4 modelMatrix = CreateModelMatrix(translation, rotation, scale);
+
 	newMesh->indices = shape.indices;
 	newMesh->vertices = shape.vertices;
-	GfxBuffer indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
-	GfxBuffer vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
-	newInstance->mesh = newMesh;
-	indexBuffers.insert(newMesh, indexBuffer);
-	vertexBuffers.insert(newMesh, vertexBuffer);
+	newMesh->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
+	newMesh->vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
 
 	if (textureFile != nullptr)
 	{
-		GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
-		GfxTexture albedoBuffer;
 		gfxSceneImport(gfxScene, textureFile);
 		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-		albedoBuffer = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		newMesh->material.texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-		gfxCommandCopyBufferToTexture(gfx, albedoBuffer, uploadBuffer);
-		gfxCommandGenerateMips(gfx, albedoBuffer);
+		gfxCommandCopyBufferToTexture(gfx, newMesh->material.texture, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->material.texture);
 		gfxDestroyBuffer(gfx, uploadBuffer);
-		matRef->albedo_map = imgRef;
-		albedoBuffers.insert(matRef, albedoBuffer);
-		newInstance->material = matRef;
+		newMesh->material.hasTexture = true;
 	}
 
-	newInstance->transform = transformationMatrix;
+	newMesh->modelMatrix = modelMatrix;
 
 	char* objName = new char[strlen(name) + 1];
 	strcpy_s(objName, strlen(name) + 1, name);
-	gameObjects.push_back(new Mesh(objName, newInstance, translation, rotation, scale));
+	newMesh->name = objName;
+	gameObjects.push_back(newMesh);
 }
 
 
