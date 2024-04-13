@@ -48,7 +48,6 @@ private:
 	GfxArray<GfxBuffer>			indexBuffers			= {};
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
-	std::vector<Light*>			lights					= {};
 	std::vector<GameObject*>	gameObjects				= {};
 	Skybox*						skybox					= nullptr;
 };

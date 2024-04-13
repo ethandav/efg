@@ -67,15 +67,11 @@ public:
 private:
 };
 
-class Skybox
+class Skybox : public Mesh
 {
 public:
 	Skybox() {};
-	Skybox(GfxRef<GfxMesh> meshRef, GfxRef<GfxMaterial> matRef) : mesh(meshRef), material(matRef) {};
 	~Skybox() {};
-
-	GfxRef<GfxMesh> mesh = {};
-	GfxRef<GfxMaterial> material = {};
 };
 
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);

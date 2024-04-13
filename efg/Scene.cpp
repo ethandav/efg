@@ -146,10 +146,10 @@ void Scene::updateSkybox(GfxContext const& gfx)
 {
 	gfxCommandBindKernel(gfx, skyboxKernel);
     gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
-	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", albedoBuffers[skybox->material]);
-	gfxCommandBindIndexBuffer(gfx, indexBuffers[skybox->mesh]);
-	gfxCommandBindVertexBuffer(gfx, vertexBuffers[skybox->mesh]);
-	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->mesh->indices.size());
+	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.texture);
+	gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
+	gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
+	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
 }
 
 void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
@@ -287,28 +287,22 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 {
 	Shape shape = Shapes::skybox();
 
-	GfxRef<GfxMesh> newMesh = gfxSceneCreateMesh(gfxScene);
-	newMesh->indices = shape.indices;
-	newMesh->vertices = shape.vertices;
-	GfxBuffer indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
-	GfxBuffer vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
-	indexBuffers.insert(newMesh, indexBuffer);
-	vertexBuffers.insert(newMesh, vertexBuffer);
+	skybox = new Skybox();
 
-	GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
-	GfxTexture albedoBuffer;
+	skybox->indices = shape.indices;
+	skybox->vertices = shape.vertices;
+	skybox->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
+	skybox->vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
+
 	gfxSceneImport(gfxScene, textureFile);
 	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-	albedoBuffer = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+	skybox->material.texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 	GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-    gfxCommandCopyBufferToTexture(gfx, albedoBuffer, uploadBuffer);
-	gfxCommandGenerateMips(gfx, albedoBuffer);
+    gfxCommandCopyBufferToTexture(gfx, skybox->material.texture, uploadBuffer);
+	gfxCommandGenerateMips(gfx, skybox->material.texture);
     gfxDestroyBuffer(gfx, uploadBuffer);
-	matRef->albedo_map = imgRef;
-	albedoBuffers.insert(matRef, albedoBuffer);
-
-	skybox = new Skybox(newMesh, matRef);
+	skybox->material.hasTexture = true;
 }
 
 void Scene::destroy(GfxContext const& gfx)
