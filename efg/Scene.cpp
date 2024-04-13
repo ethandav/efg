@@ -270,13 +270,6 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 	gameObjects.push_back(new Mesh(objName, newInstance, translation, rotation, scale));
 }
 
-glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const
-{
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
-	glm::mat4 rotationMatrix = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
-	glm::mat4 scalingMatrix = glm::scale(glm::mat4(1.0f), scale);
-	return translationMatrix * rotationMatrix * scalingMatrix;
-}
 
 void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 {
