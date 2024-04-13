@@ -45,12 +45,12 @@ public:
 	int			shininess		= 32;
 };
 
-class Instance : public GameObject
+class Mesh: public GameObject
 {
 public:
-	Instance() {};
-	Instance(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
-	Instance(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
+	Mesh() {};
+	Mesh(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
+	Mesh(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		GameObject(name, ref, translation, rotation, scale) {}
 };
 

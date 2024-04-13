@@ -4,7 +4,7 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, -5.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
@@ -160,7 +160,7 @@ void Scene::updateGameObjects(GfxContext const& gfx)
             instance->transform = CreateTransformationMatrix(obj->position, obj->rotation, obj->scale);
         }
 
-        if (dynamic_cast<Instance*>(obj))
+        if (dynamic_cast<Mesh*>(obj))
         {
 			glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(instance->transform)));
 
@@ -267,7 +267,7 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 
 	char* objName = new char[strlen(name) + 1];
 	strcpy_s(objName, strlen(name) + 1, name);
-	gameObjects.push_back(new Instance(objName, newInstance, translation, rotation, scale));
+	gameObjects.push_back(new Mesh(objName, newInstance, translation, rotation, scale));
 }
 
 glm::mat4 Scene::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) const
@@ -318,7 +318,7 @@ void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 		char* name = new char[tmp_name.length() + 1];
 		strcpy_s(name, tmp_name.length() + 1, tmp_name.c_str());
 
-		gameObjects.push_back(new Instance(name, inst_ref));
+		gameObjects.push_back(new Mesh(name, inst_ref));
     }
 
     for(uint32_t i = orig_material_count; i < new_material_count; ++i)
@@ -358,7 +358,6 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 
 	GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
 	GfxTexture albedoBuffer;
-	GfxTexture cubemap = gfxCreateTextureCube(gfx, 128, DXGI_FORMAT_R16G16B16A16_FLOAT, 5);
 	gfxSceneImport(gfxScene, textureFile);
 	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
