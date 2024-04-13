@@ -41,7 +41,7 @@ public:
 	glm::vec3	lightPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
 	float		lightColor[3]	= {1.0f, 1.0f, 1.0f};
 	float		lightIntensity	= 0.0f;
-	float		specStrength	= 0.0f;
+	float		specStrength	= .5f;
 	int			shininess		= 32;
 };
 
@@ -79,7 +79,7 @@ private:
 	void updateGameObjects(GfxContext const& gfx);
 	void updateSkybox(GfxContext const& gfx);
 	void AddPrimitive(GfxContext const& gfx, const char* name,
-		const Shapes::Types type, const char* textureFile,
+		const Shapes::Types type, const char* textureFile = nullptr,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));

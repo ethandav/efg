@@ -1,6 +1,7 @@
 //cube.vert
 float4x4 g_ViewProjection;
 float4x4 transform;
+float3x3 normalMatrix;
 
 struct Params
 {
@@ -20,10 +21,11 @@ Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
     // Create the output structure
     Params output;
     output.Position = clipPos;
+    //output.Normal = normalize(mul(normalMatrix, normal));
     output.Normal = normal;
     output.uv = uv;
     output.FragPos = worldPos.xyz;
-    output.Color = 1.0f;
+    output.Color = float3(1.0f, 1.0f, 1.0f);
 
     return output;
 }

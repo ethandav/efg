@@ -4,7 +4,7 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 0.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, -5.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
@@ -36,32 +36,54 @@ void Scene::loadScene(const GfxContext& gfx)
 {
 	createSkybox(gfx, "assets/textures/sky.jpg");
 	addLight(gfx, "Light 1",
-		glm::vec3(0.0, 2.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(1.f, 1.f, 1.f)
-	);
-
-	AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
-
-	AddPrimitive(
-        gfx,
-		"Moon",
-		Shapes::SPHERE,
-		"assets/textures/moon.jpg",
-		glm::vec3(1.0, 1.0f, -15.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(.5f, .5f, .5f)
+		glm::vec3(0.0, 2.0f, 0.0f)
 	);
 
 	AddPrimitive(
-        gfx,
-		"Sun",
+		gfx,
+		"Sphere 1",
 		Shapes::SPHERE,
-		"assets/textures/sun.png",
-		glm::vec3(0.0, 0.0f, -80.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(20.0f, 20.0f, 20.0f)
+		nullptr,
+		glm::vec3(-2.0, 0.0f, 2.0f)
 	);
+
+	AddPrimitive(
+		gfx,
+		"Sphere 2",
+		Shapes::SPHERE,
+		nullptr,
+		glm::vec3(2.0, 0.0f, 2.0f)
+	);
+
+	AddPrimitive(
+		gfx,
+		"Sphere 3",
+		Shapes::SPHERE,
+		nullptr,
+		glm::vec3(0.0, 0.0f, -2.0f)
+	);
+
+	//AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+
+	//AddPrimitive(
+    //    gfx,
+	//	"Moon",
+	//	Shapes::SPHERE,
+	//	"assets/textures/moon.jpg",
+	//	glm::vec3(1.0, 1.0f, -15.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(.5f, .5f, .5f)
+	//);
+
+	//AddPrimitive(
+    //    gfx,
+	//	"Sun",
+	//	Shapes::SPHERE,
+	//	"assets/textures/sun.png",
+	//	glm::vec3(0.0, 0.0f, -80.0f),
+	//	glm::vec3(0.0f, 0.0f, 0.0f),
+	//	glm::vec3(20.0f, 20.0f, 20.0f)
+	//);
 
 	//LoadSceneFromFile(gxf, "assets/Room.obj");
 }
@@ -75,6 +97,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	gfxCommandClearTexture(gfx, colorBuffer);
 	gfxCommandClearTexture(gfx, depthBuffer);
 	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
+	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_View", glm::mat4(glm::mat3(cam.view)));
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
 
@@ -139,16 +162,20 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 
         if (dynamic_cast<Instance*>(obj))
         {
+			glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(instance->transform)));
+
             gfxProgramSetParameter(gfx, litProgram, "transform", instance->transform);
+            gfxProgramSetParameter(gfx, litProgram, "normalMatrix", normalMatrix);
 
             if (instance->material)
             {
                 gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", albedoBuffers[instance->material]);
+                gfxProgramSetParameter(gfx, litProgram, "useTexture", true);
             }
-            else
-            {
-                gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
-            }
+			else
+			{
+                gfxProgramSetParameter(gfx, litProgram, "useTexture", false);
+			}
 
             gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
             gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance->mesh]);
@@ -219,19 +246,22 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 	indexBuffers.insert(newMesh, indexBuffer);
 	vertexBuffers.insert(newMesh, vertexBuffer);
 
-	GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
-	GfxTexture albedoBuffer;
-	gfxSceneImport(gfxScene, textureFile);
-	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
-	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-	albedoBuffer = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
-	GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-    gfxCommandCopyBufferToTexture(gfx, albedoBuffer, uploadBuffer);
-	gfxCommandGenerateMips(gfx, albedoBuffer);
-    gfxDestroyBuffer(gfx, uploadBuffer);
-	matRef->albedo_map = imgRef;
-	albedoBuffers.insert(matRef, albedoBuffer);
-	newInstance->material = matRef;
+	if (textureFile != nullptr)
+	{
+		GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
+		GfxTexture albedoBuffer;
+		gfxSceneImport(gfxScene, textureFile);
+		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
+		albedoBuffer = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		gfxCommandCopyBufferToTexture(gfx, albedoBuffer, uploadBuffer);
+		gfxCommandGenerateMips(gfx, albedoBuffer);
+		gfxDestroyBuffer(gfx, uploadBuffer);
+		matRef->albedo_map = imgRef;
+		albedoBuffers.insert(matRef, albedoBuffer);
+		newInstance->material = matRef;
+	}
 
 	newInstance->transform = transformationMatrix;
 
@@ -328,6 +358,7 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 
 	GfxRef<GfxMaterial> matRef = gfxSceneCreateMaterial(gfxScene);
 	GfxTexture albedoBuffer;
+	GfxTexture cubemap = gfxCreateTextureCube(gfx, 128, DXGI_FORMAT_R16G16B16A16_FLOAT, 5);
 	gfxSceneImport(gfxScene, textureFile);
 	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);

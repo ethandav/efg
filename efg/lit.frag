@@ -10,6 +10,8 @@ SamplerState TextureSampler;
 Texture2D AlbedoBuffer;
 Texture2D ColorBuffer;
 
+bool useTexture;
+
 struct Params 
 {
     float4 Position : SV_Position;
@@ -21,8 +23,11 @@ struct Params
 
 float4 main(Params input) : SV_Target
 {
-
-    float3 texColor = AlbedoBuffer.Sample(TextureSampler, input.uv).xyz;
+    float3 texColor = input.Color;
+    if(useTexture)
+    {
+        texColor *= AlbedoBuffer.Sample(TextureSampler, input.uv).xyz;
+    }
     
     // Ambient Lighting
     float ambientStrength = lightIntensity;
@@ -43,6 +48,8 @@ float4 main(Params input) : SV_Target
     float3 specular = specularStrength * spec * lightColor;
 
     // Final color calculation
+    //float3 result = (ambient) * texColor;
+    //float3 result = (ambient + diffuse) * texColor;
     float3 result = (ambient + diffuse + specular) * texColor;
     float4 FragColor = float4(result, 1.0);
 
