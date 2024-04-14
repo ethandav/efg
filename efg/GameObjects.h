@@ -9,9 +9,22 @@ struct Properties
 	float shininess = 0.0;
 };
 
+struct LightProperties
+{
+	glm::vec4	position	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec4	ambient		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec4	diffuse		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec4	specular	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+};
+
 struct Material
 {
 	Properties properties;
+};
+
+struct Light
+{
+	LightProperties properties;
 };
 
 class GameObject
@@ -39,22 +52,18 @@ public:
 	glm::mat4				modelMatrix		= glm::mat4();
 };
 
-class Light : public GameObject
+class LightObject : public GameObject
 {
 public:
-	Light() {};
-	Light(const char* name) : GameObject(name) { };
-	Light(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
-		lightPosition(translation),
+	LightObject() {};
+	LightObject(const char* name) : GameObject(name) { };
+	LightObject(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		GameObject(name, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
 
-	glm::vec3	lightPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
-	float		lightColor[3]	= {1.0f, 1.0f, 1.0f};
-	float		lightIntensity	= 0.0f;
-	float		specStrength	= .5f;
-	int			shininess		= 32;
+	Light light;
+
 };
 
 class Mesh: public GameObject

@@ -27,7 +27,7 @@ private:
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
-	void addLight(GfxContext const& gfx, const char* name,
+	LightObject* addLight(GfxContext const& gfx, const char* name,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)

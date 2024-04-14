@@ -36,9 +36,14 @@ void Scene::loadScene(const GfxContext& gfx)
 {
 	createSkybox(gfx, "assets/textures/sky.jpg");
 
-	addLight(gfx, "Light 1",
+	LightObject* light1 = addLight(gfx, "Light 1",
 		glm::vec3(0.0, 2.0f, 0.0f)
 	);
+
+	light1->light.properties.position = glm::vec4(0.0f, 2.0f, 0.0f, 0.0f);
+	light1->light.properties.ambient = glm::vec4(.2f, .2f, .2f, 0.0f);
+	light1->light.properties.diffuse = glm::vec4(.5f, .5f, .5f, 0.0f);
+	light1->light.properties.specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 
 	Mesh* obj1 = AddPrimitive(
 		gfx,
@@ -61,7 +66,7 @@ void Scene::loadScene(const GfxContext& gfx)
 		"Sphere 3",
 		Shapes::SPHERE,
 		nullptr,
-		glm::vec3(0.0, 0.0f, -2.0f)
+		glm::vec3(0.0, 0.0f, -3.0f)
 	);
 
 	obj1->material.properties.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
@@ -79,7 +84,12 @@ void Scene::loadScene(const GfxContext& gfx)
 	obj3->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
 	obj3->material.properties.shininess = 32.0;
 
-	//AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+	Mesh* earth = AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
+	earth->material.properties.ambient = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+	earth->material.properties.diffuse = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	earth->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	earth->material.properties.shininess = 100.0;
+
 
 	//AddPrimitive(
     //    gfx,
@@ -196,12 +206,13 @@ void Scene::updateSkybox(GfxContext const& gfx)
 	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
 }
 
-void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
+LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	char* lightName = new char[strlen(name) + 1];
 	strcpy_s(lightName, strlen(name) + 1, name);
-	Light* light = new Light(lightName, translation, rotation, scale);
+	LightObject* light = new LightObject(lightName, translation, rotation, scale);
 	gameObjects.push_back(light);
+	return light;
 }
 
 Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
