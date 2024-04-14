@@ -3,10 +3,10 @@
 
 struct Properties
 {
-	glm::vec4 ambient = glm::vec4(0.0f);
+	glm::vec4 ambient = glm::vec4(0.1f);
 	glm::vec4 diffuse = glm::vec4(0.0f);
-	glm::vec4 specular = glm::vec4(0.0f);
-	float shininess = 0.0;
+	glm::vec4 specular = glm::vec4(0.5f);
+	float shininess = 32.0f;
 };
 
 struct LightProperties
