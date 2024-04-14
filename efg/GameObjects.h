@@ -92,8 +92,10 @@ public:
 	Instanced(const char* name, GfxRef<GfxInstance> ref) : GameObject(name, ref) {}
 	Instanced(const char* name, GfxRef<GfxInstance> ref, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
 		GameObject(name, ref, translation, rotation, scale) {}
-	virtual void draw(GfxContext const& gfx, GfxProgram const& program) {};
+	virtual void draw(GfxContext const& gfx, GfxProgram const& program);
 	virtual void gui();
+
+	Material material = {};
 
 };
 

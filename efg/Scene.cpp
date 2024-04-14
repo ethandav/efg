@@ -84,33 +84,6 @@ void Scene::loadScene(const GfxContext& gfx)
 	obj3->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
 	obj3->material.properties.shininess = 32.0;
 
-	Mesh* earth = AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
-	earth->material.properties.ambient = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-	earth->material.properties.diffuse = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	earth->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	earth->material.properties.shininess = 100.0;
-
-
-	//AddPrimitive(
-    //    gfx,
-	//	"Moon",
-	//	Shapes::SPHERE,
-	//	"assets/textures/moon.jpg",
-	//	glm::vec3(1.0, 1.0f, -15.0f),
-	//	glm::vec3(0.0f, 0.0f, 0.0f),
-	//	glm::vec3(.5f, .5f, .5f)
-	//);
-
-	//AddPrimitive(
-    //    gfx,
-	//	"Sun",
-	//	Shapes::SPHERE,
-	//	"assets/textures/sun.png",
-	//	glm::vec3(0.0, 0.0f, -80.0f),
-	//	glm::vec3(0.0f, 0.0f, 0.0f),
-	//	glm::vec3(20.0f, 20.0f, 20.0f)
-	//);
-
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
 
@@ -159,13 +132,10 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 		    obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
 		}
 
+		obj->draw(gfx, litProgram);
 		if (obj->reference)
 		{
 			DrawInstanced(gfx, obj);
-		}
-		else
-		{
-			obj->draw(gfx, litProgram);
 		}
 
 		if (ImGui::TreeNode(obj->name))

@@ -32,6 +32,11 @@ void Mesh::gui()
 	ImGui::TreePop();
 }
 
+void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
+{
+	gfxProgramSetParameter(gfx, program, "Material", material);
+}
+
 void Instanced::gui()
 {
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
