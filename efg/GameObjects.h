@@ -1,10 +1,17 @@
 #pragma once
 #include "RenderLayer.h"
 
+struct Properties
+{
+	glm::vec4 ambient = glm::vec4(0.0f);
+	glm::vec4 diffuse = glm::vec4(0.0f);
+	glm::vec4 specular = glm::vec4(0.0f);
+	float shininess = 0.0;
+};
+
 struct Material
 {
-	bool hasTexture = false;
-	GfxTexture texture = {};
+	Properties properties;
 };
 
 class GameObject
@@ -61,6 +68,8 @@ public:
 	virtual void gui();
 
 	Material material = {};
+	bool hasTexture = false;
+	GfxTexture texture = {};
     std::vector<GfxVertex>  vertices        = {};
     std::vector<uint32_t>   indices         = {};
 	GfxBuffer indexBuffer = {};

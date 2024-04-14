@@ -40,29 +40,44 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(0.0, 2.0f, 0.0f)
 	);
 
-	//AddPrimitive(
-	//	gfx,
-	//	"Sphere 1",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(-2.0, 0.0f, 2.0f)
-	//);
+	Mesh* obj1 = AddPrimitive(
+		gfx,
+		"Sphere 1",
+		Shapes::SPHERE,
+		nullptr,
+		glm::vec3(-2.0, 0.0f, 2.0f)
+	);
 
-	//AddPrimitive(
-	//	gfx,
-	//	"Sphere 2",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(2.0, 0.0f, 2.0f)
-	//);
+	Mesh* obj2 = AddPrimitive(
+		gfx,
+		"Sphere 2",
+		Shapes::SPHERE,
+		nullptr,
+		glm::vec3(2.0, 0.0f, 2.0f)
+	);
 
-	//AddPrimitive(
-	//	gfx,
-	//	"Sphere 3",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(0.0, 0.0f, -2.0f)
-	//);
+	Mesh* obj3 = AddPrimitive(
+		gfx,
+		"Sphere 3",
+		Shapes::SPHERE,
+		nullptr,
+		glm::vec3(0.0, 0.0f, -2.0f)
+	);
+
+	obj1->material.properties.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	obj1->material.properties.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	obj1->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj1->material.properties.shininess = 32.0;
+
+	obj2->material.properties.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	obj2->material.properties.diffuse = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	obj2->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj2->material.properties.shininess = 32.0;
+
+	obj3->material.properties.ambient = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	obj3->material.properties.diffuse = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	obj3->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj3->material.properties.shininess = 32.0;
 
 	//AddPrimitive(gfx, "Earth", Shapes::SPHERE, "assets/textures/earth.jpeg");
 
@@ -86,7 +101,7 @@ void Scene::loadScene(const GfxContext& gfx)
 	//	glm::vec3(20.0f, 20.0f, 20.0f)
 	//);
 
-	LoadSceneFromFile(gfx, "assets/sponza.obj");
+	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
 
 void Scene::update(GfxContext const& gfx, GfxWindow const& window)
@@ -138,7 +153,10 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 		{
 			DrawInstanced(gfx, obj);
 		}
-		obj->draw(gfx, litProgram);
+		else
+		{
+			obj->draw(gfx, litProgram);
+		}
 
 		if (ImGui::TreeNode(obj->name))
 		{
@@ -172,7 +190,7 @@ void Scene::updateSkybox(GfxContext const& gfx)
 {
 	gfxCommandBindKernel(gfx, skyboxKernel);
     gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
-	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.texture);
+	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->texture);
 	gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
 	gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
 	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
@@ -186,7 +204,7 @@ void Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translat
 	gameObjects.push_back(light);
 }
 
-void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
+Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	using namespace Shapes;
@@ -225,12 +243,12 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 		gfxSceneImport(gfxScene, textureFile);
 		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-		newMesh->material.texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		newMesh->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-		gfxCommandCopyBufferToTexture(gfx, newMesh->material.texture, uploadBuffer);
-		gfxCommandGenerateMips(gfx, newMesh->material.texture);
+		gfxCommandCopyBufferToTexture(gfx, newMesh->texture, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->texture);
 		gfxDestroyBuffer(gfx, uploadBuffer);
-		newMesh->material.hasTexture = true;
+		newMesh->hasTexture = true;
 	}
 
 	newMesh->modelMatrix = modelMatrix;
@@ -239,6 +257,8 @@ void Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::
 	strcpy_s(objName, strlen(name) + 1, name);
 	newMesh->name = objName;
 	gameObjects.push_back(newMesh);
+
+	return newMesh;
 }
 
 
@@ -322,12 +342,12 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 	gfxSceneImport(gfxScene, textureFile);
 	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-	skybox->material.texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+	skybox->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 	GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-    gfxCommandCopyBufferToTexture(gfx, skybox->material.texture, uploadBuffer);
-	gfxCommandGenerateMips(gfx, skybox->material.texture);
+    gfxCommandCopyBufferToTexture(gfx, skybox->texture, uploadBuffer);
+	gfxCommandGenerateMips(gfx, skybox->texture);
     gfxDestroyBuffer(gfx, uploadBuffer);
-	skybox->material.hasTexture = true;
+	skybox->hasTexture = true;
 }
 
 void Scene::destroy(GfxContext const& gfx)
@@ -346,7 +366,7 @@ void Scene::destroy(GfxContext const& gfx)
 		{
 			gfxDestroyBuffer(gfx, mesh->indexBuffer);
 			gfxDestroyBuffer(gfx, mesh->vertexBuffer);
-			gfxDestroyTexture(gfx, mesh->material.texture);
+			gfxDestroyTexture(gfx, mesh->texture);
 		}
 
 		if (obj != nullptr)
@@ -360,7 +380,7 @@ void Scene::destroy(GfxContext const& gfx)
 	{
 		gfxDestroyBuffer(gfx, skybox->indexBuffer);
 		gfxDestroyBuffer(gfx, skybox->vertexBuffer);
-		gfxDestroyTexture(gfx, skybox->material.texture);
+		gfxDestroyTexture(gfx, skybox->texture);
 	}
 
 	gfxDestroyScene(gfxScene);

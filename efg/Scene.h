@@ -22,7 +22,7 @@ private:
 	void updateGameObjects(GfxContext const& gfx);
 	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
-	void AddPrimitive(GfxContext const& gfx, const char* name,
+	Mesh* AddPrimitive(GfxContext const& gfx, const char* name,
 		const Shapes::Types type, const char* textureFile = nullptr,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),

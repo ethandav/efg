@@ -6,9 +6,11 @@
 void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "transform", modelMatrix);
-    if (material.hasTexture)
+	gfxProgramSetParameter(gfx, program, "Material", material);
+
+    if (hasTexture)
     {
-        gfxProgramSetParameter(gfx, program, "AlbedoBuffer", material.texture);
+        gfxProgramSetParameter(gfx, program, "AlbedoBuffer", texture);
         gfxProgramSetParameter(gfx, program, "useTexture", true);
     }
 	else
