@@ -36,54 +36,49 @@ void Scene::loadScene(const GfxContext& gfx)
 {
 	createSkybox(gfx, "assets/textures/sky.jpg");
 
-	LightObject* light1 = addLight(gfx, "Light 1",
-		glm::vec3(0.0, 2.0f, 0.0f)
-	);
+	//LightObject* light1 = addLight(gfx, "Light 1",
+	//	glm::vec3(0.0, 2.0f, 0.0f)
+	//);
 
-	light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
-	light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
-	light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	//light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
+	//light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	//light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	//light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	//light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	Mesh* obj1 = AddPrimitive(
-		gfx,
-		"Sphere 1",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(-2.0, 0.0f, 2.0f)
-	);
+	//Mesh* obj1 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 1",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(-2.0, 0.0f, 2.0f)
+	//);
 
-	Mesh* obj2 = AddPrimitive(
-		gfx,
-		"Sphere 2",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(2.0, 0.0f, 2.0f)
-	);
+	//Mesh* obj2 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 2",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(2.0, 0.0f, 2.0f)
+	//);
 
-	Mesh* obj3 = AddPrimitive(
-		gfx,
-		"Sphere 3",
-		Shapes::SPHERE,
-		nullptr,
-		glm::vec3(0.0, 0.0f, -3.0f)
-	);
+	//Mesh* obj3 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 3",
+	//	Shapes::SPHERE,
+	//	nullptr,
+	//	glm::vec3(0.0, 0.0f, -3.0f)
+	//);
 
-	obj1->materialBuffer.material.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	obj1->materialBuffer.material.diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 0.0f);
-	obj1->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj1->materialBuffer.material.shininess = 32.0;
+	//obj1->materialBuffer.material.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	//obj1->materialBuffer.material.diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 0.0f);
+	//obj1->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	//obj1->materialBuffer.material.shininess = 32.0;
 
-	obj2->materialBuffer.material.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	obj2->materialBuffer.material.diffuse = glm::vec4(0.5f, 1.0f, 0.5f, 0.0f);
-	obj2->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj2->materialBuffer.material.shininess = 32.0;
-
-	obj3->materialBuffer.material.ambient = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	obj3->materialBuffer.material.diffuse = glm::vec4(0.5f, 0.5f, 1.0f, 0.0f);
-	obj3->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj3->materialBuffer.material.shininess = 32.0;
+	//obj2->materialBuffer.material.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	//obj2->materialBuffer.material.diffuse = glm::vec4(0.5f, 1.0f, 0.5f, 0.0f);
+	//obj2->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	//obj2->materialBuffer.material.shininess = 32.0;
 
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
@@ -112,7 +107,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 
 }
 
-const std::vector<GameObject*>* Scene::getGameObjects()
+std::vector<GameObject*>* Scene::getGameObjects()
 {
 	return &gameObjects;
 }
@@ -235,8 +230,19 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 
 	newMesh->modelMatrix = modelMatrix;
 
-	char* objName = new char[strlen(name) + 1];
-	strcpy_s(objName, strlen(name) + 1, name);
+	char* objName = nullptr;
+	if (name == nullptr)
+	{
+		std::string newName = std::string("Object ") + std::to_string(gameObjects.size() + 1);
+		objName = new char[strlen(newName.c_str()) + 1];
+		strcpy_s(objName, strlen(newName.c_str()) + 1, newName.c_str());
+	}
+	else
+	{
+		objName = new char[strlen(name) + 1];
+		strcpy_s(objName, strlen(name) + 1, name);
+	}
+
 	newMesh->name = objName;
 	gameObjects.push_back(newMesh);
 

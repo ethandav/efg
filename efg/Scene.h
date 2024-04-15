@@ -12,19 +12,7 @@ class Scene : public RenderLayer
 {
 public:
 	Scene() {};
-	virtual void initialize(const GfxContext& gfx);
-	virtual void update(GfxContext const& gfx, GfxWindow const& window);
-	virtual void destroy(GfxContext const& gfx);
 
-	const std::vector<GameObject*>* getGameObjects();
-
-private:
-	GfxScene gfxScene = {};
-
-	void loadScene(GfxContext const& gfx);
-	void updateGameObjects(GfxContext const& gfx);
-	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
-	void updateSkybox(GfxContext const& gfx);
 	Mesh* AddPrimitive(GfxContext const& gfx, const char* name,
 		const Shapes::Types type, const char* textureFile = nullptr,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
@@ -35,6 +23,20 @@ private:
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
 	);
+
+	std::vector<GameObject*>* getGameObjects();
+
+private:
+	GfxScene gfxScene = {};
+
+	virtual void initialize(const GfxContext& gfx);
+	virtual void update(GfxContext const& gfx, GfxWindow const& window);
+	virtual void destroy(GfxContext const& gfx);
+
+	void loadScene(GfxContext const& gfx);
+	void updateGameObjects(GfxContext const& gfx);
+	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
+	void updateSkybox(GfxContext const& gfx);
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
 	void createSkybox(GfxContext const& gfx, const char* textureFile);
 

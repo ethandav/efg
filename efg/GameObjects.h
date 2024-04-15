@@ -1,14 +1,13 @@
 #pragma once
 #include "RenderLayer.h"
 
-
 struct MaterialBuffer
 {
 	struct Material
 	{
-		glm::vec4 ambient = glm::vec4(0.1f);
-		glm::vec4 diffuse = glm::vec4(0.0f);
-		glm::vec4 specular = glm::vec4(0.5f);
+		glm::vec4 ambient = glm::vec4(0.2f);
+		glm::vec4 diffuse = glm::vec4(0.5f);
+		glm::vec4 specular = glm::vec4(1.0f);
 		float shininess = 32.0f;
 	};
 	Material material;
@@ -20,8 +19,8 @@ struct LightBuffer
 	{
 		glm::vec4	position		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 		glm::vec4	specular		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec4	ambientColor	= glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-		glm::vec4	diffuseColor	= glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+		glm::vec4	ambientColor	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		glm::vec4	diffuseColor	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	};
 	Light light;
 };
@@ -64,8 +63,8 @@ public:
 	glm::vec3 position	= glm::vec3(0.0f);
 	glm::vec3 ambient	= glm::vec3(1.0f);
 	glm::vec3 diffuse	= glm::vec3(0.5f);
-	glm::vec3 specular	= glm::vec3(0.0f);
-	glm::vec3 color		= glm::vec3(0.0f);
+	glm::vec3 specular	= glm::vec3(1.0f);
+	glm::vec3 color		= glm::vec3(1.0f);
 
 private:
 	LightBuffer lightBuffer;

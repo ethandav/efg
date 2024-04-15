@@ -3,19 +3,18 @@
 #define GUI_H
 
 #include "RenderLayer.h"
-#include "GameObjects.h"
+#include "Scene.h"
 
 class Gui : public RenderLayer
 {
 public:
-	Gui() {};
-	Gui(const std::vector<GameObject*>* gameObjects) : gameObjects(gameObjects) {};
+	Gui(Scene* scene) : scene(scene) {};
 	~Gui() {};
 	virtual void initialize(const GfxContext& gfx);
 	virtual void update(GfxContext const& gfx, GfxWindow const& window);
 	virtual void destroy(GfxContext const& gfx);
 private:
-	const std::vector<GameObject*>* gameObjects;
+	Scene* scene = nullptr;
 };
 
 #endif // GUI_H

@@ -5,7 +5,7 @@ void Engine::Initialize()
 	window = gfxCreateWindow(1280, 720, "Freeside Engine");
 
 	Scene* scene = new Scene();
-	Gui* gui = new Gui(scene->getGameObjects());
+	Gui* gui = new Gui(scene);
 	renderer.attachRenderLayer(scene);
 	renderer.attachRenderLayer(gui);
 	renderer.initialize(window);

@@ -7,17 +7,70 @@ void Gui::initialize(const GfxContext& gfx)
 
 void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 {
-	ImGui::Begin("Ethan's Framework (for) Graphics", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
-	if (gameObjects != nullptr)
+	if (ImGui::BeginMainMenuBar())
 	{
-		for (GameObject* obj : *gameObjects)
+		if (ImGui::BeginMenu("Add Objects"))
 		{
-			if (obj != nullptr)
+			if (ImGui::BeginMenu("Shape"))
 			{
-				if (ImGui::TreeNode(obj->name))
+				if (ImGui::MenuItem("Cube"))
 				{
-					obj->gui();
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::CUBE
+					);
 				}
+				if (ImGui::MenuItem("Sphere"))
+				{
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::SPHERE
+					);
+				}
+				if (ImGui::MenuItem("Triangle"))
+				{
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::TRIANGLE
+					);
+				}
+				if (ImGui::MenuItem("Pyramid"))
+				{
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::PYRAMID
+					);
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Light"))
+			{
+				if (ImGui::MenuItem("Directional"))
+				{
+					scene->addLight(gfx, "Directional Light");
+				}
+				if (ImGui::MenuItem("Point"))
+				{
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
+	ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
+	for (GameObject* obj : *scene->getGameObjects())
+	{
+		if (obj != nullptr)
+		{
+			if (ImGui::TreeNode(obj->name))
+			{
+				obj->gui();
 			}
 		}
 	}
