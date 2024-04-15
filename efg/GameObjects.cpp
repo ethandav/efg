@@ -76,8 +76,9 @@ void LightObject::gui()
 
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
+	glm::vec3 rotationRadians = glm::radians(rotation);
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
-	glm::mat4 rotationMatrix = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
+	glm::mat4 rotationMatrix = glm::yawPitchRoll(rotationRadians.y, rotationRadians.x, rotationRadians.z);
 	glm::mat4 scalingMatrix = glm::scale(glm::mat4(1.0f), scale);
 	return translationMatrix * rotationMatrix * scalingMatrix;
 }

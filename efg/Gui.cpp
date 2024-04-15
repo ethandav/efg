@@ -13,6 +13,14 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 		{
 			if (ImGui::BeginMenu("Shape"))
 			{
+				if (ImGui::MenuItem("Square"))
+				{
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::SQUARE
+					);
+				}
 				if (ImGui::MenuItem("Cube"))
 				{
 					scene->AddPrimitive(

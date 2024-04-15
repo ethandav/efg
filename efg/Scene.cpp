@@ -184,24 +184,7 @@ LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 
 Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
-	using namespace Shapes;
-
-	Shape shape = {};
-	switch (type)
-	{
-	case CUBE:
-		shape = cube();
-		break;
-	case SPHERE:
-		shape = sphere();
-		break;
-	case TRIANGLE:
-		shape = triangle();
-		break;
-	case PYRAMID:
-		shape = pyramid();
-		break;
-	}
+	Shape shape = Shapes::getShape(type);
 
 	Mesh* newMesh = new Mesh();
 	newMesh->position = translation;
@@ -318,7 +301,7 @@ void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 
 void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 {
-	Shape shape = Shapes::skybox();
+	Shape shape = Shapes::getShape(Shapes::SKYBOX);
 
 	skybox = new Skybox();
 

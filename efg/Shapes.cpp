@@ -1,6 +1,38 @@
 #include "Shapes.h"
 
-Shape Shapes::cube()
+
+Shape square()
+{
+    Shape square;
+    square.vertexCount = 4;
+    square.indexCount = 6;
+    square.vertices = std::vector<GfxVertex>(square.vertexCount);
+    square.indices = std::vector<uint32_t>(square.indexCount);
+
+    square.vertices[0].position = glm::vec3(-0.5f,  0.5f, 0.0f);
+    square.vertices[1].position = glm::vec3( 0.5f,  0.5f, 0.0f);
+    square.vertices[2].position = glm::vec3(-0.5f, -0.5f, 0.0f);
+    square.vertices[3].position = glm::vec3( 0.5f, -0.5f, 0.0f);
+
+    square.vertices[0].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+    square.vertices[1].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+    square.vertices[2].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+    square.vertices[3].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+
+    square.vertices[0].uv = glm::vec2(0.0f, 0.0f);
+    square.vertices[1].uv = glm::vec2(1.0f, 0.0f);
+    square.vertices[2].uv = glm::vec2(0.0f, 1.0f);
+    square.vertices[3].uv = glm::vec2(1.0f, 1.0f);
+
+    square.indices = {
+        2, 1, 0,
+        3, 1, 2
+    };
+
+    return square;
+}
+
+Shape cube()
 {
     Shape cube;
     cube.vertexCount = 24;
@@ -108,7 +140,7 @@ Shape Shapes::cube()
     return cube;
 }
 
-Shape Shapes::skybox()
+Shape skybox()
 {
     Shape skybox;
     skybox.vertexCount = 24;
@@ -209,7 +241,7 @@ Shape Shapes::skybox()
     return skybox;
 }
 
-Shape Shapes::sphere()
+Shape sphere()
 {
     Shape sphere;
     sphere.indexCount = 5000;
@@ -284,7 +316,7 @@ Shape Shapes::sphere()
     return sphere;
 }
 
-Shape Shapes::triangle() {
+Shape triangle() {
     Shape triangle;
     triangle.vertexCount = 3;
     triangle.indexCount = 3;
@@ -308,7 +340,7 @@ Shape Shapes::triangle() {
     return triangle;
 }
 
-Shape Shapes::pyramid() {
+Shape pyramid() {
     Shape pyramid;
     pyramid.vertexCount = 16;
     pyramid.indexCount = 18;
@@ -376,4 +408,32 @@ Shape Shapes::pyramid() {
     };
 
     return pyramid;
+}
+
+Shape Shapes::getShape(Types type)
+{
+    Shape shape;
+	switch (type)
+	{
+    case SQUARE:
+        shape = square();
+        break;
+	case CUBE:
+		shape = cube();
+		break;
+	case SKYBOX:
+		shape = skybox();
+		break;
+	case SPHERE:
+		shape = sphere();
+		break;
+	case TRIANGLE:
+		shape = triangle();
+		break;
+	case PYRAMID:
+		shape = pyramid();
+		break;
+	}
+
+    return shape;
 }

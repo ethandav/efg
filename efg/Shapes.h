@@ -25,6 +25,7 @@ namespace Shapes
 {
     enum Types
     {
+        SQUARE,
         CUBE,
         SKYBOX,
         SPHERE,
@@ -32,11 +33,7 @@ namespace Shapes
         PYRAMID
     };
 
-    Shape cube();
-    Shape skybox();
-    Shape sphere();
-    Shape triangle();
-    Shape pyramid();
+    Shape getShape(Types type);
 }
 
 #endif
