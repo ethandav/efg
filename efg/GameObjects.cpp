@@ -29,6 +29,14 @@ void Mesh::gui()
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
+    ImGui::Separator();
+    ImGui::InputFloat3("Ambient", &materialBuffer.material.ambient[0], "%.3f");
+    ImGui::Separator();
+    ImGui::InputFloat3("Diffuse", &materialBuffer.material.diffuse[0], "%.3f");
+    ImGui::Separator();
+    ImGui::InputFloat3("Specular", &materialBuffer.material.specular[0], "%.3f");
+    ImGui::Separator();
+	ImGui::InputFloat("Shininess", &materialBuffer.material.shininess);
 }
 
 void Mesh::destroy(GfxContext const& gfx)

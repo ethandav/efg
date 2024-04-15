@@ -32,6 +32,37 @@ Shape square()
     return square;
 }
 
+Shape plane()
+{
+    Shape square;
+    square.vertexCount = 4;
+    square.indexCount = 6;
+    square.vertices = std::vector<GfxVertex>(square.vertexCount);
+    square.indices = std::vector<uint32_t>(square.indexCount);
+
+    square.vertices[0].position = glm::vec3(-2.5f, 0.0f, -2.5f);
+    square.vertices[1].position = glm::vec3( 2.5f, 0.0f, -2.5f);
+    square.vertices[2].position = glm::vec3(-2.5f, 0.0f,  2.5f);
+    square.vertices[3].position = glm::vec3( 2.5f, 0.0f,  2.5f);
+
+    square.vertices[0].normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    square.vertices[1].normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    square.vertices[2].normal = glm::vec3(0.0f, 1.0f, 0.0f);
+    square.vertices[3].normal = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    square.vertices[0].uv = glm::vec2(0.0f, 0.0f);
+    square.vertices[1].uv = glm::vec2(1.0f, 0.0f);
+    square.vertices[2].uv = glm::vec2(0.0f, 1.0f);
+    square.vertices[3].uv = glm::vec2(1.0f, 1.0f);
+
+    square.indices = {
+        2, 1, 0,
+        3, 1, 2
+    };
+
+    return square;
+}
+
 Shape cube()
 {
     Shape cube;
@@ -417,6 +448,9 @@ Shape Shapes::getShape(Types type)
 	{
     case SQUARE:
         shape = square();
+        break;
+    case PLANE:
+        shape = plane();
         break;
 	case CUBE:
 		shape = cube();

@@ -26,6 +26,7 @@ namespace Shapes
     enum Types
     {
         SQUARE,
+        PLANE,
         CUBE,
         SKYBOX,
         SPHERE,

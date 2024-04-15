@@ -334,6 +334,7 @@ void Scene::destroy(GfxContext const& gfx)
 	{
 		if (obj != nullptr)
 		{
+			obj->destroy(gfx);
 			delete obj->name;
 			delete obj;
 		}

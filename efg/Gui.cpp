@@ -21,6 +21,14 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 						Shapes::SQUARE
 					);
 				}
+				if (ImGui::MenuItem("Plane"))
+				{
+					scene->AddPrimitive(
+						gfx,
+						nullptr,
+						Shapes::PLANE
+					);
+				}
 				if (ImGui::MenuItem("Cube"))
 				{
 					scene->AddPrimitive(
