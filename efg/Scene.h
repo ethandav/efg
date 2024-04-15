@@ -15,6 +15,9 @@ public:
 	virtual void initialize(const GfxContext& gfx);
 	virtual void update(GfxContext const& gfx, GfxWindow const& window);
 	virtual void destroy(GfxContext const& gfx);
+
+	const std::vector<GameObject*>* getGameObjects();
+
 private:
 	GfxScene gfxScene = {};
 

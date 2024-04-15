@@ -112,6 +112,11 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 
 }
 
+const std::vector<GameObject*>* Scene::getGameObjects()
+{
+	return &gameObjects;
+}
+
 void Scene::updateGameObjects(GfxContext const& gfx)
 {
 	gfxCommandBindKernel(gfx, litKernel);
@@ -137,11 +142,6 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 		if (obj->reference)
 		{
 			DrawInstanced(gfx, obj);
-		}
-
-		if (ImGui::TreeNode(obj->name))
-		{
-			obj->gui();
 		}
     }
 }
