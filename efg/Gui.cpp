@@ -71,18 +71,34 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 		ImGui::EndMainMenuBar();
 	}
 
-	ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
-	for (GameObject* obj : *scene->getGameObjects())
+	std::vector<GameObject*>* objects = scene->getGameObjects();
+	if (!objects->empty())
 	{
-		if (obj != nullptr)
+		uint32_t i = 0;
+		ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
+		for (GameObject* obj : *objects)
 		{
-			if (ImGui::TreeNode(obj->name))
+			if (obj != nullptr)
 			{
-				obj->gui();
+				if (ImGui::TreeNode(obj->name))
+				{
+					obj->gui();
+
+					std::string buttonId = "Delete##" + std::to_string(i);
+					if (ImGui::Button(buttonId.c_str()))
+					{
+						objects->erase(objects->begin() + i);
+						delete obj->name;
+						delete obj;
+						--i;
+					}
+					ImGui::TreePop();
+				}
+				++i;
 			}
 		}
+		ImGui::End();
 	}
-	ImGui::End();
 	gfxImGuiRender();
 }
 

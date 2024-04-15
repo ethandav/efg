@@ -29,7 +29,6 @@ void Mesh::gui()
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
-	ImGui::TreePop();
 }
 
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
@@ -42,7 +41,6 @@ void Instanced::gui()
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
-	ImGui::TreePop();
 }
 
 void LightObject::draw(GfxContext const& gfx, GfxProgram const& program)
@@ -71,7 +69,6 @@ void LightObject::gui()
     ImGui::Separator();
 	ImGui::ColorPicker3("Color", &color[0]);
     ImGui::Separator();
-	ImGui::TreePop();
 }
 
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
