@@ -332,14 +332,6 @@ void Scene::destroy(GfxContext const& gfx)
 
 	for (GameObject* obj : gameObjects)
 	{
-		Mesh* mesh = dynamic_cast<Mesh*>(obj);
-		if (mesh)
-		{
-			gfxDestroyBuffer(gfx, mesh->indexBuffer);
-			gfxDestroyBuffer(gfx, mesh->vertexBuffer);
-			gfxDestroyTexture(gfx, mesh->texture);
-		}
-
 		if (obj != nullptr)
 		{
 			delete obj->name;
@@ -347,12 +339,7 @@ void Scene::destroy(GfxContext const& gfx)
 		}
 	}
 
-	if (skybox != nullptr)
-	{
-		gfxDestroyBuffer(gfx, skybox->indexBuffer);
-		gfxDestroyBuffer(gfx, skybox->vertexBuffer);
-		gfxDestroyTexture(gfx, skybox->texture);
-	}
+	skybox->destroy(gfx);
 
 	gfxDestroyScene(gfxScene);
 

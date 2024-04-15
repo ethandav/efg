@@ -31,6 +31,13 @@ void Mesh::gui()
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
 }
 
+void Mesh::destroy(GfxContext const& gfx)
+{
+	gfxDestroyBuffer(gfx, indexBuffer);
+	gfxDestroyBuffer(gfx, vertexBuffer);
+	gfxDestroyTexture(gfx, texture);
+}
+
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
 {
 	gfxProgramSetParameter(gfx, program, "MaterialBuffer", materialBuffer);
@@ -41,6 +48,11 @@ void Instanced::gui()
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
+}
+
+void Instanced::destroy(GfxContext const& gfx)
+{
+
 }
 
 void LightObject::draw(GfxContext const& gfx, GfxProgram const& program)
@@ -69,6 +81,10 @@ void LightObject::gui()
     ImGui::Separator();
 	ImGui::ColorPicker3("Color", &color[0]);
     ImGui::Separator();
+}
+
+void LightObject::destroy(GfxContext const& gfx)
+{
 }
 
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)

@@ -88,6 +88,7 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 					if (ImGui::Button(buttonId.c_str()))
 					{
 						objects->erase(objects->begin() + i);
+						obj->destroy(gfx);
 						delete obj->name;
 						delete obj;
 						--i;

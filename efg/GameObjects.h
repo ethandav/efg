@@ -38,6 +38,7 @@ public:
 	virtual ~GameObject() = default;
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram) = 0;
 	virtual void gui() = 0;
+	virtual void destroy(GfxContext const& gfx) = 0;
 
 	const char*				name			= "";
 	GfxRef<GfxInstance>		reference		= {};
@@ -59,6 +60,7 @@ public:
 		GameObject(name, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
+	virtual void destroy(GfxContext const& gfx);
 
 	glm::vec3 position	= glm::vec3(0.0f);
 	glm::vec3 ambient	= glm::vec3(1.0f);
@@ -80,6 +82,7 @@ public:
 		GameObject(name, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
+	virtual void destroy(GfxContext const& gfx);
 
 	MaterialBuffer materialBuffer = {};
 	bool hasTexture = false;
@@ -99,6 +102,7 @@ public:
 		GameObject(name, ref, translation, rotation, scale) {}
 	virtual void draw(GfxContext const& gfx, GfxProgram const& program);
 	virtual void gui();
+	virtual void destroy(GfxContext const& gfx);
 
 	MaterialBuffer materialBuffer = {};
 
