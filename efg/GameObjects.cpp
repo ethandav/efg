@@ -6,7 +6,7 @@
 void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "transform", modelMatrix);
-	gfxProgramSetParameter(gfx, program, "Material", material);
+	gfxProgramSetParameter(gfx, program, "MaterialBuffer", materialBuffer);
 
     if (hasTexture)
     {
@@ -34,7 +34,7 @@ void Mesh::gui()
 
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
 {
-	gfxProgramSetParameter(gfx, program, "Material", material);
+	gfxProgramSetParameter(gfx, program, "MaterialBuffer", materialBuffer);
 }
 
 void Instanced::gui()
@@ -47,7 +47,14 @@ void Instanced::gui()
 
 void LightObject::draw(GfxContext const& gfx, GfxProgram const& program)
 {
-    gfxProgramSetParameter(gfx, program, "Light", light);
+	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
+	glm::vec3 ambientColor = diffuseColor * ambient;
+
+	lightBuffer.light.ambientColor = glm::vec4(ambientColor, 0.0f);
+	lightBuffer.light.diffuseColor = glm::vec4(diffuseColor, 0.0f);
+	lightBuffer.light.position = glm::vec4(position, 1.0f);
+	lightBuffer.light.specular = glm::vec4(specular, 1.0f);
+    gfxProgramSetParameter(gfx, program, "LightBuffer", lightBuffer);
 }
 
 void LightObject::gui()
@@ -56,13 +63,13 @@ void LightObject::gui()
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
     ImGui::Separator();
-    //ImGui::SliderFloat("Ambient Light Intensity", &lightIntensity, 0, 5);
-    //ImGui::Separator();
-    //ImGui::SliderFloat("Specular Strength", &specStrength, 0, 5);
-    //ImGui::Separator();
-    //ImGui::InputInt("Shininess", &shininess, 2, 256);
-    //ImGui::Separator();
-    //ImGui::ColorPicker3("Light Source Color", lightColor);
+    ImGui::SliderFloat3("Ambient", &ambient[0], 0.0f, 1.0f, "%.3f");
+    ImGui::Separator();
+    ImGui::SliderFloat3("Diffuse", &diffuse[0], 0.0f, 1.0f);
+    ImGui::Separator();
+    ImGui::SliderFloat("Specular", &specular[0], 0.0f, 1.0f);
+    ImGui::Separator();
+	ImGui::ColorPicker3("Color", &color[0]);
     ImGui::Separator();
 	ImGui::TreePop();
 }

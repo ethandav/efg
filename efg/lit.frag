@@ -7,28 +7,28 @@ Texture2D ColorBuffer;
 
 bool useTexture;
 
-cbuffer Material : register(b0)
+cbuffer MaterialBuffer : register(b0)
 {
-    struct Properties
+    struct Material
     {
         float4  ambient;
         float4  diffuse;
         float4  specular;
         float shininess;
     };
-    Properties material;
+    Material material;
 };
 
-cbuffer Light : register(b1)
+cbuffer LightBuffer : register(b1)
 {
-    struct LightProperties
+    struct Light
     {
         float4 position;
-        float4  ambient;
-        float4  diffuse;
         float4  specular;
+        float4  ambientColor;
+        float4  diffuseColor;
     };
-    LightProperties light;
+    Light light;
 }
 
 struct Params 
@@ -44,7 +44,7 @@ float4 main(Params input) : SV_Target
 {
 
     // Ambient Lighting
-    float3 ambient = material.ambient.xyz * light.ambient.xyz;
+    float3 ambient = light.ambientColor.xyz * material.ambient.xyz;
 
     // Diffuse lighting
     float3 diffuse;
@@ -58,14 +58,14 @@ float4 main(Params input) : SV_Target
     }
     else
     {
-        diffuse = (diff * material.diffuse.xyz) * light.diffuse.xyz;
+        diffuse = light.diffuseColor.xyz * (diff * material.diffuse.xyz);
     }
 
     // Specular Lighting
     float3 viewDir = normalize(viewPos - FragPos);
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    float3 specular = (material.specular.xyz * spec) * light.specular.xyz;
+    float3 specular = light.specular.xyz * (spec * material.specular.xyz);
 
     // Final color calculation
     float3 result = (ambient + diffuse + specular);

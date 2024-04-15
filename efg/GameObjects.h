@@ -1,30 +1,29 @@
 #pragma once
 #include "RenderLayer.h"
 
-struct Properties
+
+struct MaterialBuffer
 {
-	glm::vec4 ambient = glm::vec4(0.1f);
-	glm::vec4 diffuse = glm::vec4(0.0f);
-	glm::vec4 specular = glm::vec4(0.5f);
-	float shininess = 32.0f;
+	struct Material
+	{
+		glm::vec4 ambient = glm::vec4(0.1f);
+		glm::vec4 diffuse = glm::vec4(0.0f);
+		glm::vec4 specular = glm::vec4(0.5f);
+		float shininess = 32.0f;
+	};
+	Material material;
 };
 
-struct LightProperties
+struct LightBuffer
 {
-	glm::vec4	position	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	glm::vec4	ambient		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	glm::vec4	diffuse		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	glm::vec4	specular	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-};
-
-struct Material
-{
-	Properties properties;
-};
-
-struct Light
-{
-	LightProperties properties;
+	struct Light
+	{
+		glm::vec4	position		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		glm::vec4	specular		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		glm::vec4	ambientColor	= glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+		glm::vec4	diffuseColor	= glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	};
+	Light light;
 };
 
 class GameObject
@@ -62,7 +61,14 @@ public:
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
 
-	Light light;
+	glm::vec3 position	= glm::vec3(0.0f);
+	glm::vec3 ambient	= glm::vec3(1.0f);
+	glm::vec3 diffuse	= glm::vec3(0.5f);
+	glm::vec3 specular	= glm::vec3(0.0f);
+	glm::vec3 color		= glm::vec3(0.0f);
+
+private:
+	LightBuffer lightBuffer;
 
 };
 
@@ -76,7 +82,7 @@ public:
 	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
 	virtual void gui();
 
-	Material material = {};
+	MaterialBuffer materialBuffer = {};
 	bool hasTexture = false;
 	GfxTexture texture = {};
     std::vector<GfxVertex>  vertices        = {};
@@ -95,7 +101,7 @@ public:
 	virtual void draw(GfxContext const& gfx, GfxProgram const& program);
 	virtual void gui();
 
-	Material material = {};
+	MaterialBuffer materialBuffer = {};
 
 };
 

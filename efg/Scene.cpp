@@ -40,10 +40,11 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(0.0, 2.0f, 0.0f)
 	);
 
-	light1->light.properties.position = glm::vec4(0.0f, 2.0f, 0.0f, 0.0f);
-	light1->light.properties.ambient = glm::vec4(.2f, .2f, .2f, 0.0f);
-	light1->light.properties.diffuse = glm::vec4(.5f, .5f, .5f, 0.0f);
-	light1->light.properties.specular = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+	light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
+	light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	Mesh* obj1 = AddPrimitive(
 		gfx,
@@ -69,20 +70,20 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(0.0, 0.0f, -3.0f)
 	);
 
-	obj1->material.properties.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	obj1->material.properties.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	obj1->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj1->material.properties.shininess = 32.0;
+	obj1->materialBuffer.material.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	obj1->materialBuffer.material.diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 0.0f);
+	obj1->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj1->materialBuffer.material.shininess = 32.0;
 
-	obj2->material.properties.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	obj2->material.properties.diffuse = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	obj2->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj2->material.properties.shininess = 32.0;
+	obj2->materialBuffer.material.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	obj2->materialBuffer.material.diffuse = glm::vec4(0.5f, 1.0f, 0.5f, 0.0f);
+	obj2->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj2->materialBuffer.material.shininess = 32.0;
 
-	obj3->material.properties.ambient = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	obj3->material.properties.diffuse = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	obj3->material.properties.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	obj3->material.properties.shininess = 32.0;
+	obj3->materialBuffer.material.ambient = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	obj3->materialBuffer.material.diffuse = glm::vec4(0.5f, 0.5f, 1.0f, 0.0f);
+	obj3->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
+	obj3->materialBuffer.material.shininess = 32.0;
 
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
