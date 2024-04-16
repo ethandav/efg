@@ -6,11 +6,11 @@
 void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "transform", modelMatrix);
-	gfxProgramSetParameter(gfx, program, "MaterialBuffer", materialBuffer);
+	gfxProgramSetParameter(gfx, program, "MaterialBuffer", material);
 
     if (hasTexture)
     {
-        gfxProgramSetParameter(gfx, program, "AlbedoBuffer", texture);
+        gfxProgramSetParameter(gfx, program, "diffuseMap", texture);
         gfxProgramSetParameter(gfx, program, "useTexture", true);
     }
 	else
@@ -30,13 +30,13 @@ void Mesh::gui()
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
     ImGui::Separator();
-    ImGui::InputFloat3("Ambient", &materialBuffer.material.ambient[0], "%.3f");
+    ImGui::InputFloat3("Ambient", &material.properties.ambient[0]);
     ImGui::Separator();
-    ImGui::InputFloat3("Diffuse", &materialBuffer.material.diffuse[0], "%.3f");
+    ImGui::InputFloat3("Diffuse", &material.properties.diffuse[0]);
     ImGui::Separator();
-    ImGui::InputFloat3("Specular", &materialBuffer.material.specular[0], "%.3f");
+    ImGui::InputFloat3("Specular", &material.properties.specular[0]);
     ImGui::Separator();
-	ImGui::InputFloat("Shininess", &materialBuffer.material.shininess);
+	ImGui::InputFloat("Shininess", &material.properties.shininess);
 }
 
 void Mesh::destroy(GfxContext const& gfx)
@@ -48,7 +48,7 @@ void Mesh::destroy(GfxContext const& gfx)
 
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
 {
-	gfxProgramSetParameter(gfx, program, "MaterialBuffer", materialBuffer);
+	gfxProgramSetParameter(gfx, program, "MaterialBuffer", material);
 }
 
 void Instanced::gui()
@@ -81,11 +81,9 @@ void LightObject::gui()
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
     ImGui::Separator();
-    ImGui::SliderFloat3("Ambient", &ambient[0], 0.0f, 1.0f, "%.3f");
-    ImGui::Separator();
-    ImGui::SliderFloat3("Diffuse", &diffuse[0], 0.0f, 1.0f);
-    ImGui::Separator();
-    ImGui::SliderFloat("Specular", &specular[0], 0.0f, 1.0f);
+    ImGui::InputFloat3("Ambient", &ambient[0]);
+    ImGui::InputFloat3("Diffuse", &diffuse[0]);
+    ImGui::InputFloat3("Specular", &specular[0]);
     ImGui::Separator();
 	ImGui::ColorPicker3("Color", &color[0]);
     ImGui::Separator();

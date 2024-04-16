@@ -36,9 +36,9 @@ void Scene::loadScene(const GfxContext& gfx)
 {
 	createSkybox(gfx, "assets/textures/sky.jpg");
 
-	//LightObject* light1 = addLight(gfx, "Light 1",
-	//	glm::vec3(0.0, 2.0f, 0.0f)
-	//);
+	LightObject* light1 = addLight(gfx, "Light 1",
+		glm::vec3(5.0, 3.0f, 0.0f)
+	);
 
 	//light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
 	//light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
@@ -46,13 +46,14 @@ void Scene::loadScene(const GfxContext& gfx)
 	//light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
 	//light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	//Mesh* obj1 = AddPrimitive(
-	//	gfx,
-	//	"Sphere 1",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(-2.0, 0.0f, 2.0f)
-	//);
+	Mesh* obj1 = AddPrimitive(
+		gfx,
+		"Sphere 1",
+		Shapes::SPHERE,
+		"assets/textures/earth.jpeg",
+		nullptr,
+		glm::vec3(0.0, 0.0f, 0.0f)
+	);
 
 	//Mesh* obj2 = AddPrimitive(
 	//	gfx,
@@ -181,7 +182,7 @@ LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 
 	return light;
 }
 
-Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile,
+Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile, const char* specularMap,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	Shape shape = Shapes::getShape(type);
@@ -209,6 +210,19 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 		gfxCommandGenerateMips(gfx, newMesh->texture);
 		gfxDestroyBuffer(gfx, uploadBuffer);
 		newMesh->hasTexture = true;
+	}
+
+	if (specularMap != nullptr)
+	{
+		//gfxSceneImport(gfxScene, specularMap);
+		//GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		//uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
+		//newMesh->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		//GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		//gfxCommandCopyBufferToTexture(gfx, newMesh->texture, uploadBuffer);
+		//gfxCommandGenerateMips(gfx, newMesh->texture);
+		//gfxDestroyBuffer(gfx, uploadBuffer);
+		//newMesh->hasTexture = true;
 	}
 
 	newMesh->modelMatrix = modelMatrix;

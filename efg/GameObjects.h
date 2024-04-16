@@ -3,14 +3,14 @@
 
 struct MaterialBuffer
 {
-	struct Material
+	struct Properties
 	{
 		glm::vec4 ambient = glm::vec4(0.2f);
 		glm::vec4 diffuse = glm::vec4(0.5f);
 		glm::vec4 specular = glm::vec4(1.0f);
 		float shininess = 32.0f;
 	};
-	Material material;
+	Properties properties;
 };
 
 struct LightBuffer
@@ -64,7 +64,7 @@ public:
 
 	glm::vec3 position	= glm::vec3(0.0f);
 	glm::vec3 ambient	= glm::vec3(1.0f);
-	glm::vec3 diffuse	= glm::vec3(0.5f);
+	glm::vec3 diffuse	= glm::vec3(1.0f);
 	glm::vec3 specular	= glm::vec3(1.0f);
 	glm::vec3 color		= glm::vec3(1.0f);
 
@@ -84,7 +84,7 @@ public:
 	virtual void gui();
 	virtual void destroy(GfxContext const& gfx);
 
-	MaterialBuffer materialBuffer = {};
+	MaterialBuffer material = {};
 	bool hasTexture = false;
 	GfxTexture texture = {};
     std::vector<GfxVertex>  vertices        = {};
@@ -104,7 +104,7 @@ public:
 	virtual void gui();
 	virtual void destroy(GfxContext const& gfx);
 
-	MaterialBuffer materialBuffer = {};
+	MaterialBuffer material = {};
 
 };
 
