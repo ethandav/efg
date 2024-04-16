@@ -7,8 +7,8 @@ void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "transform", modelMatrix);
 	gfxProgramSetParameter(gfx, program, "MaterialBuffer", material.cBuffer);
-    gfxProgramSetParameter(gfx, program, "useTexture", material.useDiffuseMap);
-    gfxProgramSetParameter(gfx, program, "useSPecMap", material.useSpecMap);
+    gfxProgramSetParameter(gfx, program, "useDiffuseMap", material.useDiffuseMap);
+    gfxProgramSetParameter(gfx, program, "useSpecMap", material.useSpecMap);
 
     if (material.useDiffuseMap)
     {
@@ -16,7 +16,7 @@ void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
     }
 	if (material.useSpecMap)
 	{
-        gfxProgramSetParameter(gfx, program, "diffuseMap", material.specularMap);
+        gfxProgramSetParameter(gfx, program, "specularMap", material.specularMap);
 	}
 
     gfxCommandBindIndexBuffer(gfx, indexBuffer);

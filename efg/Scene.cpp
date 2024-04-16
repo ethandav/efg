@@ -48,10 +48,10 @@ void Scene::loadScene(const GfxContext& gfx)
 
 	Mesh* obj1 = AddPrimitive(
 		gfx,
-		"Sphere 1",
-		Shapes::SPHERE,
-		"assets/textures/earth.jpeg",
-		nullptr,
+		"Box",
+		Shapes::CUBE,
+		"assets/textures/box_diffuse.png",
+		"assets/textures/box_specular.png",
 		glm::vec3(0.0, 0.0f, 0.0f)
 	);
 

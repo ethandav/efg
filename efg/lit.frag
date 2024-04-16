@@ -6,7 +6,7 @@ Texture2D ColorBuffer;
 Texture2D diffuseMap;
 Texture2D specularMap;
 
-bool useTexture;
+bool useDiffuseMap;
 bool useSpecMap;
 
 cbuffer MaterialBuffer : register(b0)
@@ -45,8 +45,8 @@ struct Params
 float4 main(Params input) : SV_Target
 {
 
-    float3 objectAmbient, objectDiffuse;
-    if(useTexture)
+    float3 objectAmbient, objectDiffuse, objectSpecular;
+    if(useDiffuseMap)
     {
         objectDiffuse = diffuseMap.Sample(TextureSampler, input.uv).xyz;
         objectAmbient = objectDiffuse;
@@ -55,6 +55,15 @@ float4 main(Params input) : SV_Target
     {
         objectDiffuse = material.diffuse.xyz;
         objectAmbient = material.ambient.xyz;
+    }
+
+    if(useSpecMap)
+    {
+        objectSpecular = specularMap.Sample(TextureSampler, input.uv).xyz;
+    }
+    else
+    {
+        objectSpecular = material.specular.xyz;
     }
 
     // Ambient Lighting
@@ -72,7 +81,7 @@ float4 main(Params input) : SV_Target
     float3 viewDir = normalize(viewPos - FragPos);
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    float3 specular = light.specular.xyz * (spec * material.specular.xyz);
+    float3 specular = light.specular.xyz * (spec * objectSpecular.xyz);
 
     // Final color calculation
     float3 result = (ambient + diffuse + specular);
