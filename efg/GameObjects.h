@@ -25,6 +25,15 @@ struct LightBuffer
 	Light light;
 };
 
+struct Material
+{
+	MaterialBuffer cBuffer;
+	GfxTexture diffuseMap;
+	GfxTexture specularMap;
+	bool useDiffuseMap = false;
+	bool useSpecMap = false;
+};
+
 class GameObject
 {
 public:
@@ -84,9 +93,7 @@ public:
 	virtual void gui();
 	virtual void destroy(GfxContext const& gfx);
 
-	MaterialBuffer material = {};
-	bool hasTexture = false;
-	GfxTexture texture = {};
+	Material material = {};
     std::vector<GfxVertex>  vertices        = {};
     std::vector<uint32_t>   indices         = {};
 	GfxBuffer indexBuffer = {};

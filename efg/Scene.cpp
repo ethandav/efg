@@ -167,7 +167,7 @@ void Scene::updateSkybox(GfxContext const& gfx)
 {
 	gfxCommandBindKernel(gfx, skyboxKernel);
     gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
-	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->texture);
+	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.diffuseMap);
 	gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
 	gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
 	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
@@ -204,25 +204,25 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 		gfxSceneImport(gfxScene, textureFile);
 		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-		newMesh->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		newMesh->material.diffuseMap= gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-		gfxCommandCopyBufferToTexture(gfx, newMesh->texture, uploadBuffer);
-		gfxCommandGenerateMips(gfx, newMesh->texture);
+		gfxCommandCopyBufferToTexture(gfx, newMesh->material.diffuseMap, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->material.diffuseMap);
 		gfxDestroyBuffer(gfx, uploadBuffer);
-		newMesh->hasTexture = true;
+		newMesh->material.useDiffuseMap = true;
 	}
 
 	if (specularMap != nullptr)
 	{
-		//gfxSceneImport(gfxScene, specularMap);
-		//GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
-		//uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-		//newMesh->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
-		//GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-		//gfxCommandCopyBufferToTexture(gfx, newMesh->texture, uploadBuffer);
-		//gfxCommandGenerateMips(gfx, newMesh->texture);
-		//gfxDestroyBuffer(gfx, uploadBuffer);
-		//newMesh->hasTexture = true;
+		gfxSceneImport(gfxScene, specularMap);
+		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
+		newMesh->material.specularMap = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		gfxCommandCopyBufferToTexture(gfx, newMesh->material.specularMap, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->material.specularMap);
+		gfxDestroyBuffer(gfx, uploadBuffer);
+		newMesh->material.useSpecMap = true;
 	}
 
 	newMesh->modelMatrix = modelMatrix;
@@ -327,12 +327,12 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
 	gfxSceneImport(gfxScene, textureFile);
 	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-	skybox->texture = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+	skybox->material.diffuseMap = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
 	GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-    gfxCommandCopyBufferToTexture(gfx, skybox->texture, uploadBuffer);
-	gfxCommandGenerateMips(gfx, skybox->texture);
+    gfxCommandCopyBufferToTexture(gfx, skybox->material.diffuseMap, uploadBuffer);
+	gfxCommandGenerateMips(gfx, skybox->material.diffuseMap);
     gfxDestroyBuffer(gfx, uploadBuffer);
-	skybox->hasTexture = true;
+	skybox->material.useDiffuseMap = true;
 }
 
 void Scene::destroy(GfxContext const& gfx)

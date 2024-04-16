@@ -7,6 +7,7 @@ Texture2D diffuseMap;
 Texture2D specularMap;
 
 bool useTexture;
+bool useSpecMap;
 
 cbuffer MaterialBuffer : register(b0)
 {
@@ -49,7 +50,6 @@ float4 main(Params input) : SV_Target
     {
         objectDiffuse = diffuseMap.Sample(TextureSampler, input.uv).xyz;
         objectAmbient = objectDiffuse;
-
     }
     else
     {

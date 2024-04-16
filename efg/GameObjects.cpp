@@ -6,16 +6,17 @@
 void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 {
     gfxProgramSetParameter(gfx, program, "transform", modelMatrix);
-	gfxProgramSetParameter(gfx, program, "MaterialBuffer", material);
+	gfxProgramSetParameter(gfx, program, "MaterialBuffer", material.cBuffer);
+    gfxProgramSetParameter(gfx, program, "useTexture", material.useDiffuseMap);
+    gfxProgramSetParameter(gfx, program, "useSPecMap", material.useSpecMap);
 
-    if (hasTexture)
+    if (material.useDiffuseMap)
     {
-        gfxProgramSetParameter(gfx, program, "diffuseMap", texture);
-        gfxProgramSetParameter(gfx, program, "useTexture", true);
+        gfxProgramSetParameter(gfx, program, "diffuseMap", material.diffuseMap);
     }
-	else
+	if (material.useSpecMap)
 	{
-		gfxProgramSetParameter(gfx, program, "useTexture", false);
+        gfxProgramSetParameter(gfx, program, "diffuseMap", material.specularMap);
 	}
 
     gfxCommandBindIndexBuffer(gfx, indexBuffer);
@@ -30,20 +31,21 @@ void Mesh::gui()
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
     ImGui::Separator();
-    ImGui::InputFloat3("Ambient", &material.properties.ambient[0]);
+    ImGui::InputFloat3("Ambient", &material.cBuffer.properties.ambient[0]);
     ImGui::Separator();
-    ImGui::InputFloat3("Diffuse", &material.properties.diffuse[0]);
+    ImGui::InputFloat3("Diffuse", &material.cBuffer.properties.diffuse[0]);
     ImGui::Separator();
-    ImGui::InputFloat3("Specular", &material.properties.specular[0]);
+    ImGui::InputFloat3("Specular", &material.cBuffer.properties.specular[0]);
     ImGui::Separator();
-	ImGui::InputFloat("Shininess", &material.properties.shininess);
+	ImGui::InputFloat("Shininess", &material.cBuffer.properties.shininess);
 }
 
 void Mesh::destroy(GfxContext const& gfx)
 {
 	gfxDestroyBuffer(gfx, indexBuffer);
 	gfxDestroyBuffer(gfx, vertexBuffer);
-	gfxDestroyTexture(gfx, texture);
+	gfxDestroyTexture(gfx, material.diffuseMap);
+	gfxDestroyTexture(gfx, material.specularMap);
 }
 
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
