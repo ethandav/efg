@@ -34,26 +34,26 @@ void Scene::initialize(const GfxContext& gfx)
 
 void Scene::loadScene(const GfxContext& gfx)
 {
-	createSkybox(gfx, "assets/textures/sky.jpg");
+	//createSkybox(gfx, "assets/textures/sky.jpg");
 
-	LightObject* light1 = addLight(gfx, "Light 1",
-		glm::vec3(5.0, 3.0f, 0.0f)
-	);
+	//LightObject* light1 = addLight(gfx, "Light 1",
+	//	glm::vec3(5.0, 3.0f, 0.0f)
+	//);
 
-	//light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
-	//light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	//light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	//light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
-	//light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
+	////light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
+	////light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+	////light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	////light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	////light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	Mesh* obj1 = AddPrimitive(
-		gfx,
-		"Box",
-		Shapes::CUBE,
-		"assets/textures/box_diffuse.png",
-		"assets/textures/box_specular.png",
-		glm::vec3(0.0, 0.0f, 0.0f)
-	);
+	//Mesh* obj1 = AddPrimitive(
+	//	gfx,
+	//	"Box",
+	//	Shapes::CUBE,
+	//	"assets/textures/box_diffuse.png",
+	//	"assets/textures/box_specular.png",
+	//	glm::vec3(0.0, 0.0f, 0.0f)
+	//);
 
 	//Mesh* obj2 = AddPrimitive(
 	//	gfx,
@@ -165,12 +165,15 @@ void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
 
 void Scene::updateSkybox(GfxContext const& gfx)
 {
-	gfxCommandBindKernel(gfx, skyboxKernel);
-    gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
-	gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.diffuseMap);
-	gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
-	gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
-	gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
+	if (skybox != nullptr)
+	{
+		gfxCommandBindKernel(gfx, skyboxKernel);
+		gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
+		gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.diffuseMap);
+		gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
+		gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
+		gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
+	}
 }
 
 LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
@@ -354,7 +357,10 @@ void Scene::destroy(GfxContext const& gfx)
 		}
 	}
 
-	skybox->destroy(gfx);
+	if (skybox != nullptr)
+	{
+		skybox->destroy(gfx);
+	}
 
 	gfxDestroyScene(gfxScene);
 
