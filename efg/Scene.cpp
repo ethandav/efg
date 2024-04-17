@@ -202,6 +202,12 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 	Shape shape = Shapes::getShape(type);
 
 	Mesh* newMesh = new Mesh();
+
+	if (translation == glm::vec3(0.0f))
+	{
+		translation = cam.center;
+	}
+
 	newMesh->position = translation;
 	newMesh->rotation = rotation;
 	newMesh->scale = scale;
