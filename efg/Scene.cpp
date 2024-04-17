@@ -4,7 +4,7 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 4.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
@@ -35,19 +35,19 @@ void Scene::initialize(const GfxContext& gfx)
 void Scene::loadScene(const GfxContext& gfx)
 {
 	const char* textureFiles[6] = {
-		"assets/skybox/sky-right.jpg",
-		"assets/skybox/sky-left.jpg",
-		"assets/skybox/sky-top.jpg",
-		"assets/skybox/sky-bottom.jpg",
-		"assets/skybox/sky-front.jpg",
-		"assets/skybox/sky-back.jpg",
+		"assets/mountain-skyboxes/Maskonaive2/posx.jpg", // Right
+		"assets/mountain-skyboxes/Maskonaive2/negx.jpg", // Left
+		"assets/mountain-skyboxes/Maskonaive2/posy.jpg", // Top
+		"assets/mountain-skyboxes/Maskonaive2/negy.jpg", // Down
+		"assets/mountain-skyboxes/Maskonaive2/posz.jpg", // Front
+		"assets/mountain-skyboxes/Maskonaive2/negz.jpg"  // Back
 	};
 
 	createSkybox(gfx, textureFiles);
 
-	//LightObject* light1 = addLight(gfx, "Light 1",
-	//	glm::vec3(5.0, 3.0f, 0.0f)
-	//);
+	LightObject* light1 = addLight(gfx, "Light 1",
+		glm::vec3(100.0, 100.0f, 100.0f)
+	);
 
 	////light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
 	////light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
@@ -55,13 +55,15 @@ void Scene::loadScene(const GfxContext& gfx)
 	////light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
 	////light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	//Mesh* obj1 = AddPrimitive(
+	//Mesh* plane = AddPrimitive(
 	//	gfx,
-	//	"Box",
-	//	Shapes::CUBE,
-	//	"assets/textures/box_diffuse.png",
-	//	"assets/textures/box_specular.png",
-	//	glm::vec3(0.0, 0.0f, 0.0f)
+	//	"Plane",
+	//	Shapes::PLANE,
+	//	nullptr,
+	//	nullptr,
+	//	glm::vec3(0.0, 0.0f, 0.0f),
+	//	glm::vec3(0.0, 0.0f, 0.0f),
+	//	glm::vec3(20.0, 20.0f, 20.0f)
 	//);
 
 	//Mesh* obj2 = AddPrimitive(
@@ -327,10 +329,10 @@ void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 
 void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 {
+	bool textureCreated = false;
 	Shape shape = Shapes::getShape(Shapes::SKYBOX);
 	skybox = new Skybox();
 
-	skybox->textureCube = gfxCreateTextureCube(gfx, 2048, DXGI_FORMAT_R8G8B8A8_UNORM, 5);
 
 	skybox->indices = shape.indices;
 	skybox->vertices = shape.vertices;
@@ -342,6 +344,11 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 		gfxSceneImport(gfxScene, textureFiles[i]);
 		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
 		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		if (!textureCreated)
+		{
+			skybox->textureCube = gfxCreateTextureCube(gfx, imgRef->width, DXGI_FORMAT_R8G8B8A8_UNORM, 5);
+			textureCreated = true;
+		}
 		gfxCommandCopyBufferToTextureCube(gfx, skybox->textureCube, uploadBuffer, i);
 		gfxDestroyBuffer(gfx, uploadBuffer);
 	}
