@@ -1,4 +1,4 @@
-//cube.vert
+//sky.vert
 float4x4 g_View;
 float4x4 g_Projection;
 float4x4 transform;
@@ -6,13 +6,10 @@ float4x4 transform;
 struct Params
 {
     float4 Position : SV_Position;
-    float3 Normal : NORMAL;
-    float3 FragPos : POSITION;
-    float3 Color : COLOR;
-    float2 uv : TEXTCOORDS;
+    float3 uv : TEXTCOORDS;
 };
 
-Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
+Params main(float3 pos : Position)
 {
     // Transform the position to world space
     float4x4 viewProjection = mul(g_Projection, g_View);
@@ -22,10 +19,7 @@ Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
     // Create the output structure
     Params output;
     output.Position = clipPos;
-    output.Normal = normal;
-    output.uv = uv;
-    output.FragPos = pos;
-    output.Color = 1.0f;
+    output.uv = pos;
 
     return output;
 }

@@ -1,31 +1,18 @@
+//sky.frag
 SamplerState TextureSampler;
 
-Texture2D AlbedoBuffer;
+TextureCube CubeMap;
 Texture2D ColorBuffer;
 
 struct Params 
 {
     float4 Position : SV_Position;
-    float3 Normal : NORMAL;
-    float3 FragPos : POSITION;
-    float3 Color : COLOR;
-    float2 uv : TEXTCOORDS;
+    float3 uv : TEXTCOORDS;
 };
 
 float4 main(Params input) : SV_Target
 {
-    float3 skyColor = float3(1.0f, 1.0f, 1.0f);
-    float skyIntensity = 1.0f;
-    float3 texColor = AlbedoBuffer.Sample(TextureSampler, input.uv).xyz;
-    
-    // Ambient Lighting
-    float ambientStrength = skyIntensity;
-    float3 ambient = ambientStrength * skyColor;
-
-    // Final color calculation
-    float3 result = ambient * texColor;
-    float4 FragColor = float4(result, 1.0);
-
+    float4 FragColor = CubeMap.Sample(TextureSampler, input.uv);
     return FragColor;
 }
 

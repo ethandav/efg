@@ -120,6 +120,8 @@ class Skybox : public Mesh
 public:
 	Skybox() {};
 	~Skybox() {};
+
+	GfxTexture textureCube;
 };
 
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);

@@ -6,7 +6,7 @@
 #include "Shapes.h"
 #include "FlyCamera.h"
 #include "GameObjects.h"
-
+#include <list>
 
 class Scene : public RenderLayer
 {
@@ -38,7 +38,7 @@ private:
 	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
-	void createSkybox(GfxContext const& gfx, const char* textureFile);
+	void createSkybox(GfxContext const& gfx, const char* textureFiles[6]);
 
 	FlyCamera					cam						= {};
 	GfxDrawState				drawState				= {};

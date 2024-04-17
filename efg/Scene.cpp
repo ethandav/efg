@@ -34,7 +34,16 @@ void Scene::initialize(const GfxContext& gfx)
 
 void Scene::loadScene(const GfxContext& gfx)
 {
-	//createSkybox(gfx, "assets/textures/sky.jpg");
+	const char* textureFiles[6] = {
+		"assets/skybox/sky-right.jpg",
+		"assets/skybox/sky-left.jpg",
+		"assets/skybox/sky-top.jpg",
+		"assets/skybox/sky-bottom.jpg",
+		"assets/skybox/sky-front.jpg",
+		"assets/skybox/sky-back.jpg",
+	};
+
+	createSkybox(gfx, textureFiles);
 
 	//LightObject* light1 = addLight(gfx, "Light 1",
 	//	glm::vec3(5.0, 3.0f, 0.0f)
@@ -169,7 +178,7 @@ void Scene::updateSkybox(GfxContext const& gfx)
 	{
 		gfxCommandBindKernel(gfx, skyboxKernel);
 		gfxProgramSetParameter(gfx, skyboxProgram, "transform", glm::mat4(1.0f));
-		gfxProgramSetParameter(gfx, skyboxProgram, "AlbedoBuffer", skybox->material.diffuseMap);
+		gfxProgramSetParameter(gfx, skyboxProgram, "CubeMap", skybox->textureCube);
 		gfxCommandBindIndexBuffer(gfx, skybox->indexBuffer);
 		gfxCommandBindVertexBuffer(gfx, skybox->vertexBuffer);
 		gfxCommandDrawIndexed(gfx, (uint32_t)skybox->indices.size());
@@ -316,26 +325,27 @@ void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
     }
 }
 
-void Scene::createSkybox(GfxContext const& gfx, const char* textureFile)
+void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 {
 	Shape shape = Shapes::getShape(Shapes::SKYBOX);
-
 	skybox = new Skybox();
+
+	skybox->textureCube = gfxCreateTextureCube(gfx, 2048, DXGI_FORMAT_R8G8B8A8_UNORM, 5);
 
 	skybox->indices = shape.indices;
 	skybox->vertices = shape.vertices;
 	skybox->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
 	skybox->vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
 
-	gfxSceneImport(gfxScene, textureFile);
-	GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
-	uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
-	skybox->material.diffuseMap = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
-	GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
-    gfxCommandCopyBufferToTexture(gfx, skybox->material.diffuseMap, uploadBuffer);
-	gfxCommandGenerateMips(gfx, skybox->material.diffuseMap);
-    gfxDestroyBuffer(gfx, uploadBuffer);
-	skybox->material.useDiffuseMap = true;
+	for (uint32_t i = 0; i < 6; ++i)
+	{
+		gfxSceneImport(gfxScene, textureFiles[i]);
+		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		gfxCommandCopyBufferToTextureCube(gfx, skybox->textureCube, uploadBuffer, i);
+		gfxDestroyBuffer(gfx, uploadBuffer);
+	}
+	gfxCommandGenerateMips(gfx, skybox->textureCube);
 }
 
 void Scene::destroy(GfxContext const& gfx)
