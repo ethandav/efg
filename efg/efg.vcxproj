@@ -104,20 +104,20 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32;_WINDOWS;GFX_ENABLE_GUI;GFX_ENABLE_SCENE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)gfx\third_party\agility_sdk\include;$(SolutionDir)gfx;$(SolutionDir)gfx\third_party\imgui;$(SolutionDir)gfx\third_party\Vulkan-Headers\include;$(SolutionDir)gfx\third_party\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)gfx;$(SolutionDir)gfx\third_party\imgui;$(SolutionDir)gfx\third_party\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\gfx\build\Debug\gfx.lib;d3d12.lib;..\gfx\third_party\agility_sdk\lib\dummy.lib;dxgi.lib;..\gfx\third_party\dxc\lib\x64\dxcompiler.lib;..\gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRuntime.lib;..\gfx\build\_deps\glm-build\glm\Debug\glm.lib;..\gfx\build\_deps\tinyobjloader-build\Debug\tinyobjloader.lib;..\gfx\build\_deps\tinyexr-build\Debug\tinyexr.lib;..\gfx\build\_deps\ktx-build\Debug\ktx.lib;..\gfx\build\_deps\ktx-build\lib\astc-encoder\Source\Debug\astcenc-avx2-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\gfx\build\Debug\gfx.lib;d3d12.lib;dxgi.lib;..\gfx\build\_deps\d3d12memoryallocator-build\src\Debug\D3D12MAd.lib;dxguid.lib;..\gfx\third_party\directx-dxc\lib\x64\dxcompiler.lib;..\gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRuntime.lib;..\gfx\build\_deps\glm-build\glm\Debug\glm.lib;..\gfx\build\_deps\tinyobjloader-build\Debug\tinyobjloader.lib;..\gfx\build\_deps\tinyexr-build\Debug\tinyexr.lib;..\gfx\build\_deps\ktx-build\Debug\ktx.lib;..\gfx\build\_deps\ktx-build\lib\astc-encoder\Source\Debug\astcenc-avx2-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)gfx\third_party\dxc\bin\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy /Y "$(SolutionDir)gfx\third_party\dxc\bin\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy /Y "$(SolutionDir)gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRuntime.dll" "$(TargetDir)WinPixEventRuntime.dll"
-copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\D3D12Core.dll" "$(TargetDir)D3D12Core.dll"
-copy /Y "$(SolutionDir)gfx\third_party\agility_sdk\lib\d3d12SDKLayers.dll" "$(TargetDir)d3d12SDKLayers.dll"</Command>
+      <Command>copy /Y "$(SolutionDir)gfx\third_party\directx12-agility\build\native\bin\x64\D3D12Core.dll" "$(TargetDir)D3D12Core.dll"
+copy /Y "$(SolutionDir)gfx\third_party\directx12-agility\build\native\bin\x64\d3d12SDKLayers.dll" "$(TargetDir)d3d12SDKLayers.dll"
+copy /Y "$(SolutionDir)gfx\third_party\directx-dxc\bin\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy /Y "$(SolutionDir)gfx\third_party\directx-dxc\bin\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy /Y "$(SolutionDir)gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRuntime.dll" "$(TargetDir)WinPixEventRuntime.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

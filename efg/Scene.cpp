@@ -349,7 +349,7 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 			skybox->textureCube = gfxCreateTextureCube(gfx, imgRef->width, DXGI_FORMAT_R8G8B8A8_UNORM, 5);
 			textureCreated = true;
 		}
-		gfxCommandCopyBufferToTextureCube(gfx, skybox->textureCube, uploadBuffer, i);
+		gfxCommandCopyBufferToCubeFace(gfx, skybox->textureCube, uploadBuffer, i);
 		gfxDestroyBuffer(gfx, uploadBuffer);
 	}
 	gfxCommandGenerateMips(gfx, skybox->textureCube);
