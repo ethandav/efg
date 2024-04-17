@@ -4,7 +4,7 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 4.0f, 4.0f), glm::vec3(0.0f, 4.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(3.0f, 5.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
@@ -45,26 +45,21 @@ void Scene::loadScene(const GfxContext& gfx)
 
 	createSkybox(gfx, textureFiles);
 
-	LightObject* light1 = addLight(gfx, "Light 1",
+	LightObject* light1 = addLight(gfx, "Directional Light",
 		glm::vec3(100.0, 100.0f, 100.0f)
 	);
 
-	////light1->position = glm::vec3(0.0f, 2.0f, 0.0f);
-	////light1->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
-	////light1->diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	////light1->specular = glm::vec3(1.0f, 1.0f, 1.0f);
-	////light1->color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-	//Mesh* plane = AddPrimitive(
-	//	gfx,
-	//	"Plane",
-	//	Shapes::PLANE,
-	//	nullptr,
-	//	nullptr,
-	//	glm::vec3(0.0, 0.0f, 0.0f),
-	//	glm::vec3(0.0, 0.0f, 0.0f),
-	//	glm::vec3(20.0, 20.0f, 20.0f)
-	//);
+	Mesh* plane = AddPrimitive(
+		gfx,
+		"Plane",
+		Shapes::PLANE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(100.0, 100.0f, 100.0f)
+	);
 
 	//Mesh* obj2 = AddPrimitive(
 	//	gfx,
@@ -196,14 +191,15 @@ LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 
 	return light;
 }
 
-Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, const char* textureFile, const char* specularMap,
+Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam,
+	const char* textureFile, const char* specularMap,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	Shape shape = Shapes::getShape(type);
 
 	Mesh* newMesh = new Mesh();
 
-	if (translation == glm::vec3(0.0f))
+	if (atCam && translation == glm::vec3(0.0f))
 	{
 		translation = cam.center;
 	}

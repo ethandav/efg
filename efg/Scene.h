@@ -13,8 +13,8 @@ class Scene : public RenderLayer
 public:
 	Scene() {};
 
-	Mesh* AddPrimitive(GfxContext const& gfx, const char* name,
-		const Shapes::Types type, const char* textureFile = nullptr, const char* specMap = nullptr,
+	Mesh* AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam = true,
+		const char* textureFile = nullptr, const char* specMap = nullptr,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
