@@ -2,7 +2,7 @@
 
 void Engine::Initialize()
 {
-	window = gfxCreateWindow(1920, 1080, "Freeside Engine");
+	window = gfxCreateWindow(1280, 720, "efg");
 
 	Scene* scene = new Scene();
 	Gui* gui = new Gui(scene);

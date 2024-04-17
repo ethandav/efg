@@ -35,12 +35,12 @@ void Scene::initialize(const GfxContext& gfx)
 void Scene::loadScene(const GfxContext& gfx)
 {
 	const char* textureFiles[6] = {
-		"assets/mountain-skyboxes/Maskonaive2/posx.jpg", // Right
-		"assets/mountain-skyboxes/Maskonaive2/negx.jpg", // Left
-		"assets/mountain-skyboxes/Maskonaive2/posy.jpg", // Top
-		"assets/mountain-skyboxes/Maskonaive2/negy.jpg", // Down
-		"assets/mountain-skyboxes/Maskonaive2/posz.jpg", // Front
-		"assets/mountain-skyboxes/Maskonaive2/negz.jpg"  // Back
+		"assets/skybox/right.png", // Right
+		"assets/skybox/left.png", // Left
+		"assets/skybox/top.png", // Top
+		"assets/skybox/bottom.png", // Down
+		"assets/skybox/front.png", // Front
+		"assets/skybox/back.png"  // Back
 	};
 
 	createSkybox(gfx, textureFiles);
@@ -333,7 +333,6 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 	Shape shape = Shapes::getShape(Shapes::SKYBOX);
 	skybox = new Skybox();
 
-
 	skybox->indices = shape.indices;
 	skybox->vertices = shape.vertices;
 	skybox->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
@@ -343,10 +342,10 @@ void Scene::createSkybox(GfxContext const& gfx, const char* textureFiles[6])
 	{
 		gfxSceneImport(gfxScene, textureFiles[i]);
 		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
-		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count * imgRef->bytes_per_channel, imgRef->data.data());
 		if (!textureCreated)
 		{
-			skybox->textureCube = gfxCreateTextureCube(gfx, imgRef->width, DXGI_FORMAT_R8G8B8A8_UNORM, 5);
+			skybox->textureCube = gfxCreateTextureCube(gfx, imgRef->width, DXGI_FORMAT_R8G8B8A8_UNORM, gfxCalculateMipCount(imgRef->width, imgRef->height));
 			textureCreated = true;
 		}
 		gfxCommandCopyBufferToCubeFace(gfx, skybox->textureCube, uploadBuffer, i);
