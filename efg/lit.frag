@@ -9,6 +9,16 @@ Texture2D specularMap;
 bool useDiffuseMap;
 bool useSpecMap;
 
+struct dirLight
+{
+    float3 direction;
+    float3 ambient;
+    float3 diffuse;
+    float3 specular;
+};
+
+StructuredBuffer<dirLight> dirLights;
+
 cbuffer MaterialBuffer : register(b0)
 {
     struct MaterialProperties
@@ -21,18 +31,6 @@ cbuffer MaterialBuffer : register(b0)
     MaterialProperties material;
 };
 
-cbuffer LightBuffer : register(b1)
-{
-    struct LightProperties
-    {
-        float4 position;
-        float4  specular;
-        float4  ambientColor;
-        float4  diffuseColor;
-    };
-    LightProperties light;
-}
-
 struct Params 
 {
     float4 Position : SV_Position;
@@ -44,7 +42,6 @@ struct Params
 
 float4 main(Params input) : SV_Target
 {
-
     float3 objectAmbient, objectDiffuse, objectSpecular;
     if(useDiffuseMap)
     {
@@ -67,21 +64,25 @@ float4 main(Params input) : SV_Target
     }
 
     // Ambient Lighting
-    float3 ambient = light.ambientColor.xyz * objectAmbient;
+    //float3 ambient = light.ambientColor.xyz * objectAmbient;
+    float3 ambient = dirLights[0].ambient.xyz * objectAmbient;
 
     // Diffuse lighting
     float3 diffuse;
     float3 FragPos = input.FragPos;
     float3 normal = normalize(input.Normal);
-    float3 lightDir = normalize(light.position.xyz - FragPos);
+    //float3 lightDir = normalize(light.position.xyz - FragPos);
+    float3 lightDir = normalize(-dirLights[0].direction);
     float diff = max(dot(normal, lightDir), 0.0);
-    diffuse = light.diffuseColor.xyz * (diff * objectDiffuse.xyz);
+    //diffuse = light.diffuseColor.xyz * (diff * objectDiffuse.xyz);
+    diffuse = dirLights[0].diffuse.xyz * (diff * objectDiffuse.xyz);
 
     // Specular Lighting
     float3 viewDir = normalize(viewPos - FragPos);
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    float3 specular = light.specular.xyz * (spec * objectSpecular.xyz);
+    //float3 specular = light.specular.xyz * (spec * objectSpecular.xyz);
+    float3 specular = dirLights[0].specular.xyz * (spec * objectSpecular.xyz);
 
     // Final color calculation
     float3 result = (ambient + diffuse + specular);

@@ -18,11 +18,7 @@ public:
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
-	LightObject* addLight(GfxContext const& gfx, const char* name,
-		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f)
-	);
+	void addDirectionalLight(GfxContext const& gfx);
 
 	std::vector<GameObject*>* getGameObjects();
 
@@ -55,6 +51,8 @@ private:
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
+	std::vector<dirLight> dirLights = {};
+	GfxBuffer dirLightBuffer = {};
 	Skybox*						skybox					= nullptr;
 };
 

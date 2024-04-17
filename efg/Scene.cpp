@@ -23,6 +23,7 @@ void Scene::initialize(const GfxContext& gfx)
 
 	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
 
+
 	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
 
@@ -34,6 +35,8 @@ void Scene::initialize(const GfxContext& gfx)
 
 void Scene::loadScene(const GfxContext& gfx)
 {
+
+
 	const char* textureFiles[6] = {
 		"assets/skybox/right.png", // Right
 		"assets/skybox/left.png", // Left
@@ -44,10 +47,6 @@ void Scene::loadScene(const GfxContext& gfx)
 	};
 
 	createSkybox(gfx, textureFiles);
-
-	LightObject* light1 = addLight(gfx, "Directional Light",
-		glm::vec3(100.0, 100.0f, 100.0f)
-	);
 
 	Mesh* plane = AddPrimitive(
 		gfx,
@@ -102,6 +101,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_View", glm::mat4(glm::mat3(cam.view)));
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
+	gfxProgramSetParameter(gfx, litProgram, "dirLights", dirLightBuffer);
 
 	updateSkybox(gfx);
     updateGameObjects(gfx);
@@ -182,15 +182,6 @@ void Scene::updateSkybox(GfxContext const& gfx)
 	}
 }
 
-LightObject* Scene::addLight(GfxContext const& gfx, const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
-{
-	char* lightName = new char[strlen(name) + 1];
-	strcpy_s(lightName, strlen(name) + 1, name);
-	LightObject* light = new LightObject(lightName, translation, rotation, scale);
-	gameObjects.push_back(light);
-	return light;
-}
-
 Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam,
 	const char* textureFile, const char* specularMap,
 	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
@@ -262,6 +253,21 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 	return newMesh;
 }
 
+void Scene::addDirectionalLight(GfxContext const& gfx)
+{
+	dirLight aLight = {
+		glm::vec3(-0.2f, -1.0f, -0.3f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f),
+		glm::vec3(1.0f, 1.0f, 1.0f)
+	};
+	dirLights.push_back(aLight);
+
+	if(dirLightBuffer.getSize() > 0)
+		gfxCommandClearBuffer(gfx, dirLightBuffer);
+
+	dirLightBuffer = gfxCreateBuffer<dirLight>(gfx, dirLights.size(), dirLights.data());
+}
 
 void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 {
@@ -365,6 +371,8 @@ void Scene::destroy(GfxContext const& gfx)
     for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
         gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
 
+	gfxDestroyBuffer(gfx, dirLightBuffer);
+
 	for (GameObject* obj : gameObjects)
 	{
 		if (obj != nullptr)
@@ -377,6 +385,7 @@ void Scene::destroy(GfxContext const& gfx)
 
 	if (skybox != nullptr)
 	{
+		gfxDestroyTexture(gfx, skybox->textureCube);
 		skybox->destroy(gfx);
 	}
 

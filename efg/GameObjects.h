@@ -1,6 +1,14 @@
 #pragma once
 #include "RenderLayer.h"
 
+struct dirLight
+{
+    glm::vec3 direction;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
+
 struct MaterialBuffer
 {
 	struct Properties
@@ -11,18 +19,6 @@ struct MaterialBuffer
 		float shininess = 32.0f;
 	};
 	Properties properties;
-};
-
-struct LightBuffer
-{
-	struct Light
-	{
-		glm::vec4	position		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec4	specular		= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec4	ambientColor	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec4	diffuseColor	= glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	};
-	Light light;
 };
 
 struct Material
@@ -58,27 +54,6 @@ public:
 	glm::vec3				prevRotation	= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				prevScale		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4				modelMatrix		= glm::mat4();
-};
-
-class LightObject : public GameObject
-{
-public:
-	LightObject() {};
-	LightObject(const char* name) : GameObject(name) { };
-	LightObject(const char* name, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) :
-		GameObject(name, translation, rotation, scale) {};
-	virtual void draw(GfxContext const& gfx, GfxProgram const& prgoram);
-	virtual void gui();
-	virtual void destroy(GfxContext const& gfx);
-
-	glm::vec3 ambient	= glm::vec3(1.0f);
-	glm::vec3 diffuse	= glm::vec3(1.0f);
-	glm::vec3 specular	= glm::vec3(1.0f);
-	glm::vec3 color		= glm::vec3(1.0f);
-
-private:
-	LightBuffer lightBuffer;
-
 };
 
 class Mesh: public GameObject

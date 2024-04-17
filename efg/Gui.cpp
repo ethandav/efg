@@ -67,7 +67,7 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 			{
 				if (ImGui::MenuItem("Directional"))
 				{
-					scene->addLight(gfx, "Directional Light");
+					scene->addDirectionalLight(gfx);
 				}
 				if (ImGui::MenuItem("Point"))
 				{
