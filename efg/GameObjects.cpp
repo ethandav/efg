@@ -65,32 +65,6 @@ void Instanced::destroy(GfxContext const& gfx)
 
 }
 
-//void LightObject::draw(GfxContext const& gfx, GfxProgram const& program)
-//{
-//	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
-//	glm::vec3 ambientColor = diffuseColor * ambient;
-//
-//	lightBuffer.light.ambientColor = glm::vec4(ambientColor, 0.0f);
-//	lightBuffer.light.diffuseColor = glm::vec4(diffuseColor, 0.0f);
-//	lightBuffer.light.position = glm::vec4(position, 1.0f);
-//	lightBuffer.light.specular = glm::vec4(specular, 1.0f);
-//    gfxProgramSetParameter(gfx, program, "LightBuffer", lightBuffer);
-//}
-//
-//void LightObject::gui()
-//{
-//	ImGui::InputFloat3("Position", &position[0], "%.3f");
-//	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
-//	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
-//    ImGui::Separator();
-//    ImGui::InputFloat3("Ambient", &ambient[0]);
-//    ImGui::InputFloat3("Diffuse", &diffuse[0]);
-//    ImGui::InputFloat3("Specular", &specular[0]);
-//    ImGui::Separator();
-//	ImGui::ColorPicker3("Color", &color[0]);
-//    ImGui::Separator();
-//}
-
 glm::mat4 CreateModelMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	glm::vec3 rotationRadians = glm::radians(rotation);

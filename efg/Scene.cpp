@@ -23,7 +23,6 @@ void Scene::initialize(const GfxContext& gfx)
 
 	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
 
-
 	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
 
@@ -99,9 +98,9 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_View", glm::mat4(glm::mat3(cam.view)));
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
-	gfxProgramSetParameter(gfx, litProgram, "dirLights", dirLightBuffer);
 
 	updateSkybox(gfx);
+	updateLights(gfx);
     updateGameObjects(gfx);
 
 	gfxCommandBindKernel(gfx, skyboxResolveKernel);
@@ -115,6 +114,11 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 std::vector<GameObject*>* Scene::getGameObjects()
 {
 	return &gameObjects;
+}
+
+std::vector<Light*>* Scene::getSceneLights()
+{
+	return &sceneLights;
 }
 
 void Scene::updateGameObjects(GfxContext const& gfx)
@@ -146,6 +150,26 @@ void Scene::updateGameObjects(GfxContext const& gfx)
     }
 }
 
+void Scene::updateLights(GfxContext const& gfx)
+{
+	bool updated = false;
+	for (Light* light : sceneLights)
+	{
+		if (light->updateLight)
+		{
+			light->update(gfx, litProgram);
+			updated = true;
+			light->updateLight = false;
+		}
+	}
+	if (updated)
+	{
+		gfxDestroyBuffer(gfx, dirLightBuffer);
+		dirLightBuffer = gfxCreateBuffer<Directional>(gfx, dirLights.size(), *dirLights.data());
+	}
+	gfxProgramSetParameter(gfx, litProgram, "dirLights", dirLightBuffer);
+}
+
 void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
 {
 	GfxInstance* instance = gfxSceneGetInstance(gfxScene, obj->reference);
@@ -161,7 +185,7 @@ void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
 	{
 	    gfxProgramSetParameter(gfx, litProgram, "AlbedoBuffer", GfxTexture());
 	}
-	
+
 	gfxCommandBindIndexBuffer(gfx, indexBuffers[instance->mesh]);
 	gfxCommandBindVertexBuffer(gfx, vertexBuffers[instance->mesh]);
 	gfxCommandDrawIndexed(gfx, (uint32_t)instance->mesh->indices.size());
@@ -253,13 +277,14 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 
 void Scene::addDirectionalLight(GfxContext const& gfx)
 {
-	Directional* newLight = new Directional();
-	dirLights.push_back(newLight);
-
-	if(dirLightBuffer.getSize() > 0)
-		gfxCommandClearBuffer(gfx, dirLightBuffer);
-
-	dirLightBuffer = gfxCreateBuffer<Directional>(gfx, dirLights.size(), *dirLights.data());
+	Light* newLight = new Light(Light::DIRECTIONAL);
+	char* name = nullptr;
+	std::string newName = std::string("Directional light ") + std::to_string(dirLights.size() + 1);
+	name = new char[strlen(newName.c_str()) + 1];
+	strcpy_s(name, strlen(newName.c_str()) + 1, newName.c_str());
+	newLight->name = name;
+	dirLights.push_back(newLight->getDirectionalLight());
+	sceneLights.push_back(newLight);
 }
 
 void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)

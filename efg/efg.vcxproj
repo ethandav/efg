@@ -141,6 +141,7 @@ copy /Y "$(SolutionDir)gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRun
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -157,6 +158,7 @@ copy /Y "$(SolutionDir)gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRun
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="Gui.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderLayer.h" />
     <ClInclude Include="Scene.h" />

@@ -80,10 +80,12 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 	}
 
 	std::vector<GameObject*>* objects = scene->getGameObjects();
+	std::vector<Light*>* lights = scene->getSceneLights();
+
+	ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
 	if (!objects->empty())
 	{
 		uint32_t i = 0;
-		ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
 		for (GameObject* obj : *objects)
 		{
 			if (obj != nullptr)
@@ -106,8 +108,34 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 				++i;
 			}
 		}
-		ImGui::End();
 	}
+	if (!lights->empty())
+	{
+		uint32_t i = 0;
+		for (Light* light : *lights)
+		{
+			if (light != nullptr)
+			{
+				if (ImGui::TreeNode(light->name))
+				{
+					light->gui();
+
+					std::string buttonId = "Delete##" + std::to_string(i);
+					if (ImGui::Button(buttonId.c_str()))
+					{
+						lights->erase(lights->begin() + i);
+						light->destroy(gfx);
+						delete light->name;
+						delete light;
+						--i;
+					}
+					ImGui::TreePop();
+				}
+				++i;
+			}
+		}
+	}
+	ImGui::End();
 	gfxImGuiRender();
 }
 

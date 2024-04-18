@@ -6,7 +6,7 @@
 #include "Shapes.h"
 #include "FlyCamera.h"
 #include "GameObjects.h"
-#include <list>
+#include "Light.h"
 
 class Scene : public RenderLayer
 {
@@ -21,6 +21,7 @@ public:
 	void addDirectionalLight(GfxContext const& gfx);
 
 	std::vector<GameObject*>* getGameObjects();
+	std::vector<Light*>* getSceneLights();
 
 private:
 	GfxScene gfxScene = {};
@@ -30,6 +31,7 @@ private:
 	virtual void destroy(GfxContext const& gfx);
 
 	void loadScene(GfxContext const& gfx);
+	void updateLights(GfxContext const& gfx);
 	void updateGameObjects(GfxContext const& gfx);
 	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
@@ -51,8 +53,9 @@ private:
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
-	std::vector<Directional*> dirLights = {};
-	GfxBuffer dirLightBuffer = {};
+	std::vector<Light*>			sceneLights				= {};
+	std::vector<Directional*>	dirLights				= {};
+	GfxBuffer					dirLightBuffer			= {};
 	Skybox*						skybox					= nullptr;
 };
 
