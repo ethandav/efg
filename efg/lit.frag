@@ -15,10 +15,22 @@ struct Directional
     float3 ambient;
     float3 diffuse;
     float3 specular;
-    float3 color;
 };
 
-StructuredBuffer<Directional> dirLights;
+StructuredBuffer<Directional> dirLight;
+
+struct PointLight
+{
+    float3 position;
+    float3 ambient;
+    float3 diffuse;
+    float3 specular;
+    float constant;
+    float pLinear;
+    float quadratic;
+};
+uint32_t numPointLights;
+StructuredBuffer<PointLight> pointLights;
 
 cbuffer MaterialBuffer : register(b0)
 {
@@ -49,20 +61,45 @@ struct Params
     float2 uv : TEXTCOORDS;
 };
 
-float3 CalculateDirectionalLight(Directional light, float3 normal, float3 viewDir, Object object)
+float3 CalculateDirectionalLight(float3 normal, float3 viewDir, Object object)
 {
     // Ambient Lighting
-    float3 ambient = dirLights[0].ambient.xyz * object.ambient;
+    float3 ambient = dirLight[0].ambient.xyz * object.ambient;
 
     // Diffuse lighting
-    float3 lightDir = normalize(-dirLights[0].direction);
+    float3 lightDir = normalize(-dirLight[0].direction);
     float diff = max(dot(normal, lightDir), 0.0);
-    float3 diffuse = dirLights[0].diffuse.xyz * (diff * object.diffuse.xyz);
+    float3 diffuse = dirLight[0].diffuse.xyz * (diff * object.diffuse.xyz);
 
     // Specular Lighting
     float3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    float3 specular = dirLights[0].specular.xyz * (spec * object.specular.xyz);
+    float3 specular = dirLight[0].specular.xyz * (spec * object.specular.xyz);
+
+    return (ambient + diffuse + specular);
+}
+
+float3 calculatePointLight(PointLight light, float3 normal, float3 fragPos, float3 viewDir, Object object)
+{
+    float3 lightDir = normalize(light.position - fragPos);
+
+    //Diffuse
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // Specular
+    float3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    // Attenuation
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.pLinear * distance + light.quadratic * (distance * distance));
+
+    float3 ambient = light.ambient * object.ambient;
+    float3 diffuse = light.diffuse * (diff * object.diffuse.xyz);
+    float3 specular = light.specular * (spec * object.specular.xyz);
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
 
     return (ambient + diffuse + specular);
 }
@@ -94,7 +131,7 @@ float4 main(Params input) : SV_Target
     float3 normal = normalize(input.Normal);
     float3 viewDir = normalize(viewPos - input.FragPos);
 
-    float3 dirLight = CalculateDirectionalLight(dirLights[0], normal, viewDir, object);
+    float3 dirLight = CalculateDirectionalLight(normal, viewDir, object);
 
     float4 FragColor = float4(dirLight, 1.0);
 

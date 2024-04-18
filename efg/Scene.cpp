@@ -152,22 +152,10 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 
 void Scene::updateLights(GfxContext const& gfx)
 {
-	bool updated = false;
 	for (Light* light : sceneLights)
 	{
-		if (light->updateLight)
-		{
-			light->update(gfx, litProgram);
-			updated = true;
-			light->updateLight = false;
-		}
+		light->update(gfx, litProgram);
 	}
-	if (updated)
-	{
-		gfxDestroyBuffer(gfx, dirLightBuffer);
-		dirLightBuffer = gfxCreateBuffer<Directional>(gfx, dirLights.size(), *dirLights.data());
-	}
-	gfxProgramSetParameter(gfx, litProgram, "dirLights", dirLightBuffer);
 }
 
 void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
@@ -277,13 +265,12 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 
 void Scene::addDirectionalLight(GfxContext const& gfx)
 {
-	Light* newLight = new Light(Light::DIRECTIONAL);
+	Directional* newLight = new Directional();
 	char* name = nullptr;
-	std::string newName = std::string("Directional light ") + std::to_string(dirLights.size() + 1);
+	std::string newName = std::string("Directional light");
 	name = new char[strlen(newName.c_str()) + 1];
 	strcpy_s(name, strlen(newName.c_str()) + 1, newName.c_str());
 	newLight->name = name;
-	dirLights.push_back(newLight->getDirectionalLight());
 	sceneLights.push_back(newLight);
 }
 
@@ -389,7 +376,6 @@ void Scene::destroy(GfxContext const& gfx)
     for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
         gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
 
-	gfxDestroyBuffer(gfx, dirLightBuffer);
 
 	for (GameObject* obj : gameObjects)
 	{

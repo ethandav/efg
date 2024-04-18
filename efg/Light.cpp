@@ -1,53 +1,59 @@
 #include "Light.h"
 
-Light::Light(LightType type) : type(type)
+void Directional::update(GfxContext const& gfx, GfxProgram const& program)
 {
-	if (type == DIRECTIONAL)
-	{
-		directional = new Directional();
-	}
+	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
+	glm::vec3 ambientColor = diffuseColor * ambient;
+
+	input.ambient = glm::vec4(ambientColor, 0.0f);
+	input.diffuse = glm::vec4(diffuseColor, 0.0f);
+	input.specular = glm::vec4(specular, 1.0f);
+	gfxDestroyBuffer(gfx, buffer);
+	buffer = gfxCreateBuffer<DirectionalInput>(gfx, 1, &input);
+	gfxProgramSetParameter(gfx, program, "dirLight", buffer);
 }
 
-Directional* Light::getDirectionalLight()
+void Directional::gui()
 {
-	return directional;
-}
-
-void Light::update(GfxContext const& gfx, GfxProgram const& program)
-{
-	if (type == DIRECTIONAL)
-	{
-		glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
-		glm::vec3 ambientColor = diffuseColor * ambient;
-
-		directional->ambient = glm::vec4(ambientColor, 0.0f);
-		directional->diffuse = glm::vec4(diffuseColor, 0.0f);
-		directional->specular = glm::vec4(specular, 1.0f);
-	}
-}
-
-void Light::gui()
-{
-	if (type == DIRECTIONAL)
-	{
-		if (ImGui::InputFloat3("Position", &directional->direction[0]))
-			updateLight = true;
-		ImGui::Separator();
-	}
-	if(ImGui::InputFloat3("Ambient", &ambient[0]))
-			updateLight = true;
-	if(ImGui::InputFloat3("Diffuse", &diffuse[0]))
-			updateLight = true;
-	if(ImGui::InputFloat3("Specular", &specular[0]))
-			updateLight = true;
+	ImGui::InputFloat3("Position", &input.direction[0]);
+	ImGui::Separator();
+	ImGui::InputFloat3("Ambient", &ambient[0]);
+	ImGui::InputFloat3("Diffuse", &diffuse[0]);
+	ImGui::InputFloat3("Specular", &specular[0]);
     ImGui::Separator();
-	if(ImGui::ColorPicker3("Color", &color[0]))
-			updateLight = true;
+	ImGui::ColorPicker3("Color", &color[0]);
     ImGui::Separator();
 }
 
-void Light::destroy(GfxContext const& gfx)
+void Directional::destroy(GfxContext const& gfx)
 {
-	if (directional != nullptr)
-		delete directional;
+}
+
+void Point::update(GfxContext const& gfx, GfxProgram const& program)
+{
+	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
+	glm::vec3 ambientColor = diffuseColor * ambient;
+
+	input.ambient = glm::vec4(ambientColor, 0.0f);
+	input.diffuse = glm::vec4(diffuseColor, 0.0f);
+	input.specular = glm::vec4(specular, 1.0f);
+	gfxDestroyBuffer(gfx, *buffer);
+	*buffer = gfxCreateBuffer<DirectionalInput>(gfx, 1, &input);
+	gfxProgramSetParameter(gfx, program, "dirLight", *buffer);
+}
+
+void Point::gui()
+{
+	ImGui::InputFloat3("Position", &input.direction[0]);
+	ImGui::Separator();
+	ImGui::InputFloat3("Ambient", &ambient[0]);
+	ImGui::InputFloat3("Diffuse", &diffuse[0]);
+	ImGui::InputFloat3("Specular", &specular[0]);
+    ImGui::Separator();
+	ImGui::ColorPicker3("Color", &color[0]);
+    ImGui::Separator();
+}
+
+void Point::destroy(GfxContext const& gfx)
+{
 }

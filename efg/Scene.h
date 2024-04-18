@@ -54,8 +54,6 @@ private:
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
 	std::vector<Light*>			sceneLights				= {};
-	std::vector<Directional*>	dirLights				= {};
-	GfxBuffer					dirLightBuffer			= {};
 	Skybox*						skybox					= nullptr;
 };
 
