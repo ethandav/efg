@@ -9,15 +9,16 @@ Texture2D specularMap;
 bool useDiffuseMap;
 bool useSpecMap;
 
-struct dirLight
+struct Directional
 {
     float3 direction;
     float3 ambient;
     float3 diffuse;
     float3 specular;
+    float3 color;
 };
 
-StructuredBuffer<dirLight> dirLights;
+StructuredBuffer<Directional> dirLights;
 
 cbuffer MaterialBuffer : register(b0)
 {

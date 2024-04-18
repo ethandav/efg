@@ -35,8 +35,6 @@ void Scene::initialize(const GfxContext& gfx)
 
 void Scene::loadScene(const GfxContext& gfx)
 {
-
-
 	const char* textureFiles[6] = {
 		"assets/skybox/right.png", // Right
 		"assets/skybox/left.png", // Left
@@ -255,18 +253,13 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 
 void Scene::addDirectionalLight(GfxContext const& gfx)
 {
-	dirLight aLight = {
-		glm::vec3(-0.2f, -1.0f, -0.3f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
-	dirLights.push_back(aLight);
+	Directional* newLight = new Directional();
+	dirLights.push_back(newLight);
 
 	if(dirLightBuffer.getSize() > 0)
 		gfxCommandClearBuffer(gfx, dirLightBuffer);
 
-	dirLightBuffer = gfxCreateBuffer<dirLight>(gfx, dirLights.size(), dirLights.data());
+	dirLightBuffer = gfxCreateBuffer<Directional>(gfx, dirLights.size(), *dirLights.data());
 }
 
 void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)

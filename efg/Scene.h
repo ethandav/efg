@@ -51,7 +51,7 @@ private:
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
-	std::vector<dirLight> dirLights = {};
+	std::vector<Directional*> dirLights = {};
 	GfxBuffer dirLightBuffer = {};
 	Skybox*						skybox					= nullptr;
 };
