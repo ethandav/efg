@@ -1,6 +1,6 @@
 #include "Light.h"
 
-void Directional::update()
+void Directional::update(LightingManager* manager)
 {
 	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
 	glm::vec3 ambientColor = diffuseColor * ambient;
@@ -8,6 +8,8 @@ void Directional::update()
 	input->ambient = glm::vec4(ambientColor, 0.0f);
 	input->diffuse = glm::vec4(diffuseColor, 0.0f);
 	input->specular = glm::vec4(specular, 1.0f);
+
+	manager->updateDirectionals = true;
 }
 
 void Directional::gui()
@@ -26,7 +28,7 @@ void Directional::destroy(GfxContext const& gfx)
 {
 }
 
-void Point::update()
+void Point::update(LightingManager* manager)
 {
 	glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
 	glm::vec3 ambientColor = diffuseColor * ambient;
@@ -34,6 +36,8 @@ void Point::update()
 	input->ambient = glm::vec4(ambientColor, 0.0f);
 	input->diffuse = glm::vec4(diffuseColor, 0.0f);
 	input->specular = glm::vec4(specular, 1.0f);
+
+	manager->updatePoints = true;
 }
 
 void Point::gui()
@@ -58,20 +62,18 @@ void LightingManager::initialize(GfxContext const& gfx)
 
 void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 {
-	bool update = false;
 	for (Light* light : lights)
 	{
 		if (light->updated)
 		{
-			light->update();
-			update = true;
+			light->update(this);
 			light->updated = false;
 		}
 	}
-	if (update)
+
+	if (updateDirectionals)
 	{
 		gfxDestroyBuffer(gfx, directionalLightsBuffer);
-		gfxDestroyBuffer(gfx, pointLightsBuffer);
 		if (!directionalLights.empty())
 		{
 			std::vector<DirectionalInput> tempInputs;
@@ -80,7 +82,13 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 				tempInputs.push_back(*input);
 			}
 			directionalLightsBuffer = gfxCreateBuffer<DirectionalInput>(gfx, tempInputs.size(), tempInputs.data());
+			gfxProgramSetParameter(gfx, program, "dirLights", directionalLightsBuffer);
 		}
+	}
+
+	if (updatePoints)
+	{
+		gfxDestroyBuffer(gfx, pointLightsBuffer);
 		if (!pointLights.empty())
 		{
 			std::vector<PointInput> tempInputs;
@@ -89,10 +97,9 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 				tempInputs.push_back(*input);
 			}
 			pointLightsBuffer = gfxCreateBuffer<PointInput>(gfx, tempInputs.size(), tempInputs.data());
+			gfxProgramSetParameter(gfx, program, "pointLights", pointLightsBuffer);
+			gfxProgramSetParameter(gfx, program, "numPointLights", pointLights.size());
 		}
-		gfxProgramSetParameter(gfx, program, "dirLights", directionalLightsBuffer);
-		gfxProgramSetParameter(gfx, program, "pointLights", pointLightsBuffer);
-		gfxProgramSetParameter(gfx, program, "numPointLights", pointLights.size());
 	}
 }
 
@@ -110,7 +117,6 @@ void LightingManager::addDirectionalLight(GfxContext const& gfx)
 	newLight->updated = true;
 	newLight->input = input;
 	lights.push_back(newLight);
-	directionalLights.push_back(newLight->input);
 }
 
 void LightingManager::addPointLight(GfxContext const& gfx)
@@ -133,6 +139,18 @@ void LightingManager::destroy(GfxContext const& gfx)
 {
 	gfxDestroyBuffer(gfx, directionalLightsBuffer);
 	gfxDestroyBuffer(gfx, pointLightsBuffer);
+
+	for (PointInput* input : pointLights)
+	{
+		if(input != nullptr)
+			delete input;
+
+	}
+	for (DirectionalInput* input : directionalLights)
+	{
+		if(input != nullptr)
+			delete input;
+	}
 
 	for (Light* light : lights)
 	{
