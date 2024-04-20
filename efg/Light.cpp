@@ -84,6 +84,7 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 			directionalLightsBuffer = gfxCreateBuffer<DirectionalInput>(gfx, tempInputs.size(), tempInputs.data());
 			gfxProgramSetParameter(gfx, program, "dirLights", directionalLightsBuffer);
 		}
+		updateDirectionals = false;
 	}
 
 	if (updatePoints)
@@ -100,6 +101,7 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 			gfxProgramSetParameter(gfx, program, "pointLights", pointLightsBuffer);
 			gfxProgramSetParameter(gfx, program, "numPointLights", pointLights.size());
 		}
+		updatePoints = false;
 	}
 }
 

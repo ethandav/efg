@@ -23,8 +23,3 @@ Params main(float3 pos : Position)
 
     return output;
 }
-
-float4 resolve(in uint idx : SV_VertexID) : SV_Position
-{
-    return 1.0f - float4(4.0f * (idx & 1), 4.0f * (idx >> 1), 1.0f, 0.0f);
-}

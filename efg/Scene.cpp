@@ -20,7 +20,6 @@ void Scene::initialize(const GfxContext& gfx)
 
 	skyboxProgram = gfxCreateProgram(gfx, "sky");
 	skyboxKernel = gfxCreateGraphicsKernel(gfx, skyboxProgram, drawState);
-	skyboxResolveKernel = gfxCreateGraphicsKernel(gfx, skyboxProgram, "resolve");
 
 	textureSampler = gfxCreateSamplerState(gfx, D3D12_FILTER_ANISOTROPIC, D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP);
 
@@ -125,9 +124,6 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	updateSkybox(gfx);
 	lightingManager.update(gfx, litProgram);
     updateGameObjects(gfx);
-
-	gfxCommandBindKernel(gfx, skyboxResolveKernel);
-	gfxCommandDraw(gfx, 3);
 
 	gfxCommandBindKernel(gfx, litResolveKernel);
 	gfxCommandDraw(gfx, 3);
