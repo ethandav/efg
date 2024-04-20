@@ -4,7 +4,8 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
-	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(3.0f, 5.0f, 0.0f));
+	//cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(3.0f, 5.0f, 0.0f));
+	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
 	colorBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_R16G16B16A16_FLOAT);
     depthBuffer = gfxCreateTexture2D(gfx, DXGI_FORMAT_D32_FLOAT);
@@ -57,13 +58,35 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(100.0, 100.0f, 100.0f)
 	);
 
-	//Mesh* obj2 = AddPrimitive(
-	//	gfx,
-	//	"Sphere 2",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(2.0, 0.0f, 2.0f)
-	//);
+	Mesh* obj1 = AddPrimitive(
+		gfx,
+		"Sphere 1",
+		Shapes::SPHERE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, 1.0f, 2.0f)
+	);
+
+	Mesh* obj2 = AddPrimitive(
+		gfx,
+		"Sphere 2",
+		Shapes::SPHERE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(2.0, 1.0f, 0.0f)
+	);
+
+	Mesh* obj3 = AddPrimitive(
+		gfx,
+		"Sphere 3",
+		Shapes::SPHERE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(-2.0, 1.0f, 0.0f)
+	);
 
 	//Mesh* obj3 = AddPrimitive(
 	//	gfx,
@@ -100,7 +123,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
 
 	updateSkybox(gfx);
-	updateLights(gfx);
+	lightingManager.update(gfx, litProgram);
     updateGameObjects(gfx);
 
 	gfxCommandBindKernel(gfx, skyboxResolveKernel);
@@ -114,11 +137,6 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 std::vector<GameObject*>* Scene::getGameObjects()
 {
 	return &gameObjects;
-}
-
-std::vector<Light*>* Scene::getSceneLights()
-{
-	return &sceneLights;
 }
 
 void Scene::updateGameObjects(GfxContext const& gfx)
@@ -148,14 +166,6 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 			DrawInstanced(gfx, obj);
 		}
     }
-}
-
-void Scene::updateLights(GfxContext const& gfx)
-{
-	for (Light* light : sceneLights)
-	{
-		light->update(gfx, litProgram);
-	}
 }
 
 void Scene::DrawInstanced(GfxContext const& gfx, GameObject* obj)
@@ -263,16 +273,6 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 	return newMesh;
 }
 
-void Scene::addDirectionalLight(GfxContext const& gfx)
-{
-	Directional* newLight = new Directional();
-	char* name = nullptr;
-	std::string newName = std::string("Directional light");
-	name = new char[strlen(newName.c_str()) + 1];
-	strcpy_s(name, strlen(newName.c_str()) + 1, newName.c_str());
-	newLight->name = name;
-	sceneLights.push_back(newLight);
-}
 
 void Scene::LoadSceneFromFile(GfxContext const& gfx, const char* assetFile)
 {
@@ -376,7 +376,6 @@ void Scene::destroy(GfxContext const& gfx)
     for(uint32_t i = 0; i < albedoBuffers.size(); ++i)
         gfxDestroyTexture(gfx, albedoBuffers.data()[i]);
 
-
 	for (GameObject* obj : gameObjects)
 	{
 		if (obj != nullptr)
@@ -392,6 +391,8 @@ void Scene::destroy(GfxContext const& gfx)
 		gfxDestroyTexture(gfx, skybox->textureCube);
 		skybox->destroy(gfx);
 	}
+
+	lightingManager.destroy(gfx);
 
 	gfxDestroyScene(gfxScene);
 

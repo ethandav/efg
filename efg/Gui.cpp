@@ -67,10 +67,11 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 			{
 				if (ImGui::MenuItem("Directional"))
 				{
-					scene->addDirectionalLight(gfx);
+					scene->lightingManager.addDirectionalLight(gfx);
 				}
 				if (ImGui::MenuItem("Point"))
 				{
+					scene->lightingManager.addPointLight(gfx);
 				}
 				ImGui::EndMenu();
 			}
@@ -80,7 +81,6 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 	}
 
 	std::vector<GameObject*>* objects = scene->getGameObjects();
-	std::vector<Light*>* lights = scene->getSceneLights();
 
 	ImGui::Begin("Game Objects", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
 	if (!objects->empty())
@@ -109,10 +109,11 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 			}
 		}
 	}
-	if (!lights->empty())
+	std::vector<Light*> const* lights = scene->lightingManager.getLights();
+	if (lights != nullptr)
 	{
 		uint32_t i = 0;
-		for (Light* light : *lights)
+		for (Light* light : *scene->lightingManager.getLights())
 		{
 			if (light != nullptr)
 			{
@@ -123,11 +124,11 @@ void Gui::update(GfxContext const& gfx, GfxWindow const& window)
 					std::string buttonId = "Delete##" + std::to_string(i);
 					if (ImGui::Button(buttonId.c_str()))
 					{
-						lights->erase(lights->begin() + i);
-						light->destroy(gfx);
-						delete light->name;
-						delete light;
-						--i;
+						//lights->erase(lights->begin() + i);
+						//light->destroy(gfx);
+						//delete light->name;
+						//delete light;
+						//--i;
 					}
 					ImGui::TreePop();
 				}

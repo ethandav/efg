@@ -12,16 +12,14 @@ class Scene : public RenderLayer
 {
 public:
 	Scene() {};
-
 	Mesh* AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam = true,
 		const char* textureFile = nullptr, const char* specMap = nullptr,
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
-	void addDirectionalLight(GfxContext const& gfx);
-
 	std::vector<GameObject*>* getGameObjects();
-	std::vector<Light*>* getSceneLights();
+
+	LightingManager lightingManager;
 
 private:
 	GfxScene gfxScene = {};
@@ -31,7 +29,6 @@ private:
 	virtual void destroy(GfxContext const& gfx);
 
 	void loadScene(GfxContext const& gfx);
-	void updateLights(GfxContext const& gfx);
 	void updateGameObjects(GfxContext const& gfx);
 	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
@@ -53,7 +50,6 @@ private:
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
-	std::vector<Light*>			sceneLights				= {};
 	Skybox*						skybox					= nullptr;
 };
 
