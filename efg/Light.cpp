@@ -73,7 +73,6 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 
 	if (updateDirectionals)
 	{
-		gfxDestroyBuffer(gfx, directionalLightsBuffer);
 		if (!directionalLights.empty())
 		{
 			std::vector<DirectionalInput> tempInputs;
@@ -81,7 +80,7 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 			{
 				tempInputs.push_back(*input);
 			}
-			directionalLightsBuffer = gfxCreateBuffer<DirectionalInput>(gfx, tempInputs.size(), tempInputs.data());
+			gfxUpdateDynamicBuffer(gfx, directionalLightsBuffer, tempInputs.size() * sizeof(DirectionalInput), tempInputs.data());
 			gfxProgramSetParameter(gfx, program, "dirLights", directionalLightsBuffer);
 		}
 		updateDirectionals = false;
@@ -89,7 +88,6 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 
 	if (updatePoints)
 	{
-		gfxDestroyBuffer(gfx, pointLightsBuffer);
 		if (!pointLights.empty())
 		{
 			std::vector<PointInput> tempInputs;
@@ -97,7 +95,7 @@ void LightingManager::update(GfxContext const& gfx, GfxProgram const& program)
 			{
 				tempInputs.push_back(*input);
 			}
-			pointLightsBuffer = gfxCreateBuffer<PointInput>(gfx, tempInputs.size(), tempInputs.data());
+			gfxUpdateDynamicBuffer(gfx, pointLightsBuffer, tempInputs.size() * sizeof(PointInput), tempInputs.data());
 			gfxProgramSetParameter(gfx, program, "pointLights", pointLightsBuffer);
 			gfxProgramSetParameter(gfx, program, "numPointLights", pointLights.size());
 		}
@@ -119,6 +117,12 @@ void LightingManager::addDirectionalLight(GfxContext const& gfx)
 	newLight->updated = true;
 	newLight->input = input;
 	lights.push_back(newLight);
+
+	gfxDestroyBuffer(gfx, directionalLightsBuffer);
+	std::vector<DirectionalInput> tempInputs;
+	for (DirectionalInput* input : directionalLights)
+		tempInputs.push_back(*input);
+	directionalLightsBuffer = gfxCreateBuffer<DirectionalInput>(gfx, tempInputs.size(), tempInputs.data(), kGfxCpuAccess_Write);
 }
 
 void LightingManager::addPointLight(GfxContext const& gfx)
@@ -135,6 +139,12 @@ void LightingManager::addPointLight(GfxContext const& gfx)
 	newLight->updated = true;
 	newLight->input = input;
 	lights.push_back(newLight);
+
+	gfxDestroyBuffer(gfx, pointLightsBuffer);
+	std::vector<PointInput> tempInputs;
+	for (PointInput* input : pointLights)
+		tempInputs.push_back(*input);
+	pointLightsBuffer = gfxCreateBuffer<PointInput>(gfx, tempInputs.size(), tempInputs.data(), kGfxCpuAccess_Write);
 }
 
 void LightingManager::destroy(GfxContext const& gfx)
