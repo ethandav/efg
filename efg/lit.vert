@@ -2,6 +2,7 @@
 float4x4 g_ViewProjection;
 float4x4 transform;
 float3x3 normalMatrix;
+StructuredBuffer<float4x4> instances;
 
 struct Params
 {
@@ -12,10 +13,10 @@ struct Params
     float2 uv : TEXTCOORDS;
 };
 
-Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS)
+Params main(float3 pos : Position, float3 normal: NORMAL, float2 uv : TEXCOORDS, uint InstanceID : SV_InstanceID)
 {
     // Transform the position to world space
-    float4 worldPos = mul(transform, float4(pos, 1.0f));
+    float4 worldPos = mul(instances[InstanceID], float4(pos, 1.0f));
     float4 clipPos = mul(g_ViewProjection, worldPos);
 
     // Create the output structure

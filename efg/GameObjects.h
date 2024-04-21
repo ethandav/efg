@@ -39,6 +39,7 @@ public:
 
 	const char*				name			= "";
 	GfxRef<GfxInstance>		reference		= {};
+	uint32_t				instances		= 1;
 	glm::vec3				position		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				rotation		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				scale			= glm::vec3(0.0f, 0.0f, 0.0f);
@@ -62,8 +63,10 @@ public:
 	Material material = {};
     std::vector<GfxVertex>  vertices        = {};
     std::vector<uint32_t>   indices         = {};
+    std::vector<glm::mat4>  modelMatrices		= {};
 	GfxBuffer indexBuffer = {};
 	GfxBuffer vertexBuffer = {};
+	GfxBuffer instanceBuffer = {};
 };
 
 class Instanced : public GameObject

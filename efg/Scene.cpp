@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include <random>
 
 void Scene::initialize(const GfxContext& gfx)
 {
@@ -57,53 +58,17 @@ void Scene::loadScene(const GfxContext& gfx)
 		glm::vec3(100.0, 100.0f, 100.0f)
 	);
 
-	Mesh* obj1 = AddPrimitive(
-		gfx,
-		"Sphere 1",
-		Shapes::SPHERE,
-		false,
-		nullptr,
-		nullptr,
-		glm::vec3(0.0, 1.0f, 2.0f)
-	);
+	std::mt19937 rng(std::random_device{}());
+	std::uniform_real_distribution<float> dist(-50.0f, 50.0f);
 
-	Mesh* obj2 = AddPrimitive(
-		gfx,
-		"Sphere 2",
-		Shapes::SPHERE,
-		false,
-		nullptr,
-		nullptr,
-		glm::vec3(2.0, 1.0f, 0.0f)
-	);
+	std::vector<glm::mat4> matrices;
+	matrices.reserve(2000);
+	for (int i = 0; i < 2000; i++)
+	{
+		matrices.push_back(CreateModelMatrix(glm::vec3(dist(rng), dist(rng), dist(rng)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+	}
 
-	Mesh* obj3 = AddPrimitive(
-		gfx,
-		"Sphere 3",
-		Shapes::SPHERE,
-		false,
-		nullptr,
-		nullptr,
-		glm::vec3(-2.0, 1.0f, 0.0f)
-	);
-
-	//Mesh* obj3 = AddPrimitive(
-	//	gfx,
-	//	"Sphere 3",
-	//	Shapes::SPHERE,
-	//	nullptr,
-	//	glm::vec3(0.0, 0.0f, -3.0f)
-	//);
-
-	//obj1->materialBuffer.material.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	//obj1->materialBuffer.material.diffuse = glm::vec4(1.0f, 0.5f, 0.5f, 0.0f);
-	//obj1->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	//obj1->materialBuffer.material.shininess = 32.0;
-
-	//obj2->materialBuffer.material.ambient = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	//obj2->materialBuffer.material.diffuse = glm::vec4(0.5f, 1.0f, 0.5f, 0.0f);
-	//obj2->materialBuffer.material.specular = glm::vec4(0.5f, 0.5f, 0.5f, 0.0f);
-	//obj2->materialBuffer.material.shininess = 32.0;
+	AddPrimitiveInstanced(gfx, "Sphere", Shapes::SPHERE, 2000, matrices);
 
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
@@ -198,29 +163,19 @@ void Scene::updateSkybox(GfxContext const& gfx)
 	}
 }
 
-Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam,
-	const char* textureFile, const char* specularMap,
-	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
+void Scene::AddPrimitiveInstanced(GfxContext const& gfx, const char* name, const Shapes::Types type, uint32_t instances,
+	std::vector<glm::mat4> matrices, const char* textureFile, const char* specularMap)
 {
 	Shape shape = Shapes::getShape(type);
-
 	Mesh* newMesh = new Mesh();
 
-	if (atCam && translation == glm::vec3(0.0f))
-	{
-		translation = cam.center;
-	}
-
-	newMesh->position = translation;
-	newMesh->rotation = rotation;
-	newMesh->scale = scale;
-
-	glm::mat4 modelMatrix = CreateModelMatrix(translation, rotation, scale);
-
+	newMesh->modelMatrices = matrices;
+	newMesh->instances = instances;
 	newMesh->indices = shape.indices;
 	newMesh->vertices = shape.vertices;
 	newMesh->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
 	newMesh->vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
+	newMesh->instanceBuffer = gfxCreateBuffer<glm::mat4>(gfx, instances, newMesh->modelMatrices.data());
 
 	if (textureFile != nullptr)
 	{
@@ -248,7 +203,75 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 		newMesh->material.useSpecMap = true;
 	}
 
-	newMesh->modelMatrix = modelMatrix;
+	char* objName = nullptr;
+	if (name == nullptr)
+	{
+		std::string newName = std::string("Object ") + std::to_string(gameObjects.size() + 1);
+		objName = new char[strlen(newName.c_str()) + 1];
+		strcpy_s(objName, strlen(newName.c_str()) + 1, newName.c_str());
+	}
+	else
+	{
+		objName = new char[strlen(name) + 1];
+		strcpy_s(objName, strlen(name) + 1, name);
+	}
+
+	newMesh->name = objName;
+	gameObjects.push_back(newMesh);
+}
+
+Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam,
+	const char* textureFile, const char* specularMap,
+	glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
+{
+	Shape shape = Shapes::getShape(type);
+
+	Mesh* newMesh = new Mesh();
+
+	if (atCam && translation == glm::vec3(0.0f))
+	{
+		translation = cam.center;
+	}
+
+	newMesh->position = translation;
+	newMesh->rotation = rotation;
+	newMesh->scale = scale;
+
+	std::vector<glm::mat4> matrix = {
+		CreateModelMatrix(translation, rotation, scale)
+	};
+
+	newMesh->indices = shape.indices;
+	newMesh->vertices = shape.vertices;
+	newMesh->indexBuffer = gfxCreateBuffer<uint32_t>(gfx, shape.indexCount, shape.indices.data());
+	newMesh->vertexBuffer = gfxCreateBuffer<Vertex>(gfx, shape.vertexCount, shape.vertices.data());
+	newMesh->instanceBuffer = gfxCreateBuffer<glm::mat4>(gfx, 1, matrix.data());
+
+	if (textureFile != nullptr)
+	{
+		gfxSceneImport(gfxScene, textureFile);
+		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
+		newMesh->material.diffuseMap= gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		gfxCommandCopyBufferToTexture(gfx, newMesh->material.diffuseMap, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->material.diffuseMap);
+		gfxDestroyBuffer(gfx, uploadBuffer);
+		newMesh->material.useDiffuseMap = true;
+	}
+
+	if (specularMap != nullptr)
+	{
+		gfxSceneImport(gfxScene, specularMap);
+		GfxConstRef<GfxImage> imgRef = gfxSceneGetImageHandle(gfxScene, gfxSceneGetImageCount(gfxScene) - 1);
+		uint32_t const mipCount = gfxCalculateMipCount(imgRef->width, imgRef->height);
+		newMesh->material.specularMap = gfxCreateTexture2D(gfx, imgRef->width, imgRef->height, imgRef->format, mipCount);
+		GfxBuffer uploadBuffer = gfxCreateBuffer(gfx, imgRef->width * imgRef->height * imgRef->channel_count, imgRef->data.data());
+		gfxCommandCopyBufferToTexture(gfx, newMesh->material.specularMap, uploadBuffer);
+		gfxCommandGenerateMips(gfx, newMesh->material.specularMap);
+		gfxDestroyBuffer(gfx, uploadBuffer);
+		newMesh->material.useSpecMap = true;
+	}
 
 	char* objName = nullptr;
 	if (name == nullptr)

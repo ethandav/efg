@@ -18,6 +18,8 @@ public:
 		glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 	std::vector<GameObject*>* getGameObjects();
+	void AddPrimitiveInstanced(GfxContext const& gfx, const char* name, const Shapes::Types type, uint32_t instances,
+		std::vector<glm::mat4> matrices, const char* textureFile = nullptr, const char* specMap = nullptr);
 
 	LightingManager lightingManager;
 

@@ -19,9 +19,11 @@ void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
         gfxProgramSetParameter(gfx, program, "specularMap", material.specularMap);
 	}
 
+
+    gfxProgramSetParameter(gfx, program, "instances", instanceBuffer);
     gfxCommandBindIndexBuffer(gfx, indexBuffer);
     gfxCommandBindVertexBuffer(gfx, vertexBuffer);
-    gfxCommandDrawIndexed(gfx, (uint32_t)indices.size());
+    gfxCommandDrawIndexed(gfx, (uint32_t)indices.size(), instances);
 
 }
 
@@ -30,13 +32,13 @@ void Mesh::gui()
 	ImGui::InputFloat3("Position", &position[0], "%.3f");
 	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
 	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
-    ImGui::Separator();
-    ImGui::InputFloat3("Ambient", &material.cBuffer.properties.ambient[0]);
-    ImGui::Separator();
-    ImGui::InputFloat3("Diffuse", &material.cBuffer.properties.diffuse[0]);
-    ImGui::Separator();
-    ImGui::InputFloat3("Specular", &material.cBuffer.properties.specular[0]);
-    ImGui::Separator();
+	ImGui::Separator();
+	ImGui::InputFloat3("Ambient", &material.cBuffer.properties.ambient[0]);
+	ImGui::Separator();
+	ImGui::InputFloat3("Diffuse", &material.cBuffer.properties.diffuse[0]);
+	ImGui::Separator();
+	ImGui::InputFloat3("Specular", &material.cBuffer.properties.specular[0]);
+	ImGui::Separator();
 	ImGui::InputFloat("Shininess", &material.cBuffer.properties.shininess);
 }
 
