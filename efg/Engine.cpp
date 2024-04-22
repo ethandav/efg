@@ -1,9 +1,6 @@
 #include "Engine.h"
 
-#ifdef FPS_COUNTER
 #include <chrono>
-#include <iostream>
-#endif
 
 void Engine::Initialize()
 {
@@ -18,29 +15,24 @@ void Engine::Initialize()
 
 void Engine::start()
 {
-#ifdef FPS_COUNTER
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
 	int frameCount = 0;
 	double fps = 0.0;
-#endif
 
 	while (!gfxWindowIsCloseRequested(window))
 	{
+		auto currentTime = std::chrono::steady_clock::now();
+		double deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0;
+		lastTime = currentTime;
+
 		gfxWindowPumpEvents(window);
-		renderer.update();
-#ifdef FPS_COUNTER
+		renderer.update(deltaTime);
 		frameCount++;
 
-		auto currentTime = std::chrono::steady_clock::now();
-		double timeDifference = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastTime).count() / 1000.0;
-		
-		if (timeDifference >= 1.0) {
-		    fps = frameCount / timeDifference;
+		if (deltaTime >= 1.0) {
+		    fps = frameCount / deltaTime;
 		    frameCount = 0;
-		    lastTime = currentTime;
-		    std::cout << "FPS: " << fps << std::endl;
 		}
-#endif
 	}
 }
 

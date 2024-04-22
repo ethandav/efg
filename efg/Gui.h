@@ -11,7 +11,7 @@ public:
 	Gui(Scene* scene) : scene(scene) {};
 	~Gui() {};
 	virtual void initialize(const GfxContext& gfx);
-	virtual void update(GfxContext const& gfx, GfxWindow const& window);
+	virtual void update(GfxContext const& gfx, GfxWindow const& window, double deltaTime);
 	virtual void destroy(GfxContext const& gfx);
 private:
 	Scene* scene = nullptr;

@@ -16,10 +16,10 @@ void Renderer::attachRenderLayer(RenderLayer* layer)
 	renderLayers.push_back(layer);
 }
 
-void Renderer::update()
+void Renderer::update(double deltaTime)
 {
 	std::for_each(renderLayers.begin(), renderLayers.end(), [&](RenderLayer* layer) {
-		layer->update(gfx, *m_Window);
+		layer->update(gfx, *m_Window, deltaTime);
 	});
 
 	gfxFrame(gfx);

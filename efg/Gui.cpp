@@ -5,7 +5,7 @@ void Gui::initialize(const GfxContext& gfx)
 	gfxImGuiInitialize(gfx);
 }
 
-void Gui::update(GfxContext const& gfx, GfxWindow const& window)
+void Gui::update(GfxContext const& gfx, GfxWindow const& window, double deltaTime)
 {
 	if (ImGui::BeginMainMenuBar())
 	{

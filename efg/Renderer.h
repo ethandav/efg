@@ -12,7 +12,7 @@ public:
 
 	void initialize(const GfxWindow& window);
 	void attachRenderLayer(RenderLayer* layer);
-	void update();
+	void update(double deltaTIme);
 	void shutdown();
 private:
 	GfxContext					gfx				= {};

@@ -40,12 +40,10 @@ public:
 	const char*				name			= "";
 	GfxRef<GfxInstance>		reference		= {};
 	uint32_t				instances		= 1;
+	bool					update			= false;
 	glm::vec3				position		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				rotation		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3				scale			= glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3				prevPosition	= glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3				prevRotation	= glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3				prevScale		= glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4				modelMatrix		= glm::mat4();
 };
 

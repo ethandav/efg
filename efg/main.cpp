@@ -35,7 +35,7 @@ int main()
 {
     if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
     {
-        LoadLibrary(GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
+        //LoadLibrary(GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
     }
 	Engine engine;
 	engine.Initialize();

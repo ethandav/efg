@@ -5,6 +5,8 @@ void Scene::initialize(const GfxContext& gfx)
 {
 	gfxScene = gfxCreateScene();
 
+	lightingManager.initialize(gfx);
+
 	//cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 10.0f), glm::vec3(3.0f, 5.0f, 0.0f));
 	cam = CreateFlyCamera(gfx, glm::vec3(0.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -44,19 +46,68 @@ void Scene::loadScene(const GfxContext& gfx)
 		"assets/skybox/back.png"  // Back
 	};
 
-	createSkybox(gfx, textureFiles);
+	//createSkybox(gfx, textureFiles);
 
-	Mesh* plane = AddPrimitive(
-		gfx,
-		"Plane",
-		Shapes::PLANE,
-		false,
-		nullptr,
-		nullptr,
-		glm::vec3(0.0, 0.0f, 0.0f),
-		glm::vec3(0.0, 0.0f, 0.0f),
-		glm::vec3(100.0, 100.0f, 100.0f)
-	);
+	//Mesh* plane = AddPrimitive(
+	//	gfx,
+	//	"Plane",
+	//	Shapes::PLANE,
+	//	false,
+	//	nullptr,
+	//	nullptr,
+	//	glm::vec3(0.0, 0.0f, 0.0f),
+	//	glm::vec3(0.0, 0.0f, 0.0f),
+	//	glm::vec3(100.0, 100.0f, 100.0f)
+	//);
+
+	//Mesh* obj1 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 1",
+	//	Shapes::SPHERE,
+	//	false,
+	//	nullptr,
+	//	nullptr,
+	//	glm::vec3(2.0, 1.0f, 0.0f)
+	//);
+
+	//Mesh* obj2 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 2",
+	//	Shapes::SPHERE,
+	//	false,
+	//	nullptr,
+	//	nullptr,
+	//	glm::vec3(-2.0, 1.0f, 0.0f)
+	//);
+
+	//Mesh* obj3 = AddPrimitive(
+	//	gfx,
+	//	"Sphere 3",
+	//	Shapes::SPHERE,
+	//	false,
+	//	nullptr,
+	//	nullptr,
+	//	glm::vec3(0.0, 1.0f, -3.0f)
+	//);
+
+	glm::vec3 pos = glm::vec3(-5.0f, 1.0f, 0.0f);
+	glm::vec3 color = glm::vec3(1.0f, 0.3f, 0.3f);
+	Light* light1 = lightingManager.addPointLight(gfx, &pos, &color);
+	pos = glm::vec3(5.0f, 1.0f, 0.0f);
+	color = glm::vec3(0.3f, 0.3f, 1.0f);
+	Light* light2 = lightingManager.addPointLight(gfx, &pos, &color);
+
+	light1->animate = true;
+	light2->animate = true;
+
+	Circular* newAnimation1 = new Circular();
+	Circular* newAnimation2 = new Circular();
+	newAnimation1->startingAngle = glm::pi<float>();
+	newAnimation1->direction = -1;
+	newAnimation2->startingAngle = 0.0;
+	newAnimation2->direction = 1;
+	light1->animation = newAnimation1;
+	light2->animation = newAnimation2;
 
 	std::mt19937 rng(std::random_device{}());
 	std::uniform_real_distribution<float> dist(-50.0f, 50.0f);
@@ -73,7 +124,7 @@ void Scene::loadScene(const GfxContext& gfx)
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
 
-void Scene::update(GfxContext const& gfx, GfxWindow const& window)
+void Scene::update(GfxContext const& gfx, GfxWindow const& window, double deltaTime)
 {
 	UpdateFlyCamera(gfx, window, cam);
 
@@ -87,7 +138,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window)
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
 
 	updateSkybox(gfx);
-	lightingManager.update(gfx, litProgram);
+	lightingManager.update(gfx, litProgram, deltaTime);
     updateGameObjects(gfx);
 
 	gfxCommandBindKernel(gfx, litResolveKernel);
@@ -109,16 +160,10 @@ void Scene::updateGameObjects(GfxContext const& gfx)
         if (obj == nullptr)
             continue;
 
-		bool positionChanged = obj->position != obj->prevPosition;
-		bool rotationChanged = obj->rotation != obj->prevRotation;
-		bool scaleChanged = obj->scale != obj->prevScale;
-
-		if (positionChanged || rotationChanged || scaleChanged)
+		if (obj->update)
 		{
-		    obj->prevPosition = obj->position;
-		    obj->prevRotation = obj->rotation;
-		    obj->prevScale = obj->scale;
-		    obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
+			obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
+			obj->update = false;
 		}
 
 		obj->draw(gfx, litProgram);

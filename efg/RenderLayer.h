@@ -13,7 +13,7 @@ public:
 	RenderLayer() {};
 	virtual ~RenderLayer() = default;
 	virtual void initialize(GfxContext const& gfx) = 0;
-	virtual void update(GfxContext const& gfx, GfxWindow const& window) = 0;
+	virtual void update(GfxContext const& gfx, GfxWindow const& window, double deltaTime) = 0;
 	virtual void destroy(GfxContext const& gfx) = 0;
 private:
 };

@@ -29,9 +29,9 @@ void Mesh::draw(GfxContext const& gfx, GfxProgram const& program)
 
 void Mesh::gui()
 {
-	ImGui::InputFloat3("Position", &position[0], "%.3f");
-	ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
-	ImGui::InputFloat3("Scale", &scale[0], "%.3f");
+	update |= ImGui::InputFloat3("Position", &position[0], "%.3f");
+	update |= ImGui::InputFloat3("Rotation", &rotation[0], "%.3f");
+	update |= ImGui::InputFloat3("Scale", &scale[0], "%.3f");
 	ImGui::Separator();
 	ImGui::InputFloat3("Ambient", &material.cBuffer.properties.ambient[0]);
 	ImGui::Separator();

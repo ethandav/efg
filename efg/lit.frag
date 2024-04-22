@@ -16,7 +16,6 @@ struct Directional
     float3 diffuse;
     float3 specular;
 };
-
 StructuredBuffer<Directional> dirLights;
 
 struct PointLight
