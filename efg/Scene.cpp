@@ -92,22 +92,31 @@ void Scene::loadScene(const GfxContext& gfx)
 
 	glm::vec3 pos = glm::vec3(-5.0f, 1.0f, 0.0f);
 	glm::vec3 color = glm::vec3(1.0f, 0.3f, 0.3f);
-	Light* light1 = lightingManager.addPointLight(gfx, &pos, &color);
+	Point* light1 = lightingManager.addPointLight(gfx, &pos, &color);
 	pos = glm::vec3(5.0f, 1.0f, 0.0f);
 	color = glm::vec3(0.3f, 0.3f, 1.0f);
-	Light* light2 = lightingManager.addPointLight(gfx, &pos, &color);
+	Point* light2 = lightingManager.addPointLight(gfx, &pos, &color);
 
 	light1->animate = true;
 	light2->animate = true;
 
-	Circular* newAnimation1 = new Circular();
-	Circular* newAnimation2 = new Circular();
+	Circular* newAnimation1 = new Circular(&light1->input->position);
+	Circular* newAnimation2 = new Circular(&light2->input->position);
 	newAnimation1->startingAngle = glm::pi<float>();
 	newAnimation1->direction = -1;
 	newAnimation2->startingAngle = 0.0;
 	newAnimation2->direction = 1;
-	light1->animation = newAnimation1;
-	light2->animation = newAnimation2;
+	Cycle* newAnimation3 = new Cycle(&light1->input->pLinear, 0.0f, 0.2f);
+	Cycle* newAnimation4 = new Cycle(&light1->input->quadratic, 0.0f, 0.0025f);
+	Cycle* newAnimation5 = new Cycle(&light2->input->pLinear, 0.0f, 0.2f);
+	Cycle* newAnimation6 = new Cycle(&light2->input->quadratic, 0.0f, 0.0025f);
+	light1->animations.push_back(newAnimation1);
+	light1->animations.push_back(newAnimation3);
+	light1->animations.push_back(newAnimation4);
+	light2->animations.push_back(newAnimation2);
+	light2->animations.push_back(newAnimation5);
+	light2->animations.push_back(newAnimation6);
+	//light2->animations.push_back(newAnimation4);
 
 	std::mt19937 rng(std::random_device{}());
 	std::uniform_real_distribution<float> dist(-50.0f, 50.0f);

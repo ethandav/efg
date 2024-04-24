@@ -31,19 +31,15 @@ void Directional::destroy(GfxContext const& gfx)
 
 void Point::update(LightingManager* manager, float totalTime)
 {
-    // Update light colors as before
     glm::vec3 diffuseColor = glm::vec3(color) * diffuse;
     glm::vec3 ambientColor = diffuseColor * ambient;
     input->ambient = glm::vec4(ambientColor, 1.0f);
     input->diffuse = glm::vec4(diffuseColor, 1.0f);
     input->specular = glm::vec4(specular, 1.0f);
 
-	animation->run(input->position, totalTime);
+	for(Animation* animation : animations)
+		animation->run(totalTime);
 
-    // Modulate attenuation factors
-    float cycle = (sin(totalTime * 0.5f) + 1.0f) * 0.5f;  // Normalized to range [0, 1]
-    input->pLinear = 0.00f + 0.02f * cycle;  // Ranges from 0.045 to 0.065
-    input->quadratic = 0.0000f + 0.0025f * cycle;  // Ranges from 0.0075 to 0.01
 
     manager->updatePoints = true;
 }
@@ -134,7 +130,7 @@ void LightingManager::addDirectionalLight(GfxContext const& gfx)
 	directionalLightsBuffer = gfxCreateBuffer<DirectionalInput>(gfx, tempInputs.size(), tempInputs.data(), kGfxCpuAccess_Write);
 }
 
-Light* LightingManager::addPointLight(GfxContext const& gfx, glm::vec3 const* position, glm::vec3 const* color)
+Point* LightingManager::addPointLight(GfxContext const& gfx, glm::vec3 const* position, glm::vec3 const* color)
 {
 	PointInput* input = new PointInput();
 	if (position)
@@ -183,8 +179,11 @@ void LightingManager::destroy(GfxContext const& gfx)
 	for (Light* light : lights)
 	{
 		delete light->name;
-		if (light->animation != nullptr)
-			delete light->animation;
+		if (!light->animations.empty())
+		{
+			for(auto* animation : light->animations)
+				delete animation;
+		}
 		delete light;
 	}
 }

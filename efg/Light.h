@@ -23,13 +23,14 @@ struct PointInput
 	float quadratic = 0.0032f;
 };
 
+class Point;
 class LightingManager
 {
 public:
 	LightingManager() {};
 	void initialize(GfxContext const& gfx);
 	void addDirectionalLight(GfxContext const& gfx);
-	Light* addPointLight(GfxContext const& gfx, glm::vec3 const* position = nullptr,
+	Point* addPointLight(GfxContext const& gfx, glm::vec3 const* position = nullptr,
 		glm::vec3 const* color = nullptr);
 	void update(GfxContext const& gfx, GfxProgram const& program, double deltaTime);
 	void destroy(GfxContext const& gfx);
@@ -57,7 +58,7 @@ public:
 	const char* name = nullptr;
 	bool updated = false;
 	bool animate = false;
-	Animation* animation = nullptr;
+	std::vector<Animation*> animations = {};
 	glm::vec3 color = glm::vec3(1.0f);
 	glm::vec3 ambient = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
