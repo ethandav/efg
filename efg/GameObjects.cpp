@@ -48,6 +48,7 @@ void Mesh::destroy(GfxContext const& gfx)
 	gfxDestroyBuffer(gfx, vertexBuffer);
 	gfxDestroyTexture(gfx, material.diffuseMap);
 	gfxDestroyTexture(gfx, material.specularMap);
+	gfxDestroyBuffer(gfx, instanceBuffer);
 }
 
 void Instanced::draw(GfxContext const& gfx, GfxProgram const& program)
