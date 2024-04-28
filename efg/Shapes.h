@@ -27,6 +27,7 @@ namespace Shapes
     {
         SQUARE,
         PLANE,
+        GRID,
         CUBE,
         SKYBOX,
         SPHERE,

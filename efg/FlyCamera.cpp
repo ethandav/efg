@@ -27,6 +27,8 @@ SOFTWARE.
 #include "glm/gtc/quaternion.hpp"
 #include <glm/ext/quaternion_trigonometric.hpp>
 
+#include <iostream>
+
 // cam speed
 const float rotationSpeed = 0.01f;
 const float zoomSpeed = 0.1f;
@@ -176,3 +178,111 @@ void UpdateFlyCamera(GfxContext gfx, GfxWindow window, FlyCamera &fly_camera)
     fly_camera.prev_view_proj  = fly_camera.prev_proj * fly_camera.prev_view;
 }
 
+glm::quat clampQuaternion(const glm::quat& q, float maxAngleRadians) {
+    float angle = 2 * acos(q.w);
+    glm::vec3 axis(q.x, q.y, q.z);
+
+    if (glm::length(axis) > 0) {
+        axis = glm::normalize(axis);
+    } else {
+        // Axis is zero vector, quaternion is already identity or close
+        return glm::quat(1.0, 0.0, 0.0, 0.0);
+    }
+
+    if (angle > maxAngleRadians) {
+        angle = maxAngleRadians;
+    }
+
+    return glm::angleAxis(angle, axis);
+}
+
+void UpdatePlayerCamera(GfxContext gfx, GfxWindow window, FlyCamera &player_camera)
+{
+    // Update camera history
+    player_camera.prev_view = player_camera.view;
+    player_camera.prev_proj = player_camera.proj;
+
+    POINT cursorPos;
+    GetCursorPos(&cursorPos);
+    ScreenToClient(window, &cursorPos);
+
+    int mouseX = cursorPos.x - (gfxGetBackBufferWidth(gfx) / 2);
+    int mouseY = cursorPos.y - (gfxGetBackBufferHeight(gfx) / 2);
+
+    // Calculate the rotation angles based on mouse movement
+    float yaw = -rotationSpeed * static_cast<float>(mouseX - prevMouseX);
+    float pitch = rotationSpeed * static_cast<float>(mouseY - prevMouseY);
+
+    float smoothFactor = 0.2f; // Adjust this value for smoother movement
+    yaw = smoothFactor * yaw + (1.0f - smoothFactor) * player_camera.prevYaw;
+    pitch = smoothFactor * pitch + (1.0f - smoothFactor) * player_camera.prevPitch;
+
+    glm::vec3 direction = glm::normalize(player_camera.center - player_camera.eye);
+
+    glm::vec3 right = glm::normalize(glm::cross(player_camera.up, direction));
+
+    // Create quaternions for the yaw and pitch rotations
+    glm::quat yawQuat = glm::angleAxis(yaw, player_camera.up);
+    glm::quat pitchQuat = glm::angleAxis(pitch, right);
+
+    // Apply the rotations to the direction vector
+    direction = yawQuat * direction;
+    direction = pitchQuat * direction;
+    direction = glm::normalize(direction);
+
+    // Update the camera's center position
+    player_camera.center = player_camera.eye + direction;
+
+    player_camera.prevYaw = yaw;
+    player_camera.prevPitch = pitch;
+
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
+
+    // Handle camera translation based on keyboard input
+    glm::vec3 forward = glm::normalize(glm::cross(right, player_camera.up)); // Forward direction on XZ plane
+    glm::vec3 horizontalForward = glm::normalize(glm::vec3(forward.x, 0.0f, forward.z)); // Remove Y component
+
+    if (GetAsyncKeyState('W') & 0x8000)
+    {
+        player_camera.eye += horizontalForward * zoomSpeed;
+        player_camera.center += horizontalForward * zoomSpeed;
+    }
+    if (GetAsyncKeyState('S') & 0x8000)
+    {
+        player_camera.eye -= horizontalForward * zoomSpeed;
+        player_camera.center -= horizontalForward * zoomSpeed;
+    }
+    if (GetAsyncKeyState('A') & 0x8000)
+    {
+        player_camera.eye += right * zoomSpeed;
+        player_camera.center += right * zoomSpeed;
+    }
+    if (GetAsyncKeyState('D') & 0x8000)
+    {
+        player_camera.eye -= right * zoomSpeed;
+        player_camera.center -= right * zoomSpeed;
+    }
+
+    // Handle mouse button states
+    if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+    {
+        // Right mouse button is held down
+        rmbDown = true;
+    }
+    else
+    {
+        // Right mouse button is not held down
+        rmbDown = false;
+    }
+
+    // Update view matrix
+    player_camera.view = glm::lookAt(player_camera.eye, player_camera.center, player_camera.up);
+
+    // Update projection matrix
+    float const aspect_ratio = gfxGetBackBufferWidth(gfx) / (float)gfxGetBackBufferHeight(gfx);
+    player_camera.proj = glm::perspective(0.6f, aspect_ratio, 1e-1f, 1e4f);
+
+    player_camera.view_proj = player_camera.proj * player_camera.view;
+    player_camera.prev_view_proj = player_camera.prev_proj * player_camera.prev_view;
+}

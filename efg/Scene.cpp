@@ -16,6 +16,7 @@ void Scene::initialize(const GfxContext& gfx)
 	gfxDrawStateSetColorTarget(drawState, 0, colorBuffer.getFormat());
 	gfxDrawStateSetDepthStencilTarget(drawState, depthBuffer.getFormat());
 	gfxDrawStateSetDepthFunction(drawState, D3D12_COMPARISON_FUNC_LESS);
+	gfxDrawStateEnableAlphaBlending(drawState);
 
 	litProgram = gfxCreateProgram(gfx, "lit");
 	litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
@@ -31,6 +32,7 @@ void Scene::initialize(const GfxContext& gfx)
 
 	gfxProgramSetParameter(gfx, skyboxProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, skyboxProgram, "ColorBuffer", colorBuffer);
+
 
     loadScene(gfx);
 }
@@ -48,6 +50,9 @@ void Scene::loadScene(const GfxContext& gfx)
 
 	//createSkybox(gfx, textureFiles);
 
+	lightingManager.addDirectionalLight(gfx);
+	lightingManager.addPointLight(gfx);
+
 	//Mesh* plane = AddPrimitive(
 	//	gfx,
 	//	"Plane",
@@ -59,6 +64,16 @@ void Scene::loadScene(const GfxContext& gfx)
 	//	glm::vec3(0.0, 0.0f, 0.0f),
 	//	glm::vec3(100.0, 100.0f, 100.0f)
 	//);
+
+	Mesh* obj1 = AddPrimitive(
+		gfx,
+		"Sphere 1",
+		Shapes::GRID,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, 0.0f, 0.0f)
+	);
 
 	//Mesh* obj1 = AddPrimitive(
 	//	gfx,
@@ -90,23 +105,24 @@ void Scene::loadScene(const GfxContext& gfx)
 	//	glm::vec3(0.0, 1.0f, -3.0f)
 	//);
 
-	std::mt19937 rng(std::random_device{}());
-	std::uniform_real_distribution<float> dist(-50.0f, 50.0f);
+	//std::mt19937 rng(std::random_device{}());
+	//std::uniform_real_distribution<float> dist(-50.0f, 50.0f);
 
-	std::vector<glm::mat4> matrices;
-	matrices.reserve(2000);
-	for (int i = 0; i < 2000; i++)
-	{
-		matrices.push_back(CreateModelMatrix(glm::vec3(dist(rng), dist(rng), dist(rng)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
-	}
+	//std::vector<glm::mat4> matrices;
+	//matrices.reserve(2000);
+	//for (int i = 0; i < 2000; i++)
+	//{
+	//	matrices.push_back(CreateModelMatrix(glm::vec3(dist(rng), dist(rng), dist(rng)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+	//}
 
-	AddPrimitiveInstanced(gfx, "Sphere", Shapes::SPHERE, 2000, matrices);
+	//AddPrimitiveInstanced(gfx, "Sphere", Shapes::SPHERE, 2000, matrices);
 
 	//LoadSceneFromFile(gfx, "assets/sponza.obj");
 }
 
 void Scene::update(GfxContext const& gfx, GfxWindow const& window, double deltaTime)
-{
+{    
+	totalTime += deltaTime;
 	UpdateFlyCamera(gfx, window, cam);
 
 	gfxCommandBindColorTarget(gfx, 0, colorBuffer);
@@ -115,6 +131,7 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window, double deltaT
 	gfxCommandClearTexture(gfx, depthBuffer);
 	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
+	gfxProgramSetParameter(gfx, litProgram, "time", totalTime);
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_View", glm::mat4(glm::mat3(cam.view)));
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
 

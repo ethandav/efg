@@ -63,6 +63,52 @@ Shape plane()
     return square;
 }
 
+Shape grid()
+{
+    int resolution = 100;
+    float size = 50.0f;
+    Shape grid;
+    grid.vertexCount = (resolution + 1) * (resolution + 1);
+    grid.indexCount = resolution * resolution * 6;
+    grid.vertices.resize(grid.vertexCount);
+    grid.indices.resize(grid.indexCount);
+
+    float step = size / resolution;
+    float offset = size / 2.0f;
+
+    // Create vertices
+    for (int i = 0; i <= resolution; ++i) {
+        for (int j = 0; j <= resolution; ++j) {
+            float x = j * step - offset;
+            float z = i * step - offset;
+            grid.vertices[i * (resolution + 1) + j].position = glm::vec3(x, 0.0f, z);
+            grid.vertices[i * (resolution + 1) + j].normal = glm::vec3(0.0f, 1.0f, 0.0f);
+            grid.vertices[i * (resolution + 1) + j].uv = glm::vec2(j / float(resolution), i / float(resolution));
+        }
+    }
+
+    // Create indices for 2 triangles per square
+    int index = 0;
+    for (int i = 0; i < resolution; ++i) {
+        for (int j = 0; j < resolution; ++j) {
+            int topLeft = i * (resolution + 1) + j;
+            int topRight = topLeft + 1;
+            int bottomLeft = topLeft + (resolution + 1);
+            int bottomRight = bottomLeft + 1;
+
+            grid.indices[index++] = topLeft;
+            grid.indices[index++] = bottomLeft;
+            grid.indices[index++] = bottomRight;
+
+            grid.indices[index++] = topLeft;
+            grid.indices[index++] = bottomRight;
+            grid.indices[index++] = topRight;
+        }
+    }
+
+    return grid;
+}
+
 Shape cube()
 {
     Shape cube;
@@ -451,6 +497,9 @@ Shape Shapes::getShape(Types type)
         break;
     case PLANE:
         shape = plane();
+        break;
+    case GRID:
+        shape = grid();
         break;
 	case CUBE:
 		shape = cube();

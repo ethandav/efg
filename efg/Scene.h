@@ -53,6 +53,7 @@ private:
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
 	Skybox*						skybox					= nullptr;
+	float totalTime;
 };
 
 #endif SCENE_H

@@ -37,8 +37,9 @@ void Point::update(LightingManager* manager, float totalTime)
     input->diffuse = glm::vec4(diffuseColor, 1.0f);
     input->specular = glm::vec4(specular, 1.0f);
 
-	for(Animation* animation : animations)
-		animation->run(totalTime);
+	if(!animations.empty())
+		for(Animation* animation : animations)
+			animation->run(totalTime);
 
 
     manager->updatePoints = true;
