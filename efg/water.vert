@@ -19,8 +19,8 @@ struct Params
 Params main(float3 pos : Position, float3 normal : NORMAL, float2 uv : TEXCOORDS, uint InstanceID : SV_InstanceID)
 {
     // Transform the position to world space
-    float frequency = 10.0f;  // Increased frequency for tighter wave patterns
-    float amplitude = 0.1f;  // Reduced amplitude for subtle waves
+    float frequency = 8.0f;  // Increased frequency for tighter wave patterns
+    float amplitude = 0.08f;  // Reduced amplitude for subtle waves
 
     // Calculate wave using a damped sine wave
     float wave = amplitude * sin(pos.x * frequency + time) * cos(pos.z * frequency + time);

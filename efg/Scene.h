@@ -32,6 +32,7 @@ private:
 
 	void loadScene(GfxContext const& gfx);
 	void updateGameObjects(GfxContext const& gfx);
+	void updateWaterSurfaces(GfxContext const& gfx);
 	void DrawInstanced(GfxContext const& gfx, GameObject* obj);
 	void updateSkybox(GfxContext const& gfx);
 	void LoadSceneFromFile(GfxContext const& gfx, const char* assetFile);
@@ -43,15 +44,19 @@ private:
 	GfxTexture					depthBuffer				= {};
 	GfxProgram					litProgram				= {};
 	GfxKernel					litKernel				= {};
+	GfxProgram					waterProgram			= {};
+	GfxKernel					waterKernel				= {};
 	GfxProgram					skyboxProgram			= {};
 	GfxKernel					skyboxKernel			= {};
 	GfxKernel					litResolveKernel		= {};
+	GfxKernel					waterResolveKernel		= {};
 	GfxKernel					skyboxResolveKernel		= {};
 	GfxSamplerState				textureSampler			= {};
 	GfxArray<GfxBuffer>			indexBuffers			= {};
 	GfxArray<GfxBuffer>			vertexBuffers			= {};
 	GfxArray<GfxTexture>		albedoBuffers			= {};
 	std::vector<GameObject*>	gameObjects				= {};
+	std::vector<GameObject*>	waterSurfaces			= {};
 	Skybox*						skybox					= nullptr;
 	float totalTime;
 };

@@ -65,8 +65,8 @@ Shape plane()
 
 Shape grid()
 {
-    int resolution = 100;
-    float size = 50.0f;
+    int resolution = 200;
+    float size = 10.0f;
     Shape grid;
     grid.vertexCount = (resolution + 1) * (resolution + 1);
     grid.indexCount = resolution * resolution * 6;

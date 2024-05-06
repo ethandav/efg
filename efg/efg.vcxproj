@@ -153,6 +153,8 @@ copy /Y "$(SolutionDir)gfx\third_party\WinPixEventRuntime\bin\x64\WinPixEventRun
     <None Include="lit.vert" />
     <None Include="sky.frag" />
     <None Include="sky.vert" />
+    <None Include="water.frag" />
+    <None Include="water.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />

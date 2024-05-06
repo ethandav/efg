@@ -22,6 +22,10 @@ void Scene::initialize(const GfxContext& gfx)
 	litKernel = gfxCreateGraphicsKernel(gfx, litProgram, drawState);
 	litResolveKernel = gfxCreateGraphicsKernel(gfx, litProgram, "resolve");
 
+	waterProgram = gfxCreateProgram(gfx, "water");
+	waterKernel = gfxCreateGraphicsKernel(gfx, waterProgram, drawState);
+	waterResolveKernel = gfxCreateGraphicsKernel(gfx, waterProgram, "resolve");
+
 	skyboxProgram = gfxCreateProgram(gfx, "sky");
 	skyboxKernel = gfxCreateGraphicsKernel(gfx, skyboxProgram, drawState);
 
@@ -29,6 +33,9 @@ void Scene::initialize(const GfxContext& gfx)
 
 	gfxProgramSetParameter(gfx, litProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, litProgram, "ColorBuffer", colorBuffer);
+
+	gfxProgramSetParameter(gfx, waterProgram, "TextureSampler", textureSampler);
+	gfxProgramSetParameter(gfx, waterProgram, "ColorBuffer", colorBuffer);
 
 	gfxProgramSetParameter(gfx, skyboxProgram, "TextureSampler", textureSampler);
 	gfxProgramSetParameter(gfx, skyboxProgram, "ColorBuffer", colorBuffer);
@@ -48,7 +55,7 @@ void Scene::loadScene(const GfxContext& gfx)
 		"assets/skybox/back.png"  // Back
 	};
 
-	//createSkybox(gfx, textureFiles);
+	createSkybox(gfx, textureFiles);
 
 	lightingManager.addDirectionalLight(gfx);
 	lightingManager.addPointLight(gfx);
@@ -70,30 +77,88 @@ void Scene::loadScene(const GfxContext& gfx)
 		"Sphere 1",
 		Shapes::GRID,
 		false,
-		nullptr,
+		"assets/textures/water.jpg",
 		nullptr,
 		glm::vec3(0.0, 0.0f, 0.0f)
 	);
+	obj1->material.cBuffer.properties.ambient = glm::vec4(0.1f, 0.3f, 1.0f, 0.0f);
+	waterSurfaces.push_back(obj1);
 
-	//Mesh* obj1 = AddPrimitive(
-	//	gfx,
-	//	"Sphere 1",
-	//	Shapes::SPHERE,
-	//	false,
-	//	nullptr,
-	//	nullptr,
-	//	glm::vec3(2.0, 1.0f, 0.0f)
-	//);
+	Mesh* obj2 = AddPrimitive(
+		gfx,
+		"Sphere 1",
+		Shapes::SPHERE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, -2.0f, 0.0f)
+	);
+	gameObjects.push_back(obj2);
 
-	//Mesh* obj2 = AddPrimitive(
-	//	gfx,
-	//	"Sphere 2",
-	//	Shapes::SPHERE,
-	//	false,
-	//	nullptr,
-	//	nullptr,
-	//	glm::vec3(-2.0, 1.0f, 0.0f)
-	//);
+	Mesh* obj3 = AddPrimitive(
+		gfx,
+		"wall 1",
+		Shapes::SQUARE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, -1.0f, -5.0f),
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(10.0, 5.0f, 10.0f)
+	);
+	gameObjects.push_back(obj3);
+
+	Mesh* obj4 = AddPrimitive(
+		gfx,
+		"wall 2",
+		Shapes::SQUARE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, -1.0f, 5.0f),
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(10.0, 5.0f, 10.0f)
+	);
+	gameObjects.push_back(obj4);
+
+	Mesh* obj5 = AddPrimitive(
+		gfx,
+		"wall 3",
+		Shapes::SQUARE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(-5.0, -1.0f, 0.0f),
+		glm::vec3(0.0, 90.0f, 0.0f),
+		glm::vec3(10.0, 5.0f, 10.0f)
+	);
+	gameObjects.push_back(obj5);
+
+	Mesh* obj6 = AddPrimitive(
+		gfx,
+		"wall 3",
+		Shapes::SQUARE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(5.0, -1.0f, 0.0f),
+		glm::vec3(0.0, -90.0f, 0.0f),
+		glm::vec3(10.0, 5.0f, 10.0f)
+	);
+	gameObjects.push_back(obj6);
+
+	Mesh* obj7 = AddPrimitive(
+		gfx,
+		"wall 3",
+		Shapes::PLANE,
+		false,
+		nullptr,
+		nullptr,
+		glm::vec3(0.0, -3.0f, 0.0f),
+		glm::vec3(0.0, 0.0f, 0.0f),
+		glm::vec3(2.0, 2.0f, 2.0f)
+	);
+	gameObjects.push_back(obj7);
 
 	//Mesh* obj3 = AddPrimitive(
 	//	gfx,
@@ -132,12 +197,22 @@ void Scene::update(GfxContext const& gfx, GfxWindow const& window, double deltaT
 	gfxProgramSetParameter(gfx, litProgram, "g_ViewProjection", cam.view_proj);
 	gfxProgramSetParameter(gfx, litProgram, "viewPos", cam.eye);
 	gfxProgramSetParameter(gfx, litProgram, "time", totalTime);
+	gfxProgramSetParameter(gfx, waterProgram, "g_ViewProjection", cam.view_proj);
+	gfxProgramSetParameter(gfx, waterProgram, "viewPos", cam.eye);
+	gfxProgramSetParameter(gfx, waterProgram, "time", totalTime);
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_View", glm::mat4(glm::mat3(cam.view)));
 	gfxProgramSetParameter(gfx, skyboxProgram, "g_Projection", cam.proj);
 
 	updateSkybox(gfx);
 	lightingManager.update(gfx, litProgram, deltaTime);
+	lightingManager.updateDirectionals = true;
+	lightingManager.updatePoints = true;
+	lightingManager.update(gfx, waterProgram, deltaTime);
     updateGameObjects(gfx);
+	updateWaterSurfaces(gfx);
+
+	gfxCommandBindKernel(gfx, waterResolveKernel);
+	gfxCommandDraw(gfx, 3);
 
 	gfxCommandBindKernel(gfx, litResolveKernel);
 	gfxCommandDraw(gfx, 3);
@@ -165,6 +240,29 @@ void Scene::updateGameObjects(GfxContext const& gfx)
 		}
 
 		obj->draw(gfx, litProgram);
+		if (obj->reference)
+		{
+			DrawInstanced(gfx, obj);
+		}
+    }
+}
+
+void Scene::updateWaterSurfaces(GfxContext const& gfx)
+{
+	gfxCommandBindKernel(gfx, waterKernel);
+
+    for (GameObject* obj : waterSurfaces)
+    {
+        if (obj == nullptr)
+            continue;
+
+		if (obj->update)
+		{
+			obj->modelMatrix = CreateModelMatrix(obj->position, obj->rotation, obj->scale);
+			obj->update = false;
+		}
+
+		obj->draw(gfx, waterProgram);
 		if (obj->reference)
 		{
 			DrawInstanced(gfx, obj);
@@ -260,7 +358,6 @@ void Scene::AddPrimitiveInstanced(GfxContext const& gfx, const char* name, const
 	}
 
 	newMesh->name = objName;
-	gameObjects.push_back(newMesh);
 }
 
 Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes::Types type, bool atCam,
@@ -330,7 +427,6 @@ Mesh* Scene::AddPrimitive(GfxContext const& gfx, const char* name, const Shapes:
 	}
 
 	newMesh->name = objName;
-	gameObjects.push_back(newMesh);
 
 	return newMesh;
 }
@@ -463,6 +559,9 @@ void Scene::destroy(GfxContext const& gfx)
 	gfxDestroyKernel(gfx, litKernel);
 	gfxDestroyKernel(gfx, litResolveKernel);
 	gfxDestroyProgram(gfx, litProgram);
+	gfxDestroyKernel(gfx, waterKernel);
+	gfxDestroyKernel(gfx, waterResolveKernel);
+	gfxDestroyProgram(gfx, waterProgram);
 	gfxDestroyKernel(gfx, skyboxKernel);
 	gfxDestroyKernel(gfx, skyboxResolveKernel);
 	gfxDestroyProgram(gfx, skyboxProgram);

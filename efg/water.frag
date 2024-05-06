@@ -147,7 +147,7 @@ float4 main(Params input) : SV_Target
     float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 3.0);
     transparency *= fresnel;
 
-    float4 FragColor = float4(result, transparency);
+    float4 FragColor = float4(result, 0.2f);
 
     return FragColor;
 }
